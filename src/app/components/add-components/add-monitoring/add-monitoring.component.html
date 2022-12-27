@@ -1,0 +1,943 @@
+<!-- HTML component for ADD/EDIT Monitoring -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">  
+  <mat-accordion class="example-headers-align">
+    <form class="example-form" [formGroup]="monitoringForm" (change)="validateOnChange()">
+      <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle class="custom-expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h6>{{'monitoring-component.project' | translate}}</h6>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline">
+                <mat-label><span class="label-project-name">{{'monitoring-component.project-name' | translate}}</span>
+                </mat-label>
+                <input type="text" placeholder="Pick one" matInput formControlName="projectName" [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="validateOnChange();getCurrency();">
+                  <mat-option *ngFor="let option of filteredOptions | async" [value]="option.projectNameEn">
+                    {{option.projectNameEn}}
+                  </mat-option>
+                  <!-- <mat-option *ngFor="let option of projectList" [value]="option.projectNameEn">
+                      {{option.projectNameEn}}
+                    </mat-option> -->
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+          </div>
+          <ng-container *ngIf="hidden===false">
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-start-date">{{'monitoring-component.start-date' | translate}}</span>
+                  </mat-label>
+                  <input matInput autocomplete="off" [matDatepicker]="picker" style="cursor: pointer"
+                    (focus)="picker?.open()"  formControlName="startdate">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker [disabled]="pickerDisable_flag_start_date==false"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12 pr-0">
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-end-date">{{'monitoring-component.end-date' | translate}}</span>
+                  </mat-label>
+                  <input matInput autocomplete="off" [matDatepicker]="picker1" style="cursor: pointer"
+                    (focus)="picker1?.open()" readonly formControlName="enddate" />
+                  <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                  <mat-datepicker #picker1 [disabled]="pickerDisable_flag_end_date==false"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-total-budget-mzn">{{'monitoring-component.total-budget-mzn' |
+                      translate}}</span></mat-label>
+                  <input matInput type="text" formControlName="budgetMzn" autocomplete="off" class=""
+                    placeholder="Total budget (in MZN)" readonly />
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+
+                <h6>{{'monitoring-component.annual-budget-mzn' | translate}}</h6>
+                <div class="mat-elevation-z8 table-responsive customizeTable" #epltable>
+
+                  <table mat-table [dataSource]="dataSource" class="table table-bordered" matSort>
+
+
+                    <ng-container matColumnDef="finagr">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'monitoring-component.financial-agreement' |
+                        translate}} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.finagr}}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="year">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'monitoring-component.year' | translate}}
+                      </th>
+                      <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="associatedFunding">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'monitoring-component.associated-funding' |
+                        translate}} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.associatedFunding}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="donor">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'monitoring-component.donor' | translate}}
+                      </th>
+                      <td mat-cell *matCellDef="let element"> {{element.donor}}
+                      </td>
+                    </ng-container>
+                    <ng-container matColumnDef="allocatedBudjet">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'monitoring-component.allocated-annual-budget' | translate}} </th>
+                      <td mat-cell *matCellDef="let element" align="end"> {{element.allocatedBudjet | number : '1.2-2'}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="disbursedBudjet">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'monitoring-component.annual-disbursed-budget' | translate}} </th>
+                      <td mat-cell *matCellDef="let element" align="end"> {{element.disbursedBudjet | number : '1.2-2'}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="budjetexecuted">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        {{'monitoring-component.annual-budget-executed' | translate}} </th>
+                      <td mat-cell *matCellDef="let element" align="end"> {{element.budjetexecuted | number : '1.2-2'}} </td>
+                    </ng-container>
+                    <!-- <ng-container matColumnDef="disrate">
+                        <th mat-header-cell *matHeaderCellDef>{{'monitoring-component.disbursement-rate' | translate}} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.disrate}} </td>
+                      </ng-container>  -->
+                    <!-- <ng-container matColumnDef="financialrate">
+                        <th mat-header-cell *matHeaderCellDef>{{'monitoring-component.financial-execution-rate' | translate}} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.financialrate}} </td>
+                      </ng-container> -->
+
+                    <ng-container matColumnDef="edit" sticky>
+                      <!-- <ng-container *ngIf="viewMonitoring!=='viewMonitoring'"> -->
+                      <th *matHeaderCellDef > {{'common.action' | translate}} </th>
+                      <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+                      <td *matCellDef="let element;let i = index;" class="whitesp-nowrap printremove">
+
+                        <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+
+                        <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{'common.edit' | translate}}" tabindex="-1"
+                        (click)='moveToSelectedTabFunding("Edit Funding",element)'>
+                        <i class="far fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{'common.delete' | translate}}" tabindex="-1"
+                        (click)='opensweetalertDelete(i)'>
+                        <i class="fas fa-trash-alt"></i></button>
+                        <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{'common.view' | translate}}"
+                        tabindex="-1" (click)='viewFunding(element)'>
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </ng-container>
+                    <ng-container *ngIf="viewMonitoring==='viewMonitoring'">
+
+
+                      <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{'common.view' | translate}}"
+                      tabindex="-1" (click)='viewFunding(element)'>
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </ng-container>
+
+                      </td>
+                    <!-- </ng-container> -->
+                    </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsDisbursement"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsDisbursement;"></tr>
+                  </table>
+
+                </div>
+                <mat-paginator #paginator3 [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                <!-- </ng-container> -->
+
+
+              </div>
+            </div>
+          </ng-container>
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-12">
+              <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-ugb-meo">{{'monitoring-component.level-of-action' | translate}} </span></mat-label>
+                <mat-select formControlName="levelOfAction">
+                    <mat-option value="option1" class="label-uGBMEO1">Central</mat-option>
+                    <mat-option value="option2" class="label-uGBMEO2">Provincial</mat-option>
+                </mat-select>
+            </mat-form-field>
+              <!-- <mat-form-field appearance="outline">
+                <mat-label><span class="label-level-of-action">{{'monitoring-component.level-of-action' |
+                    translate}}</span></mat-label>
+                <input matInput formControlName="levelOfAction" autocomplete="off" class="" />
+              </mat-form-field> -->
+            </div>
+            <div class="col-xl-4 col-lg-4 col-sm-12">
+              <mat-form-field appearance="outline">
+                <mat-label><span class="label-strategic-priority-pqg">{{'monitoring-component.strategic-priority-pqg' |
+                    translate}}</span></mat-label>
+                <input matInput formControlName="strategicPriorityPQG" autocomplete="off" class=""  />
+              </mat-form-field>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-sm-12 pr-0">
+              <mat-form-field appearance="outline">
+                <mat-label><span class="label-strategic-objective-pqg">{{'monitoring-component.strategic-objective-pqg' |
+                    translate}}</span></mat-label>
+                <input matInput formControlName="strategicObjectivePQG" autocomplete="off" class="" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 col-sm-12">
+              <h6>{{'monitoring-component.disbursement' | translate}}</h6>
+              <mat-form-field appearance="outline">
+                <mat-label><span
+                    class="label-conditions-on-disbursements">{{'monitoring-component.conditions-on-disbursements' |
+                    translate}}</span>
+                </mat-label>
+                <textarea matInput placeholder="Condition" formControlName="conditions"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6 col-lg-6 col-sm-12 pr-0">
+              <h6>{{'monitoring-component.physical-execution-rate' | translate}}</h6>
+              <table class="table table-striped table-bordered" formArrayName="physicalExecutionData">
+                <tr>
+                  <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+                  <th class="add-width">
+                    <button (click)="addPhysicalExecutionHeaders()" class="btn btn-success btn-sm">
+                      {{'monitoring-component.add' | translate}}
+                    </button>
+                  </th>
+                </ng-container>
+                  <th *ngFor="let column of physicalExecutionHeaders">
+
+                    <ng-container *ngIf="column==='Date of Physical Execution'">
+                      {{'monitoring-component.date-of-physical-execution' | translate}}
+                  </ng-container>
+                  <ng-container *ngIf="column==='Physical Execution Rate'">
+                    {{'monitoring-component.physical-execution-rate' | translate}}
+                </ng-container>
+                  </th>
+                </tr>
+                <tr *ngFor="let row of monitoringForm.get('physicalExecutionData')['controls']; let j = index">
+                  <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+                  <td class="text-center">
+                    <a class="btn btn-danger btn-sm" popover-trigger="'mouseenter'" uib-popover="Delete"
+                      (click)="deletePhysicalExecution(j)">
+                      <i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                  </td>
+                </ng-container>
+                  <td *ngFor="let column of physicalExecutionHeaders">
+                    <ng-container>
+                      <ng-container [formGroupName]="j">
+                        <ng-container *ngIf="column == 'Date of Physical Execution';then tempp;">
+                        </ng-container>
+                        <ng-template #tempp>
+                          <mat-form-field class="mb-form-0" appearance="outline">
+                            <mat-label><span
+                                class="label-enter-date-of-physical-execution ">{{'monitoring-component.date-of-physical-execution'
+                                | translate}} </span>
+                            </mat-label>
+                            <input matInput formControlName="dateOfPhysicalExecution" autocomplete="off"
+                              [matDatepicker]="picker2" style="cursor: pointer" (focus)="picker2?.open()" readonly />
+                            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                            <mat-datepicker #picker2 [disabled]="pickerDisable_flag_date==false"></mat-datepicker>
+                          </mat-form-field>
+                        </ng-template>
+                        <ng-container *ngIf="column == 'Physical Execution Rate';then tempp1;">
+                        </ng-container>
+                        <ng-template #tempp1>
+                          <mat-form-field class="mb-form-0" appearance="outline">
+                            <mat-label><span class="label-enter-funds"> {{'monitoring-component.enter-funds' |
+                                translate}}</span> </mat-label>
+
+                            <input type="number" min="0" max="100" (keypress)="checkLength1($event, inputNumber)"
+                              #inputNumber matInput autocomplete="off" formControlName="funds" />
+
+                          </mat-form-field>
+                        </ng-template>
+                      </ng-container>
+                    </ng-container>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <mat-action-row class="border-top-none">
+            <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+              (click)="clearForm(monitoringForm)">{{'monitoring-component.reset' | translate}}</button>
+            <button class="btn btn-outline-success btn-sm mr-2 label-next"
+              (click)="validateProject();">{{'monitoring-component.next' | translate}}</button>
+          </mat-action-row>
+        </div>
+      </mat-expansion-panel>
+      <button class="checkValidation" [hidden]="true"></button>
+    </form>
+    <ng-container *ngIf="terrainVisit_flag==='false'">
+      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle [disabled]="true"
+        class="custom-expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h6>{{'monitoring-component.field-visit' | translate}}</h6>
+          </mat-panel-title>
+          <mat-panel-description>
+            <mat-icon></mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+    </ng-container>
+    <ng-container *ngIf="terrainVisit_flag==='true'">
+      <form id="myForm" [formGroup]="monitoringForm2" (change)="validateOnChange()">
+        <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle [disabled]="false"
+          class="custom-expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h6>{{'monitoring-component.field-visit' | translate}}</h6>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-date-of-visit">{{'monitoring-component.date-of-visit' | translate}}</span>
+                  </mat-label>
+                  <input matInput autocomplete="off" [matDatepicker]="picker2" formControlName="dovisit"
+                    style="cursor: pointer" (focus)="picker2?.open()" readonly (dateChange)="validateOnChange()" />
+                  <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                  <mat-datepicker #picker2 [disabled]="pickerDisable_flag_date==false"></mat-datepicker>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-province">{{'monitoring-component.province' | translate}}</span>
+                  </mat-label>
+                  <!-- <mat-select formControlName="province" (selectionChange)="validateOnChange()">
+                      <mat-option value="option">Maputo</mat-option>
+                      <mat-option value="option">Beira</mat-option>
+                      <mat-option value="option">Pemba</mat-option>
+                    </mat-select> -->
+                  <mat-select formControlName="province" (selectionChange)="validateOnChange()">
+                    <mat-option *ngFor="let option of provinceList1" [value]="option.provinces_id">
+                      {{option.provinces_name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-province">{{'monitoring-component.visitors-name' | translate}}</span>
+                  </mat-label>
+                  <input matInput autocomplete="off" placeholder="Name of the visitor" formControlName="lastvisitor"
+                    (keyDown)="validateOnChange()" />
+                </mat-form-field>
+              </div>
+            </div>
+            <mat-action-row class="border-top-none">
+              <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+                (click)="clearForm2(monitoringForm2)">{{'monitoring-component.reset' | translate}}</button>
+              <button class="btn btn-outline-danger btn-sm mr-2" (click)="prevStep()"> {{'monitoring-component.previous' |
+                translate}}</button>
+              <button class="btn btn-outline-success btn-sm mr-2" (click)="validateTrrainvisit()">
+                {{'monitoring-component.next' | translate}}</button>
+            </mat-action-row>
+          </div>
+        </mat-expansion-panel>
+        <button class="checkValidation" [hidden]="true"></button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="contract_flag==='false'">
+      <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle [disabled]="true"
+        class="custom-expansion-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h6>{{'monitoring-component.contract' | translate}}</h6>
+          </mat-panel-title>
+          <mat-panel-description>
+            <mat-icon></mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+    </ng-container>
+    <ng-container *ngIf="contract_flag==='true'">
+      <form id="myForm" [formGroup]="monitoringForm3" (change)="validateOnChange()">
+        <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle [disabled]="false"
+          class="custom-expansion-panel">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h6>{{'monitoring-component.contract' | translate}}</h6>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                  <mat-label><span
+                      class="label-name-of-contracted-company">{{'monitoring-component.name-of-contracted-company' |
+                      translate}}</span>
+                  </mat-label>
+                  <input matInput autocomplete="off" class="" placeholder="Name of contracted company"
+                    formControlName="company" />
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-contract-value-in-mzn">{{'monitoring-component.contract-value-mzn' |
+                      translate}}</span></mat-label>
+                  <input matInput autocomplete="off" class="" placeholder="Contract value in MZN"
+                    formControlName="contractValue" (focus)="onFocus($event.target.value)"
+                    (blur)="onBlur($event.target.value)" (keypress)="regex_Currency($event)">
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <mat-form-field appearance="outline">
+                  <mat-label><span
+                      class="label-implementing-organization">{{'monitoring-component.implementing-organization' |
+                      translate}} </span>
+                  </mat-label>
+                  <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="organization"
+                    [matAutocomplete]="autoOrganization">
+                  <mat-autocomplete #autoOrganization="matAutocomplete">
+                    <!-- <mat-option *ngFor="let option of donorfilter | async" [value]="option">
+                        {{option}}
+                      </mat-option> -->
+                    <mat-option *ngFor="let option of implementingOrganization"
+                      [value]="option.implementingOrganizationName">
+                      {{option.implementingOrganizationName}}
+                    </mat-option>
+                    <mat-option value="option" (click)="openDialog()"> <i class="fas fa-plus text-primary"></i>&nbsp;
+                      {{'monitoring-component.add-new-implementing-organization' | translate}}</mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <mat-form-field appearance="outline">
+                  <mat-label><span
+                      class="label-did-this-contract-have-an-addendum">{{'monitoring-component.did-this-contract-have-an-addendum'
+                      | translate}}</span></mat-label>
+                  <mat-select formControlName="contractAb" (selectionChange)='validateContract()'>
+                    <mat-option value="Yes">Yes</mat-option>
+                    <mat-option value="No">No</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <div class="row">
+              <ng-container *ngIf="addendum_value_mandatory_flag==true">
+                <strong class="mandatory">*</strong>
+              </ng-container>
+              <ng-container *ngIf="addendum_value_mandatory_flag==false">
+              </ng-container>
+              <ng-container *ngIf="hdn_flag==='true'">
+              </ng-container>
+              <ng-container *ngIf="hdn_flag==='false'">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                  <mat-form-field appearance="outline">
+                    <mat-label><span class="label-addendum-value-in-mzn">{{'monitoring-component.addendum-value-mzn' |
+                        translate}}</span></mat-label>
+                    <input matInput autocomplete="off" class="" placeholder="Addendum value in MZN"
+                      formControlName="abValue" (focus)="onFocus2($event.target.value)"
+                      (blur)="onBlur2($event.target.value)" (keypress)="regex_Currency2($event)">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="hdn_flag1==='true'">
+              </ng-container>
+              <ng-container *ngIf="hdn_flag1==='false'">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                  <div class="row">
+                    <label class="col-xl-12">
+                      <mat-label class="mat-check-box"><span
+                          class="label-reason-for-addendum">{{'monitoring-component.reasons-for-addendum' | translate}}
+                        </span></mat-label>
+                    </label>
+                    <div class="col-xl-12">
+                      <ul class="checkbox-list">
+                        <li>
+                          <mat-checkbox formControlName="reasons">
+                            {{'monitoring-component.additional-work-not-foreseen-in-the-contract' | translate}}
+                          </mat-checkbox>
+                        </li>
+                        <li>
+                          <mat-checkbox formControlName="reasons">
+                            {{'monitoring-component.increase-in-the-price-paid-for-the-good-or-service' | translate}}
+                          </mat-checkbox>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+            <div class="row">
+              <div class="col-xl-12 col-lg-12 col-sm-12">
+                <h6>{{'monitoring-component.financial-performance-of-the-contract' | translate}}</h6>
+                <div class="table-responsive">
+                  <table class="table table-striped table-bordered" formArrayName="tableDatainancialPerformance">
+                    <tr>
+                      <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+                      <th class="add-width">
+                        <button class="btn btn-success btn-sm" (click)="addItem()">
+                          {{'monitoring-component.add' | translate}}
+                        </button>
+                      </th>
+                    </ng-container>
+                      <th *ngFor="let column of headers">
+                        <ng-container *ngIf="column==='Date Of Field Visit'">
+                          {{'monitoring-component.dateofvisit' | translate}}
+                      </ng-container>
+                      <ng-container *ngIf="column==='Province'">
+                        {{'monitoring-component.province' | translate}}
+                    </ng-container>
+                    <ng-container *ngIf="column==='Financial Execution'">
+                      {{'monitoring-component.financingEx' | translate}}
+                  </ng-container>
+                  <ng-container *ngIf="column==='Financial Execution Rate'">
+                    {{'monitoring-component.financial-execution-rate' | translate}}
+                </ng-container>
+                      </th>
+
+                    </tr>
+
+                    <tr
+                      *ngFor="let row of monitoringForm3.get('tableDatainancialPerformance')['controls']; let i = index">
+                      <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+                      <td class="text-center">
+                        <a class="btn btn-danger btn-sm" popover-trigger="'mouseenter'" uib-popover="Delete"
+                          (click)="deleteRows(i)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                      </ng-container>
+
+                      <td *ngFor="let column of headers">
+                        <ng-container [formGroupName]="i">
+                          <!-- <ng-container *ngIf="addLandVisitTableFlag === true"> -->
+                          <ng-container *ngIf="monitoringForm3.get('tableDatainancialPerformance').controls[i].controls.status.value
+                            === 'new'">
+                            <ng-container *ngIf="column == 'Date Of Field Visit';then logged;">
+                            </ng-container>
+                            <ng-template #logged>
+                              <!-- <mat-form-field class="mb-form-0" appearance="outline">
+                                  <mat-label>Date Of Field Visit</mat-label>
+                                  <input matInput autocomplete="off" value="{{ row[column] }}" />
+                                </mat-form-field> -->
+
+                              <mat-form-field class="mb-form-0" appearance="outline">
+
+                                <mat-label> {{'monitoring-component.dateofvisit' | translate}}</mat-label>
+                                <input matInput formControlName="dateOfFieldVisitFinancialExecution" autocomplete="off"
+                                  [matDatepicker]="pickerFieldVisit" style="cursor: pointer"
+                                  (focus)="pickerFieldVisit?.open()" (dateChange)="validateOnChange()" />
+                                <mat-datepicker-toggle matSuffix [for]="pickerFieldVisit"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerFieldVisit [disabled]="pickerDisable_flag_date==false"></mat-datepicker>
+                              </mat-form-field>
+                              <!-- {{ row[column] }} -->
+                            </ng-template>
+                          </ng-container>
+
+
+
+
+                          <ng-container *ngIf="monitoringForm3.get('tableDatainancialPerformance').controls[i].controls.status.value
+                              === 'existing'">
+                            <!-- <ng-container *ngIf="addLandVisitTableFlag === false"> -->
+                            <ng-container *ngIf="column == 'Date Of Field Visit';then logged;">
+                            </ng-container>
+                            <ng-template #logged>
+                              <!-- <mat-form-field class="mb-form-0" appearance="outline">
+                                <mat-label>Date Of Field Visit</mat-label>
+                                <input matInput autocomplete="off" value="{{ row[column] }}" />
+                              </mat-form-field> -->
+
+                              <mat-form-field class="mb-form-0" appearance="outline">
+                                <mat-label>{{'monitoring-component.dateofvisit' | translate}}</mat-label>
+                                <input matInput formControlName="dateOfFieldVisitFinancialExecution" (dateChange)="valueaddInSecodExp()" />
+
+                              </mat-form-field>
+                              <!-- {{ row[column] }} -->
+                            </ng-template>
+                          </ng-container>
+
+                          <ng-container *ngIf="monitoringForm3.get('tableDatainancialPerformance').controls[i].controls.status.value
+                          === 'new'">
+                          <ng-container *ngIf="column == 'Province';then logged1;">
+                          </ng-container>
+                          <ng-template #logged1>
+                            <mat-form-field class="mb-form-0" appearance="outline">
+                              <mat-label> {{'monitoring-component.province' | translate}}</mat-label>
+                              <!-- <input matInput formControlName="province" autocomplete="off" /> -->
+                              <mat-select formControlName="province" (selectionChange)="validateOnChange()">
+                                <mat-option *ngFor="let option of provinceList1" [value]="option.provinces_id">
+                                  {{option.provinces_name}}
+                                </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <!-- {{ row[column] }} -->
+                          </ng-template>
+
+
+                          </ng-container>
+
+                          <ng-container *ngIf="monitoringForm3.get('tableDatainancialPerformance').controls[i].controls.status.value
+                          === 'existing'">
+
+
+                          <ng-container *ngIf="column == 'Province';then logged1;">
+                          </ng-container>
+                          <ng-template #logged1>
+                            <mat-form-field class="mb-form-0" appearance="outline">
+                              <mat-label>{{'monitoring-component.province' | translate}}</mat-label>
+                              <input matInput formControlName="province" autocomplete="off" (selectionChange)="valueaddInSecodExp()"/>
+
+                            </mat-form-field>
+                            <!-- {{ row[column] }} -->
+                            </ng-template>
+                          </ng-container>
+                          <ng-container *ngIf="column == 'Financial Execution';then logged2;">
+                          </ng-container>
+                          <ng-template #logged2>
+                            <mat-form-field class="mb-form-0" appearance="outline">
+                              <mat-label>{{'monitoring-component.financingEx' | translate}}</mat-label>
+                              <input matInput autocomplete="off" formControlName="finExecution" placeholder="0.00"
+                                (blur)="onBlurfinExecution($event.target.value,i)"
+                                (keypress)="regex_CurrencyfinExecution($event)" />
+                            </mat-form-field>
+                            <!-- {{ row[column] }} -->
+                          </ng-template>
+                          <ng-container *ngIf="column == 'Financial Execution Rate';then logged3;">
+                          </ng-container>
+                          <ng-template #logged3>
+                            <mat-form-field class="mb-form-0" appearance="outline">
+                              <mat-label>In %</mat-label>
+                              <input type="number" min="0" max="100" (keypress)="checkLength1($event, inputNumber)"
+                                #inputNumber matInput placeholder="In %" autocomplete="off"
+                                formControlName="finExecutionRate" />
+                              <!-- <input matInput autocomplete="off" formControlName="finExecutionRate" /> -->
+                              <!-- <input type="number" min="0"  max="100" (keypress)="checkLength1($event, inputNumber)" #inputNumber matInput autocomplete="off"  formControlName="finExecutionRate" />  -->
+                            </mat-form-field>
+                            <!-- {{ row[column] }} -->
+                          </ng-template>
+
+                          <!-- </ng-container> -->
+
+
+
+                        </ng-container>
+                      </td>
+
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-6 col-lg-6 col-sm-12 mt-4">
+                <h6>{{'monitoring-component.physical-execution-of-the-contract' | translate}}</h6>
+                <table class="table table-striped table-bordered" formArrayName="tableDataphysicalExecution">
+                  <tr>
+                    <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+                    <th class="add-width">
+                      <button class="btn btn-success btn-sm" (click)="addExecutionItem()">
+                        {{'monitoring-component.add' | translate}}
+                      </button>
+                    </th>
+                    </ng-container>
+                    <th *ngFor="let column of executionHeaders">
+                      <!-- {{ column }} -->
+                      <ng-container *ngIf="column==='Date Of Field Visit'">
+                        {{'monitoring-component.dateofvisit' | translate}}
+                    </ng-container>
+                  <ng-container *ngIf="column==='Province'">
+                        {{'monitoring-component.province' | translate}}
+                    </ng-container>
+                  <ng-container *ngIf="column==='Physical Execution Rate'">
+                    {{'monitoring-component.physical-execution-rate' | translate}}
+                </ng-container>
+                    </th>
+                  </tr>
+                  <tr *ngFor="let row of monitoringForm3.get('tableDataphysicalExecution')['controls']; let i = index">
+                    <ng-container [formGroupName]="i">
+                      <ng-container *ngIf="viewMonitoring!=='viewMonitoring'">
+                      <td class="text-center">
+                        <a class="btn btn-danger btn-sm" popover-trigger="'mouseenter'" uib-popover="Delete"
+                          (click)="deleteExecutionRows(i)">
+                          <i class="fa fa-trash" aria-hidden="true"></i>
+                        </a>
+                      </td>
+                    </ng-container>
+                      <td *ngFor="let column of executionHeaders">
+
+                        <ng-container *ngIf="monitoringForm3.get('tableDataphysicalExecution').controls[i].controls.status.value
+                        === 'new'">
+                          <!-- <ng-container *ngIf="addExecutionTableFlag===true">  -->
+
+                          <ng-container *ngIf="column == 'Date Of Field Visit';then logg;">
+                          </ng-container>
+                          <ng-template #logg>
+                            <mat-form-field class="mb-form-0" appearance="outline">
+
+                              <mat-label> {{'monitoring-component.dateofvisit' | translate}}</mat-label>
+                              <input matInput formControlName="dateOfFieldVisitPhysicalExecution" autocomplete="off"
+                                [matDatepicker]="pickerFieldVisit2" style="cursor: pointer"
+                                (focus)="pickerFieldVisit2?.open()" (dateChange)="validateOtherValue()" />
+                              <mat-datepicker-toggle matSuffix [for]="pickerFieldVisit2"></mat-datepicker-toggle>
+                              <mat-datepicker #pickerFieldVisit2 [disabled]="pickerDisable_flag_date==false"></mat-datepicker>
+                            </mat-form-field>
+                          </ng-template>
+
+                        </ng-container>
+
+                        <!-- <ng-container *ngIf="addExecutionTableFlag===false">  -->
+                        <ng-container *ngIf="monitoringForm3.get('tableDataphysicalExecution').controls[i].controls.status.value
+                          === 'existing'">
+                          <ng-container *ngIf="column == 'Date Of Field Visit';then logg;">
+                          </ng-container>
+                          <ng-template #logg>
+                            <mat-form-field class="mb-form-0" appearance="outline">
+
+                              <mat-label> {{'monitoring-component.dateofvisit' | translate}}</mat-label>
+                              <input matInput formControlName="dateOfFieldVisitPhysicalExecution" (dateChange)="validateOtherValue()" />
+
+                            </mat-form-field>
+                          </ng-template>
+
+                        </ng-container>
+                        <ng-container *ngIf="monitoringForm3.get('tableDataphysicalExecution').controls[i].controls.status.value
+                        === 'new'">
+
+                        <ng-container *ngIf="column == 'Province';then logg1;">
+                        </ng-container>
+                        <ng-template #logg1>
+                          <mat-form-field class="mb-form-0" appearance="outline">
+                            <mat-label>{{'monitoring-component.province' | translate}}</mat-label>
+                            <!-- <input matInput formControlName="province" autocomplete="off" /> -->
+                            <mat-select formControlName="province" (selectionChange)="validateOtherValue()">
+                    <mat-option *ngFor="let option of provinceList1" [value]="option.provinces_id">
+                      {{option.provinces_name}}
+                    </mat-option>
+                    </mat-select>
+                          </mat-form-field>
+                        </ng-template>
+                        </ng-container>
+                        <ng-container *ngIf="monitoringForm3.get('tableDataphysicalExecution').controls[i].controls.status.value
+                        === 'existing'">
+
+                        <ng-container *ngIf="column == 'Province';then logg1;">
+                        </ng-container>
+                        <ng-template #logg1>
+                          <mat-form-field class="mb-form-0" appearance="outline">
+                            <mat-label>{{'monitoring-component.province' | translate}}</mat-label>
+                            <input matInput formControlName="province" autocomplete="off" (selectionChange)="validateOtherValue()"/>
+
+                          </mat-form-field>
+                        </ng-template>
+                        </ng-container>
+
+
+                        <ng-container *ngIf="column == 'Physical Execution Rate';then logg2;">
+                        </ng-container>
+                        <ng-template #logg2>
+                          <mat-form-field class="mb-form-0" appearance="outline">
+                            <mat-label>In %</mat-label>
+                            <!-- <input matInput formControlName="physicalRate" autocomplete="off"  /> -->
+                            <input type="number" min="0" max="100" (keypress)="checkLength1($event, inputNumber)"
+                              #inputNumber matInput placeholder="In %" formControlName="physicalRate"
+                              autocomplete="off" />
+                          </mat-form-field>
+                        </ng-template>
+                        <!-- </ng-container> -->
+
+
+
+
+
+                      </td>
+                    </ng-container>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-findings"> {{'monitoring-component.findings' | translate}}</span>
+                  </mat-label>
+                  <mat-select placeholder="Select Findings" formControlName="findings"
+                  (selectionChange)="FindingsChangeAction(i)" (click)="getFindingData()">
+                  <ng-container *ngIf="browserLang == 'en'">
+                    <mat-option *ngFor="let option of findingList" [value]="option.finding_Id">
+                      {{option.findingNameEn}}
+                    </mat-option>
+                  </ng-container>
+                  <ng-container *ngIf="browserLang == 'pt'">
+                    <mat-option *ngFor="let option of findingList" [value]="option.finding_Id">
+                      {{option.findingNamePt}}
+                    </mat-option>
+                  </ng-container>
+                </mat-select>
+                </mat-form-field>
+              </div>
+              <ng-container *ngIf="select_options_for_finding_hdn_flag==true">
+              </ng-container>
+              <ng-container *ngIf="select_options_for_finding_hdn_flag==false">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                  <mat-form-field appearance="outline">
+                    <mat-label><span
+                        class="label-select-options-for-findings">{{'monitoring-component.select-options-for-findings' |
+                        translate}}</span>
+                    </mat-label>
+                    <mat-select formControlName="optionFind" (click)="getOptionFindingData()">
+                      <ng-container *ngIf="browserLang == 'en'">
+                      <mat-option *ngFor="let option of optionFinding" [value]="option.optionFindingId">{{
+                        option.optionFindingNameEn }}
+                      </mat-option>
+                    </ng-container>
+                    <ng-container *ngIf="browserLang == 'pt'">
+                      <mat-option *ngFor="let option of optionFinding" [value]="option.optionFindingId">{{
+                        option.optionFindingNamePt }}
+                      </mat-option>
+                    </ng-container>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </ng-container>
+            </div>
+            <ng-container *ngIf="other_reasons_hdn_flag==true">
+            </ng-container>
+            <ng-container *ngIf="other_reasons_hdn_flag==false">
+              <div class="row">
+                <div class="col-xl-8 col-lg-8 col-sm-12">
+                  <mat-form-field appearance="outline">
+                    <mat-label><span class="label-other-reasons">{{'monitoring-component.other-reasons' | translate}}
+                      </span></mat-label>
+                    <textarea matInput placeholder="Other reasons" formControlName="otherReason"
+                      maxlength="1000"></textarea>
+                  </mat-form-field>
+                </div>
+              </div>
+            </ng-container>
+            <div class="row">
+              <div class="col-xl-8 col-lg-8 col-sm-12">
+                <div class="row">
+                  <label class="col-xl-12">
+                    <mat-label class="mat-check-box"><span class="label-constraints">{{'monitoring-component.constraints'
+                        | translate}}
+                      </span></mat-label>
+                  </label>
+                  <div class="col-xl-12">
+                    <ul class="checkbox-list">
+                      <li>
+                        <mat-checkbox formControlName="contraints">
+                          {{'monitoring-component.non-compliance-with-the-time-limits-laid-down-in-the-contract' |
+                          translate}}
+                        </mat-checkbox>
+                      </li>
+                      <li>
+                        <mat-checkbox formControlName="contraints">
+                          {{'monitoring-component.incur-additional-costs-to-the-state' | translate}}
+                        </mat-checkbox>
+                      </li>
+                      <li>
+                        <mat-checkbox formControlName="contraints">
+                          {{'monitoring-component.the-objectives-set-could-not-be-achieved' | translate}}
+                        </mat-checkbox>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12 mt-1">
+                <mat-form-field appearance="outline">
+                  <mat-label><span class="label-recommendation">{{'monitoring-component.recommendation' | translate}}
+                    </span></mat-label>
+                  <mat-select formControlName="recommendation">
+                    <!-- <mat-option value="option">Accelerate Disbursement</mat-option>
+                      <mat-option value="option">Mobilize Resource</mat-option>
+                      <mat-option value="option">Review the Project</mat-option>
+                      <mat-option value="option">Cancel the Project</mat-option> -->
+                    <mat-option *ngFor="let option of recommendationList" [value]="option.recommendationNameEn">
+                      {{option.recommendationNameEn}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+            <mat-action-row class="border-top-none">
+              <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+                (click)="clearForm3(monitoringForm3)">{{'monitoring-component.reset' | translate}}</button>
+              <button class="btn btn-outline-danger btn-sm mr-2" (click)="prevStep()">{{'monitoring-component.previous' |
+                translate}}</button>
+
+            </mat-action-row>
+          </div>
+        </mat-expansion-panel>
+        <button class="checkValidation" [hidden]="true"></button>
+      </form>
+    </ng-container>
+      <ng-container *ngIf="editMonitoring!=='editMonitoring' && viewMonitoring!=='viewMonitoring'">
+        <div class="row">
+          <div class="col-lg-12 mt-3 mb-2">
+            <div class="example-button">
+              <button class="btn btn-success mr-2" (click)="(monitoringForm.invalid || monitoringForm2.invalid || monitoringForm3.invalid ) ?  openMandatoryAlert():opensweetalert()"
+                >{{'monitoring-component.submit' |
+                  translate}}</button>
+              <button class="btn btn-primary mr-2" (click)="opensweetalert2()">{{'monitoring-component.save-as-draft' |
+                translate}}</button>
+                <button class="btn btn-reset mr-2" (click)="clearForm()">{{'common.reset' | translate}}</button>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+      <ng-container *ngIf="editMonitoring=='editMonitoring'">
+        <div class="row">
+          <div class="col-lg-12 mt-3 mb-2">
+            <div class="example-button">
+              <button class="btn btn-success mr-2" (click)="(monitoringForm.invalid || monitoringForm2.invalid || monitoringForm3.invalid ) ?  openMandatoryAlert():opensweetalert()"
+              >{{'monitoring-component.submit' |
+              translate}}</button>
+
+              <button class="btn btn-primary mr-2" (click)="opensweetalert2()">{{'monitoring-component.save-as-draft' |
+                translate}}</button>
+              <button class="btn btn-danger mr-2" (click)="moveToMoniteringTab()">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="viewMonitoring=='viewMonitoring'">
+        <div class="row">
+          <div class="col-lg-12 mt-3 mb-2">
+            <div class="example-button">
+
+
+
+              <button class="btn btn-danger mr-2" (click)="moveToMoniteringTab()">Cancel</button>
+              <button class="btn btn-primary mr-2"
+              (click)='MoveToEditMonitoring("Edit Monitoring",element)'>{{'common.edit' | translate}} </button>
+            </div>
+          </div>
+
+        </div>
+
+
+    </ng-container>
+  </mat-accordion>
+</ng-container>

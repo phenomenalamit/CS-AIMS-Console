@@ -1,0 +1,87 @@
+<div class="container-fluid">
+    <div class="innerbody">
+
+    <ng-container *ngIf="num===0 || num===undefined">
+
+    <div class="breadcumb">
+     <div class="row">
+         <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{'user-type.User Type' | translate}}</li>
+                  <li class="breadcrumb-item active" aria-current="page">{{'user-type.Create User Type' | translate}}</li>
+                </ol>
+              </nav>
+         </div>
+         <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+                <ul class="iconics-buttons">
+                   <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+
+                    <!-- <li><a href="#" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Delete"><i class="far fa-trash-alt"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+                </ul>
+                </div>
+         </div>
+     </div>
+
+    <!-- <h1 class="label-userType">User Type</h1> -->
+    </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="num===1">
+
+        <div class="breadcumb">
+         <div class="row">
+             <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                      <li class="breadcrumb-item"><a href="/admin/userType">{{'user-type.User Type' | translate}}</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{'user-type.View User Type List' | translate}}</li>
+                    </ol>
+                  </nav>
+             </div>
+             <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                    <ul class="iconics-buttons">
+
+                        <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                        <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                        <li><a  class="iconsBG" title="{{'common.Back' | translate}}" (click)='moveToSelectedTab("Create User Type")'><i class="fas fa-arrow-left"></i></a></li>
+
+
+
+
+
+
+                    </ul>
+                    </div>
+             </div>
+         </div>
+
+        <!-- <h1 class="label-userType">User Type</h1> -->
+        </div>
+        </ng-container>
+
+
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+        <mat-tab label="Create User Type" class="label-create-userType">
+           <app-add-user-type-component></app-add-user-type-component>
+        </mat-tab>
+
+
+
+        <mat-tab label="View User Type" class="label-view-userType">
+           <app-view-user-type-component></app-view-user-type-component>
+    </mat-tab>
+
+
+    </mat-tab-group>
+    </div>
+    </div>
+

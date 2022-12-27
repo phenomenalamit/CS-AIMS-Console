@@ -1,0 +1,21 @@
+{
+    "firstName":"Esperanca",
+    "lastName":"Bias",
+    "userName":"esperanca",
+    "email":"esperanca@gmail.com",
+    "typeOfUser":"1",
+    "userGroup":"1",
+    "permissions":"1",
+    "operations":["2","1"],
+    "code1":"+61",
+    "features":["2","1"],
+   "telephone":"6711987457",
+   
+    "featuresdata":[
+        {
+            "features":"2"
+           
+           
+        }
+    ]
+}

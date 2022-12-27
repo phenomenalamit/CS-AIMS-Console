@@ -1,0 +1,121 @@
+<div class="container-fluid">
+  <div class="innerbody">
+
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-6 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-create-envelope" aria-current="page">Link Management</li>
+
+                 <li class="breadcrumb-item active label-envelope" aria-current="page">View Global  Link</li>
+                 </ol>
+             </nav>
+        </div>
+
+      </div>
+
+
+
+    <div class="row mt-4">
+      <div class="col-sm-12">
+
+
+    <form id="myForm" [formGroup]="globalForm">
+    <table class="table table-striped table-bordered" >
+      <tr>
+
+        <th class="add-width">Action
+      </th>
+
+           <!-- <th class="add-width"><button (click)="addItem1()"
+             class="btn btn-success btn-sm label-add">Add</button>
+         </th> -->
+
+         <th *ngFor="let column of headers">
+          {{column}}
+        </th>
+
+      </tr>
+      <ng-container *ngIf="isReadOnly===true">
+        <tr *ngFor="let row of globalLinkRows; let j = index">
+        <td>
+          <a popover-trigger="'mouseenter'" uib-popover="Delete" class="btn btn-danger btn-sm"
+            (click)="editRow(j)" ngbTooltip="Edit">
+            <i class="fa fa-edit" aria-hidden="true"></i>
+          </a>
+        </td>
+
+
+          <td *ngFor="let column of headers">
+          {{row[column]}}
+         </td>
+         </tr>
+        </ng-container>
+
+         <ng-container *ngIf="isReadOnly===false">
+          <tr *ngFor="let row of globalLinkRows; let j = index">
+            <td>
+              <a popover-trigger="'mouseenter'" uib-popover="Delete" class="btn btn-success btn-sm mr-2"
+                (click)="editRow(j)"  ngbTooltip="Save">
+                <i class="fa fa-save" aria-hidden="true"></i>
+              </a>
+
+                  <a popover-trigger="'mouseenter'" uib-popover="Delete" class="btn btn-danger btn-sm"
+                    (click)="cancelRow(j)" ngbTooltip="Cancel">
+                    <i class="fa fa-window-close" aria-hidden="true"></i>
+                  </a>
+                </td>
+
+                  <td *ngFor="let column of headers">
+
+                      <!-- <ng-container [formGroupName]="j"> -->
+
+                        <ng-container *ngIf=" column === 'Global Link'; then loggedIn;">
+                        </ng-container>
+                        <ng-template #loggedIn>
+                            <mat-form-field class="mb-form-0" [appearance]="fill">
+                              <mat-label><span class="label-enter-funds">Global Link </span> </mat-label>
+                              <input type="text" matInput readonly autocomplete="off"
+                                 value="{{row[column]}}" />
+                            </mat-form-field>
+                        </ng-template>
+                        <ng-container *ngIf=" column === 'Link Status'; then loggedIn1;">
+                        </ng-container>
+
+                        <ng-template #loggedIn1>
+                          <mat-form-field class="mb-form-0" [appearance]="fill">
+                            <mat-label><span class="label-enter-funds">Link Status </span> </mat-label>
+                            <ng-container *ngIf="editing==false">
+                            <input  type="text" matInput [readonly]="isReadOnly" autocomplete="off"
+                                value="{{row[column]}}"/>
+                              </ng-container>
+                              <ng-container *ngIf="editing==true">
+                                <mat-select>
+                                  <mat-option value="Active">Active</mat-option>
+                                  <mat-option value="Inactive" >Inactive</mat-option>
+                                 </mat-select>
+                                </ng-container>
+                          </mat-form-field>
+
+                        </ng-template>
+
+
+                      <!-- </ng-container> -->
+
+
+                  </td>
+
+
+                </tr>
+                </ng-container>
+
+    </table>
+    </form>
+
+  </div>
+  </div>
+  </div>
+  </div>
+</div>

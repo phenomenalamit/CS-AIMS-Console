@@ -1,0 +1,45 @@
+<!-- <mat-toolbar color="primary">
+        <mat-toolbar-row>
+           
+            <h1>AIMS MOZAMBIQUE</h1>
+            <span class="menu-spacer">&nbsp;</span>
+            <div>
+                <a mat-button [routerLink]="'/envelope'" class="label-envelope"> Envelope</a>
+                <a mat-button [routerLink]="'/individual'" class="label-individual"> Individual </a>
+                <a mat-button [routerLink]="'/organization'" class="label-organization"> Organization </a>
+                <a mat-button [routerLink]="'/commitment'" class="label-commitment"> Commitment </a>
+                <a mat-button [routerLink]="'/disbursement'" class="label-disbursement"> Disbursement </a>
+                <a mat-button [routerLink]="'/region'" class="label-region"> Region </a>
+                <a mat-button [routerLink]="'/individualProject'" class="label-individual-project"> Individual Project </a>
+                <a mat-button [routerLink]="'/financing'" class="label-financing"> Financing </a>
+                <button mat-button (mouseenter)="openMyMenu()" [matMenuTriggerFor]="animals" class="label-language-translator">Language Translator</button>
+            </div>
+        </mat-toolbar-row>
+        <mat-menu #animals="matMenu">
+            <button mat-menu-item [matMenuTriggerFor]="languageMaster" class="label-language-master">Language Master</button>
+            <button mat-menu-item [matMenuTriggerFor]="labelMaster" class="label-label-master">Label Master</button>
+        </mat-menu>
+        <mat-menu #languageMaster="matMenu">
+            <button mat-menu-item routerLink="create-language" class="label-create-language">Create Language</button>
+            <button mat-menu-item routerLink="view-language-master" class="label-view-language">View Language</button>
+        </mat-menu>
+
+        <mat-menu #labelMaster="matMenu">
+            <button mat-menu-item routerLink="create-label" class="label-create-label">Create Label</button>
+            <button mat-menu-item routerLink="view-label-master" class="label-view-label">View Label</button>
+        </mat-menu>
+        <div class="block2" style="float: right;">
+            <select class="form-control" id="translateLanguageFrom" (change)="getActiveLanguageLebelsOnChange($event)" name="translateLanguageFrom" [(ngModel)]="translateLanguageFromSelected">
+  <option [value]="language.languageId" *ngFor = "let language of languages"  > {{language.languageName}} </option>
+</select>
+        </div>
+      
+    </mat-toolbar>-->
+
+<!--   -->
+
+
+<router-outlet (activate)="onActivate($event)">
+
+</router-outlet>
+<app-my-loader></app-my-loader>

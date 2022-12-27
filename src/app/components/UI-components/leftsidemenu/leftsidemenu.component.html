@@ -1,0 +1,122 @@
+<header class="headerBG ">
+   <ul class="navbar-nav ml-auto">
+     <li>
+      <div class="block2" style="float: right;">
+        <!-- <select class="form-control" id="translateLanguageFrom" (change)="getActiveLanguageLebelsOnChange($event)" name="translateLanguageFrom" [(ngModel)]="translateLanguageFromSelected">
+<option [value]="language.languageId" *ngFor = "let language of languages"  > {{language.languageName}} </option>
+</select> -->
+
+<select #langSelect (change)="switchLanguage(langSelect.value)" class="lang-bg" aria-placeholder="LN">
+  
+  <option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">
+    <ng-container *ngIf="lang === 'en'" >
+      English
+    </ng-container>
+    <ng-container *ngIf="lang === 'pt'">
+      Português
+    </ng-container>
+   
+  </option>
+</select>
+
+    </div>
+     </li>
+    <li class="nav-item dropdown no-arrow mx-1"> <a class="nav-link dropdown-toggle" href="javascriptvoid:(0)" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i class="fas fa-bell fa-fw"></i>
+      <!-- Counter - Alerts -->
+
+        <div class="notify">
+            <span class="heartbit"></span>
+            <span class="point"></span>
+        </div>
+    </a>
+      <!-- Dropdown - Alerts -->
+      <div class="dropdown-list dropdown-list-cst  dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+        <h5 class="dropdown-header"> {{'leftSideMenu.notification' | translate}} </h5>
+      
+        <div *ngFor="let mesg of notificationMsgList ; let j = index">
+          <ng-container *ngIf="j<=5">
+            <a (click)="openDialog(j)" class="dropdown-item d-flex align-items-center waves-effect waves-light">
+              <div class="mr-3">
+                <div class="icon-circle bg-gray-700"> <i class="fas fa-file-alt text-white"></i> </div>
+              </div>
+              <div>
+                
+                <div class="small text-gray-500">{{mesg.updatedOn}}</div>
+                <span class="font-weight-bold">{{(mesg.notificationMsg.slice(0,40)).concat('.....')}}
+                </span> </div>
+              </a>
+          </ng-container>
+        </div>
+
+       
+        <a class="dropdown-item text-center small text-gray-500 waves-effect waves-light" [routerLink]="'/admin/alert-notification'">{{'leftSideMenu.showAllAlerts' | translate}}</a>  
+      </div>
+    </li>
+
+   </ul>
+
+    <div class="dropdown dropdownMenuLink">
+        <a class="dropdown-toggle setting-btn" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fas fa-ellipsis-v"></i>
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" [routerLink]="'/admin/user-profile'"><i class="fas fa-user"></i> {{'leftSideMenu.profile' | translate}}</a>
+          <a class="dropdown-item" [routerLink]="'/admin/changePassword'"><i class="fas fa-key"></i> {{'leftSideMenu.changePassword' | translate}}</a>
+          <!-- <a [routerLink]="'/'" class="dropdown-item Logout" href="javascript:void(0)" > <i class="fas fa-power-off"></i>{{'leftSideMenu.logout' | translate}} </a> -->
+          <a class="dropdown-item Logout" href="javascript:void(0)" (click)="onLogout();"> <i class="fas fa-power-off"></i>{{'leftSideMenu.logout' | translate}} </a>
+        </div>
+
+      </div>
+
+
+
+
+</header>
+
+<!-- <span class="menu-spacer">&nbsp;</span> -->
+<div id="sidebar" class="leftmenu">
+    <div class="logotext">
+        <a [routerLink]="'/admin/dashboard'" class=""> <img class="logoimg" src="./assets/images/logo2.png" alt="MOZAMBIQUE"> <span>ODAMoz</span></a>
+    </div>
+
+    <div class="sidebar-toolbar text-center">
+      <div class="mt"><span class="usernames">{{userFullName}}</span>
+          <span class="usermail">{{userEmail}}</span>
+      </div>
+    <div class="user-container ">  <img class="rounded-circle thumb64" [src]="avtarUrl" alt="Profile"></div>
+    </div>
+
+    <div >  <!--malihu-scrollbar [scrollbarOptions]="scrollbarOptions" class="MenuScroll" -->
+      <ng-container *ngIf="usergroup==='dngdpadmin' ||  usergroup=='dngdpteam' || usergroup=='partner' || usergroup=='dntcef'">
+
+      </ng-container>
+
+
+
+    <app-accordion
+      [options]="options"
+      [menuList]="menuList">
+
+
+    </app-accordion>
+
+   
+
+  </div>
+
+
+
+
+  
+</div>
+
+
+<div class="printHeader">
+  <!-- <img class="logoimg" src="../assets/images/logo2.png" alt="MOZAMBIQUE">  <h3>Aid Information Management System</h3> -->
+  <img class="logoimg" src="data:image/png;base64, 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" alt="MOZAMBIQUE">  <h3>{{'leftSideMenu.aims-full-form' | translate}}</h3>
+</div>
+
+<!-- </mat-toolbar-row> -->
+

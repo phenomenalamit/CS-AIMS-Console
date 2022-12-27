@@ -1,0 +1,2430 @@
+<!--
+    HTML page for ADD/EDIT Project
+    # Author: Sourav Kumar Nayak
+-->
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <mat-accordion class="example-headers-align">
+        <!-- creating projectForm FormGroup  by declaring the fields of Project General Information expainson -->
+        <form class="example-form" [formGroup]="projectForm" autocomplete="off" (change)="validateOnChange()">
+            <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle
+                class="custom-expansion-panel">
+
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6>{{ 'add-project.firstExpansion' | translate }}</h6>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="mat-expansion-content">
+
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <strong class="mandatory">*</strong>
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-profile label-project-title">{{
+                                        'add-project.project-title' | translate }}</span></mat-label>
+                                <input matInput type="text" placeholder="{{ 'add-project.project-title' | translate }}"
+                                    formControlName="projectTitle" [(ngModel)]="snipMarkerSts"
+                                    (blur)="enableUploadBtn();checkDuplicateProjectTitle();">
+                            </mat-form-field>
+                        </div>
+                        <ng-container *ngIf="viewProjectId == null">
+                            <button type="button" class="btn btn-success  search-btn" [disabled]="!snipMarkerSts"
+                                (click)="openPopUp()">{{ 'add-project.search' | translate }}</button>
+                        </ng-container>
+                        <ng-container *ngIf="viewProjectId== null">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 justify-content-end d-flex">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-view-save-as-draft">{{ 'create-envelope.save-as-draft'
+                                            | translate }}</span></mat-label>
+                                    <mat-select formControlName="saveAsDraftId" (click)="chkDraftAvailabilty();"
+                                        (selectionChange)="patchDraftValue()" (openedChange)="searchDraft.patchValue('')">
+                                        <div class="select-container" *ngIf="draftfilteredOption">
+                                            <mat-optgroup>
+                                                <mat-form-field style="width:100%;">
+                                                    <input autocomplete="off" placeholder="Search" aria-label="Search"
+                                                        matInput [formControl]="searchDraft">
+                                                    <button [disableRipple]="true" *ngIf="searchDraft.value" matSuffix mat-icon-button
+                                                        aria-label="Clear" (click)="searchDraft.patchValue('')">
+                                                        <mat-icon>close</mat-icon>
+                                                    </button>
+                                                </mat-form-field>
+                                            </mat-optgroup>
+                                            <mat-optgroup *ngIf="(draftfilteredOption | async).length == 0">
+                                                <div>{{'common.No results found!' | translate}}</div>
+                                            </mat-optgroup>
+                                        <mat-option *ngFor="let details of draftfilteredOption | async"
+                                            [value]="details.projectId"
+                                            matTooltip="DraftID - {{details.projectId}} &nbsp; {{details.commentDate}}"
+                                            [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                                            DraftID - {{details.projectId}} &nbsp; {{details.commentDate}}
+                                        </mat-option>
+                                    </div>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="row">
+                        <ng-container *ngIf="eSnipHiddenFlag==false"></ng-container>
+                        <ng-container *ngIf="eSnipHiddenFlag==true">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-profile label-e-snipId">{{ 'add-project.e-snipId' |
+                                            translate }}</span></mat-label>
+                                    <input matInput type="text" placeholder="{{ 'add-project.e-snipId' | translate }}"
+                                        formControlName="e_snipId">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-profile label-e-snipProjectTitle">{{
+                                            'add-project.e_snipProjectTitle' | translate }}</span></mat-label>
+                                    <input matInput type="text"
+                                        placeholder="{{ 'add-project.e_snipProjectTitle' | translate }}"
+                                        formControlName="e_snipProjectTitle">
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="row form-group">
+                        <div class="col-xl-8 col-lg-8 col-sm-12">
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-project-overView">{{ 'add-project.project-overView' |
+                                        translate }}</span></mat-label>
+                                <textarea matInput #projectOverview maxlength="4000" formControlName="projectOverview"
+                                    placeholder="{{ 'add-project.project-overView' | translate }}" cols="30" rows="8"></textarea>
+
+                                <mat-hint align="start"> {{'common.Must be at most' | translate}} <strong>4000</strong>
+                                    {{'common.characters' | translate}}</mat-hint>
+                                <mat-hint align="end">{{projectOverview.value?.length || 0}}/4000</mat-hint>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <mat-form-field appearance="outline" class="mb-form-0" (click)="getValueByLang()">
+                                <mat-label><span class="label-regional/national-implementation">
+                                        {{ 'add-project.regional/national-implementation' | translate }}
+                                    </span></mat-label>
+                                <mat-select formControlName="regional" (selectionChange)="validateOnChange();">
+                                    <ng-container *ngIf="browserLang == 'en'">
+                                        <mat-option value="national" class="label-national">National</mat-option>
+                                        <mat-option value="regional" class="label-regional">Regional</mat-option>
+                                    </ng-container>
+                                    <ng-container *ngIf="browserLang == 'pt'">
+                                        <mat-option value="national" class="label-national">Nacional</mat-option>
+                                        <mat-option value="regional" class="label-regional">Regional</mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <strong class="mandatory">*</strong>
+                            <mat-form-field appearance="outline" class="mb-form-0" (click)="getValueByLang()">
+                                <mat-label><span class="label-project-situation">{{ 'add-project.project-situation' |
+                                        translate }}</span></mat-label>
+                                <mat-select class="" formControlName="projectSituation"
+                                    (selectionChange)="validateOnChangeOrgName($event);opensweetalert3($event);validateOnChange();">
+                                    <ng-container *ngIf="browserLang == 'en'">
+                                        <mat-option *ngFor="let list of projectSituationList"
+                                            [value]="list.projectSituationId" class="label-inactive">
+                                            <ng-container *ngIf="list.difference<=7 || list.updateDifference<=7">
+                                                <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                            </ng-container>
+                                            {{list.projectSituationNameEn }}
+                                        </mat-option>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="browserLang == 'pt'">
+                                        <mat-option *ngFor="let list of projectSituationList"
+                                            [value]="list.projectSituationId" class="label-inactive">
+                                            <ng-container *ngIf="list.difference<=7 || list.updateDifference<=7">
+                                                <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                            </ng-container>
+                                            {{list.projectSituationNamePt }}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <i class="fas fa-info-circle info-font mr-1 carte_button"></i>
+                            <div class="carte" style="height: 320px;">
+                                <ul>
+                                    <li>{{ 'add-project.project-situation-Identification' | translate }}</li>
+                                    <li>{{ 'add-project.project-situation-Signed' | translate }}</li>
+                                    <li>{{ 'add-project.project-situation-Ongoing' | translate }}</li>
+                                    <li>{{ 'add-project.project-situation-Suspended' | translate }}</li>
+                                    <li>{{ 'add-project.project-situation-Cancelled' | translate }}</li>
+                                    <li>{{ 'add-project.project-situation-finalization' | translate }}</li>
+                                    <li>{{ 'add-project.project-situation-Completed' | translate }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <ng-template #tooltipHtml>
+                        <div class="mt-6">Identification / Planning: Project is in Identification Phase. Planning and
+                            analysis is going on. Signed: Project has been signed and sent to implementattion phase.
+                            Ongoing: Project implementation is ongoing. Suspended: Project has
+                            been suspended and will be implemented in later stage. Cancelled: Project has been
+                            cancelled. Finished: Project implementation has been successfully completed.
+                        </div>
+                    </ng-template>
+
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <ng-container *ngIf="startDateEndDateMandatoryFalg == true">
+                                <strong class="mandatory">*</strong>
+                            </ng-container>
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-start-date">{{ 'add-project.start-date' | translate
+                                        }}</span> </mat-label>
+                                <input matInput [matDatepicker]="picker1" formControlName="startDate"
+                                    (dateChange)="validateOnChange()" (focus)="picker1?.open()" readonly>
+                                <ng-container *ngIf="viewProjectId == null">
+                                    <mat-icon matDatepickerToggleIcon (click)="clearStartDate($event)">clear</mat-icon>
+                                </ng-container>
+                                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                                <mat-datepicker #picker1 [disabled]="pickerDisable_flag1"></mat-datepicker>
+                                <mat-error *ngIf="hasError('startDate', 'required')"></mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <ng-container *ngIf="startDateEndDateMandatoryFalg == true">
+                                <strong class="mandatory">*</strong>
+                            </ng-container>
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-end-date">{{ 'add-project.end-date' | translate }}</span>
+                                </mat-label>
+                                <input matInput [matDatepicker]="picker2"
+                                    [min]="projectForm.controls['startDate'].value" formControlName="endDate"
+                                    (dateChange)="validateOnChange()" (focus)="picker2?.open()" readonly>
+                                <ng-container *ngIf="viewProjectId == null">
+                                    <mat-icon matDatepickerToggleIcon (click)="clearEndDate($event)">clear</mat-icon>
+                                </ng-container>
+                                <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                <mat-datepicker #picker2 [disabled]="pickerDisable_flag1"></mat-datepicker>
+                                <mat-error *ngIf="hasError('endDate', 'required')"></mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <strong class="mandatory">*</strong>
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-responsible-organization">{{
+                                        'add-project.responsible-organization' | translate }}</span></mat-label>
+                                <mat-select (openedChange)="searchResponsibleOrganization.patchValue('')"
+                                    placeholder="Select" formControlName="responsibleOrganization"
+                                    (selectionChange)="validateOnChange();checkDuplicateProjectTitle();">
+                                    <div *ngIf="responsibleOrganizationFilteredOption" class="select-container">
+                                        <mat-optgroup>
+                                            <mat-form-field style="width:100%;">
+                                                <input autocomplete="off" placeholder="Search" aria-label="Search"
+                                                    matInput [formControl]="searchResponsibleOrganization">
+                                                <button [disableRipple]="true"
+                                                    *ngIf="searchResponsibleOrganization.value" matSuffix
+                                                    mat-icon-button aria-label="Clear"
+                                                    (click)="searchResponsibleOrganization.patchValue('')">
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </mat-optgroup>
+                                        <mat-optgroup
+                                            *ngIf="(responsibleOrganizationFilteredOption | async).length == 0">
+                                            <div>{{'common.No results found!' | translate}}</div>
+                                        </mat-optgroup>
+                                        <mat-option
+                                            *ngFor="let options of responsibleOrganizationFilteredOption | async"
+                                            [value]="options.id" matTooltip="{{options.names}}"
+                                            [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                                            {{options.names}}
+                                        </mat-option>
+                                    </div>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <ng-container *ngIf="implOrgMandatoryFlag == true">
+                                <strong class="mandatory">*</strong>
+                            </ng-container>
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-implementing-organization">{{
+                                        'add-project.implementing-organization' | translate }}</span></mat-label>
+                                <mat-select (openedChange)="openedChange($event)" placeholder="Select"
+                                    formControlName="implementingOrganization" multiple
+                                    (selectionChange)="validateOnChange();">
+                                    <mat-select-trigger>
+                                        {{projectForm.controls.implementingOrganization.value ?
+                                        selectedImplementingOrgName[0] : ''}}
+                                        <span *ngIf="projectForm.controls.implementingOrganization.value?.length > 1"
+                                            class="additional-selection">
+                                            (+{{projectForm.controls.implementingOrganization.value.length - 1}}
+                                            {{projectForm.controls.implementingOrganization.value?.length === 2 ?
+                                            'other' : 'others'}})
+                                        </span>
+                                    </mat-select-trigger>
+                                    <div class="select-container" *ngIf="filteredImplementingOrg">
+                                        <mat-optgroup>
+                                            <mat-form-field style="width:100%;">
+                                                <input #search autocomplete="off" placeholder="Search"
+                                                    aria-label="Search" matInput [formControl]="searchTextboxControl">
+                                                <button [disableRipple]="true" *ngIf="search.value" matSuffix
+                                                    mat-icon-button aria-label="Clear" (click)="clearSearch($event)">
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </mat-optgroup>
+                                        <!-- <mat-optgroup *ngIf="(filteredImplementingOrg | async).length == 0">
+                                            <div>{{'common.No results found!' | translate}}</div>
+                                        </mat-optgroup> -->
+                                        <mat-option (onSelectionChange)="selectionChange($event)"
+                                            *ngFor="let option of filteredImplementingOrg | async" [value]="option.id"
+                                            matTooltip="{{option.names}}" [matTooltipPosition]="'right'"
+                                            matTooltipClass="custom-tooltip">
+                                            {{option.names}}
+                                        </mat-option>
+                                        <mat-optgroup (click)="openDialogOrg()">
+                                            <span class="add_impl_org"><i
+                                                    class="fas fa-plus text-primary label-add-new-donor"></i>&nbsp;{{'add-project.add-implementingOrg'
+                                                | translate }}</span>
+                                        </mat-optgroup>
+                                    </div>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <strong class="mandatory">*</strong>
+                            <mat-form-field appearance="outline" class="mb-form-0" (click)="getValueByLang()">
+                                <mat-label><span>{{ 'add-project.sustainable_development_goals' | translate }}</span>
+                                </mat-label>
+                                <mat-select #select formControlName="sustainable_development_goals" multiple
+                                    (selectionChange)="validateOnChange();countstatus($event);"
+                                    (closed)="getSdgTargets(select);">
+                                    <ng-container *ngIf="browserLang == 'en'">
+                                        <mat-option *ngFor="let sdgs of sDGList"
+                                            [value]="sdgs.sustainableDevelopmentGoalId"
+                                            matTooltip="{{sdgs.sustainableDevelopmentGoalName}}"
+                                            [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                                            <ng-container *ngIf="sdgs.difference<=7 || sdgs.updateDifference<=7">
+                                                <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                            </ng-container>
+                                            {{sdgs.sustainableDevelopmentGoalName}}
+                                        </mat-option>
+                                    </ng-container>
+                                    <ng-container *ngIf="browserLang == 'pt'">
+                                        <mat-option *ngFor="let sdgs of sDGList"
+                                            [value]="sdgs.sustainableDevelopmentGoalId"
+                                            matTooltip="{{sdgs.sustainableDevelopmentGoalNamePt}}"
+                                            [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                                            <ng-container *ngIf="sdgs.difference<=7 || sdgs.updateDifference<=7">
+                                                <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                            </ng-container>
+                                            {{sdgs.sustainableDevelopmentGoalNamePt}}
+                                        </mat-option>
+                                    </ng-container>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <ng-container *ngIf="select_options_for_development_target_hdn_flag==true">
+                        </ng-container>
+                        <ng-container *ngIf="select_options_for_development_target_hdn_flag==false">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <strong class="mandatory">*</strong>
+                                <mat-form-field appearance="outline" class="mb-form-0" (click)="getValueByLang()">
+                                    <mat-label><span>{{ 'add-project.sustainable_development_target' | translate
+                                            }}</span></mat-label>
+                                    <mat-select multiple formControlName="sustainable_development_target"
+                                        (selectionChange)="validateOnChange();coutsust($event);">
+                                        <ng-container
+                                            *ngFor="let goalId of this.projectForm.controls['sustainable_development_goals'].value">
+                                            <mat-optgroup [label]="goalName(goalId)">
+                                                <ng-container *ngFor="let sdgTargets of sDGTargetList">
+                                                    <ng-container
+                                                        *ngIf="goalId===sdgTargets.sustainableDelopmentGoalId">
+                                                        <ng-container *ngIf="browserLang== 'en'">
+                                                            <mat-option
+                                                                [value]="sdgTargets.sustainableDelopmentTargetId"
+                                                                matTooltip="{{sdgTargets.sustainableDelopmentTargetName}}"
+                                                                [matTooltipPosition]="'right'"
+                                                                matTooltipClass="custom-tooltip">
+                                                                <ng-container
+                                                                    *ngIf="sdgTargets.difference<=7 || sdgTargets.updateDifference<=7">
+                                                                    <i class="fas fa-star"
+                                                                        style="color: darkgreen;"></i> &nbsp;
+                                                                </ng-container>
+                                                                {{sdgTargets.sustainableDelopmentTargetName}}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                        <ng-container *ngIf="browserLang== 'pt'">
+                                                            <mat-option
+                                                                [value]="sdgTargets.sustainableDelopmentTargetId"
+                                                                matTooltip="{{sdgTargets.sustainableDelopmentTargetNamePt}}"
+                                                                [matTooltipPosition]="'right'"
+                                                                matTooltipClass="custom-tooltip">
+                                                                <ng-container
+                                                                    *ngIf="sdgTargets.difference<=7 || sdgTargets.updateDifference<=7">
+                                                                    <i class="fas fa-star"
+                                                                        style="color: darkgreen;"></i> &nbsp;
+                                                                </ng-container>
+                                                                {{sdgTargets.sustainableDelopmentTargetNamePt}}
+                                                            </mat-option>
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </mat-optgroup>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-project-link">{{ 'add-project.project-link' | translate
+                                        }}</span></mat-label>
+                                <input matInput formControlName="projetLink"
+                                    placeholder="{{'add-project.project-link' | translate }}"
+                                    pattern="^(http[s]?:\/\/){0,1}(www\.)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$">
+                            </mat-form-field>
+                            <mat-error *ngIf="hasError('projetLink', 'pattern')">{{'add-project.Invalid Project Link
+                                Format' | translate }}</mat-error>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                            <h6><b>{{ 'add-project.markers' | translate }} </b></h6>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered" formArrayName="markerTableData">
+                                    <tr>
+                                        <th *ngFor="let column of markerHeaders">
+                                            <ng-container *ngIf="column==='Markers'">
+                                                {{ 'add-project.marker-name' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngIf="column==='Scoring'">
+                                                {{ 'add-project.marker-optn' | translate }}
+                                            </ng-container>
+                                        </th>
+                                    </tr>
+                                    <tr
+                                        *ngFor="let row of projectForm.get('markerTableData')['controls']; let j = index">
+                                        <td class="whitesp-nowrap" *ngFor="let column of markerHeaders">
+                                            <ng-container>
+                                                <ng-container [formGroupName]="j">
+                                                    <ng-container *ngIf=" column === 'Markers'; then loggedIn2;">
+                                                    </ng-container>
+                                                    <ng-template #loggedIn2>
+                                                        <input type="hidden" formControlName="markerId"
+                                                            [ngModel]="markersList[j].markerId">
+                                                        <ng-container *ngIf="browserLang == 'en';then markrEn">
+                                                        </ng-container>
+                                                        <ng-template #markrEn>
+                                                            <ng-container
+                                                                *ngIf="markersList[j].difference<=7 || markersList[j].updateDifference<=7">
+                                                                <i class="fas fa-star" style="color: darkgreen;"></i>
+                                                                &nbsp;
+                                                            </ng-container>
+                                                            {{markersList[j].markerNameEn}}
+                                                        </ng-template>
+                                                        <ng-container *ngIf="browserLang == 'pt';then markrPt">
+                                                        </ng-container>
+                                                        <ng-template #markrPt>
+                                                            <ng-container
+                                                                *ngIf="markersList[j].difference<=7 || markersList[j].updateDifference<=7">
+                                                                <i class="fas fa-star" style="color: darkgreen;"></i>
+                                                                &nbsp;
+                                                            </ng-container>
+                                                            {{markersList[j].markerNamePt}}
+                                                        </ng-template>
+                                                    </ng-template>
+                                                    <ng-container *ngIf=" column === 'Scoring'; then loggedScr1;">
+                                                    </ng-container>
+                                                    <ng-template #loggedScr1>
+                                                        <div class="col-xl-8 col-lg-4 col-sm-12 mt-2">
+                                                            <mat-form-field appearance="fill"
+                                                                (click)="getValueByLang()">
+                                                                <mat-label>{{'add-project.choose-scoring' | translate}}
+                                                                </mat-label>
+                                                                <mat-select formControlName="markerOptions"
+                                                                    (selectionChange)="validateMarkerSelection($event,j);">
+                                                                    <ng-container
+                                                                        *ngIf="covid19MasterOptionsList[0].markerMasterId===markersList[0].markerId">
+                                                                        <ng-container
+                                                                            *ngFor="let optionLists of covid19MasterOptionsList">
+                                                                            <ng-container *ngIf="browserLang== 'en'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idCovid19Master">
+                                                                                    {{optionLists.covid19NameEn}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="browserLang== 'pt'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idCovid19Master">
+                                                                                    {{optionLists.covid19NamePt}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngIf="genderEqualityMarkerOptionsList[0].markerMasterId===markersList[1].markerId">
+                                                                        <ng-container
+                                                                            *ngFor="let optionLists of genderEqualityMarkerOptionsList">
+                                                                            <ng-container *ngIf="browserLang== 'en'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idGenderEqualityMaster">
+                                                                                    {{optionLists.genderEqualityNameEn}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="browserLang== 'pt'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idGenderEqualityMaster">
+                                                                                    {{optionLists.genderEqualityNamePt}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngIf="rioMarkerClimateChangeMitigationOptionsList[0].markerMasterId===markersList[2].markerId">
+                                                                        <ng-container
+                                                                            *ngFor="let optionLists of rioMarkerClimateChangeMitigationOptionsList">
+                                                                            <ng-container *ngIf="browserLang== 'en'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerCCMitigation">
+                                                                                    {{optionLists.rioMarkerCCMitigationNameEn}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="browserLang== 'pt'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerCCMitigation">
+                                                                                    {{optionLists.rioMarkerCCMitigationNamePt}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngIf="rioMarkerClimateChangeDesertification[0].markerMasterId===markersList[3].markerId">
+                                                                        <ng-container
+                                                                            *ngFor="let optionLists of rioMarkerClimateChangeDesertification">
+                                                                            <ng-container *ngIf="browserLang== 'en'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerCCDesertification">
+                                                                                    {{optionLists.rioMarkerCCDesertificationNameEn}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="browserLang== 'pt'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerCCDesertification">
+                                                                                    {{optionLists.rioMarkerCCDesertificationNamePt}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngIf="rioMarkerClimateChangeAdaption[0].markerMasterId===markersList[4].markerId">
+                                                                        <ng-container
+                                                                            *ngFor="let optionLists of rioMarkerClimateChangeAdaption">
+                                                                            <ng-container *ngIf="browserLang== 'en'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerCCAdaption">
+                                                                                    {{optionLists.rioMarkerCCAdaptionNameEn}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="browserLang== 'pt'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerCCAdaption">
+                                                                                    {{optionLists.rioMarkerCCAdaptionNamePt}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                    <ng-container
+                                                                        *ngIf="rioMarkerBioDiversity[0].markerMasterId===markersList[5].markerId">
+                                                                        <ng-container
+                                                                            *ngFor="let optionLists of rioMarkerBioDiversity">
+                                                                            <ng-container *ngIf="browserLang== 'en'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerBioDiversity">
+                                                                                    {{optionLists.rioMarkerBiodiversityNameEn}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="browserLang== 'pt'">
+                                                                                <mat-option
+                                                                                    [value]="optionLists.idRioMarkerBioDiversity">
+                                                                                    {{optionLists.rioMarkerBiodiversityNamePt}}
+                                                                                </mat-option>
+                                                                            </ng-container>
+                                                                        </ng-container>
+                                                                    </ng-container>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </ng-template>
+                                                </ng-container>
+                                            </ng-container>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                            <div class="row">
+                                <label class="col-xl-4 col-lg-4 col-sm-12 pt-2">
+                                    <span class="label-project-managers"> {{ 'add-project.project-managers' | translate
+                                        }}</span>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered Stakeholder"
+                                            formArrayName="tableDataManager">
+                                            <tr>
+                                                <ng-container *ngIf="viewProjectId == null">
+                                                    <th class="add-width-project"><button (click)="addManagerRow()"
+                                                            class="btn btn-success btn-sm label-add">{{ 'common.add' |
+                                                            translate }}</button>
+                                                    </th>
+                                                </ng-container>
+                                                <th *ngFor="let column of managerheaders">
+                                                    <ng-container *ngIf="column==='Organization'">
+                                                        {{ 'add-project.organization' | translate }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="column==='Project Stakeholder'">
+                                                        {{ 'add-project.Project Stakeholder' | translate }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="column==='Start Date'">
+                                                        {{ 'add-project.start-date' | translate }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="column==='End Date'">
+                                                        {{ 'add-project.end-date' | translate }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="column==='Post'">
+                                                        {{ 'add-project.post' | translate }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="column==='Email ID'">
+                                                        {{ 'add-project.email' | translate }}
+                                                    </ng-container>
+                                                    <ng-container *ngIf="column==='Contact Phone No'">
+                                                        {{ 'add-project.contact' | translate }}
+                                                    </ng-container>
+                                                </th>
+                                            </tr>
+                                            <tr
+                                                *ngFor="let row of projectForm.get('tableDataManager')['controls']; let j = index">
+                                                <ng-container *ngIf="viewProjectId == null">
+                                                    <td class="whitesp-nowrap">
+                                                        <button popover-trigger="'mouseenter'" uib-popover="View"
+                                                            class="btn btn-success btn-sm mr-1"
+                                                            (click)="viewIndividual(j)">
+                                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                            class="btn btn-danger btn-sm mr-1"
+                                                            (click)="deleteManager(j)">
+                                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                                        </button>
+                                                    </td>
+                                                </ng-container>
+                                                <td class="whitesp-nowrap" *ngFor="let column of managerheaders">
+                                                    <ng-container>
+                                                        <ng-container [formGroupName]="j">
+                                                            <ng-container *ngIf=" column === 'Action'; then action;">
+                                                            </ng-container>
+
+                                                            <ng-template #action>
+                                                                <ng-container *ngIf="manageraddflag[j]!==false">
+                                                                    <button class="btn btn-success btn-sm mr-1"
+                                                                        placement="top"
+                                                                        ngbTooltip="{{'common.view' | translate}}"
+                                                                        tabindex="-1" (click)='addManager(j)'>
+                                                                        <i class="fas fa-plus"></i>
+                                                                    </button>
+                                                                    <button class="btn btn-danger btn-sm mr-1"
+                                                                        placement="top"
+                                                                        ngbTooltip="{{'common.delete' | translate}}"
+                                                                        tabindex="-1" (click)='deleteManager(j)'>
+                                                                        <i class="fas fa-trash-alt"></i>
+                                                                    </button>
+                                                                </ng-container>
+                                                                <ng-container *ngIf="manageraddflag[j]===false">
+                                                                    <button class="btn btn-danger btn-sm mr-1"
+                                                                        placement="top"
+                                                                        ngbTooltip="{{'common.delete' | translate}}"
+                                                                        tabindex="-1" (click)='deleteManager(j)'>
+                                                                        <i class="fas fa-trash-alt"></i>
+                                                                    </button>
+                                                                </ng-container>
+                                                            </ng-template>
+                                                            <ng-container
+                                                                *ngIf=" column === 'Organization'; then manageOrganization;">
+                                                            </ng-container>
+
+                                                            <ng-template #manageOrganization>
+                                                                <div class="col-xl-12 col-lg-4 col-sm-12">
+                                                                    <strong class="mandatory">*</strong>
+                                                                    <mat-form-field appearance="outline"
+                                                                        class="mb-form-0">
+                                                                        <mat-label><span
+                                                                                class="label-select-organization">{{
+                                                                                'add-project.select-organization' |
+                                                                                translate }}</span></mat-label>
+                                                                        <mat-select
+                                                                            (openedChange)="searchOrgName.patchValue('')"
+                                                                            placeholder="Select"
+                                                                            formControlName="orgName"
+                                                                            (selectionChange)="validateOnChange();enableStakeHolderDropdown(j,$event);">
+                                                                            <div *ngIf="organizationListFilteredOption"
+                                                                                class="select-container">
+                                                                                <mat-optgroup>
+                                                                                    <mat-form-field style="width:100%;">
+                                                                                        <input autocomplete="off"
+                                                                                            placeholder="Search"
+                                                                                            aria-label="Search" matInput
+                                                                                            [formControl]="searchOrgName">
+                                                                                        <button [disableRipple]="true"
+                                                                                            *ngIf="searchOrgName.value"
+                                                                                            matSuffix mat-icon-button
+                                                                                            aria-label="Clear"
+                                                                                            (click)="searchOrgName.patchValue('')">
+                                                                                            <mat-icon>close</mat-icon>
+                                                                                        </button>
+                                                                                    </mat-form-field>
+                                                                                </mat-optgroup>
+                                                                                <mat-optgroup
+                                                                                    *ngIf="(organizationListFilteredOption | async).length == 0">
+                                                                                    <div>{{'common.No results found!' | translate}}</div>
+                                                                                </mat-optgroup>
+                                                                                <mat-option
+                                                                                    *ngFor="let list of organizationListFilteredOption | async"
+                                                                                    [value]="list.id"
+                                                                                    matTooltip="{{list.names}}"
+                                                                                    [matTooltipPosition]="'right'"
+                                                                                    matTooltipClass="custom-tooltip">
+                                                                                    {{list.names}}
+                                                                                </mat-option>
+                                                                            </div>
+                                                                        </mat-select>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                            </ng-template>
+
+                                                            <ng-container
+                                                                *ngIf=" column === 'Project Stakeholder'; then manageProjectStakeholder;">
+                                                            </ng-container>
+
+                                                            <ng-template #manageProjectStakeholder>
+                                                                <div class="col-xl-12 col-lg-4 col-sm-12">
+                                                                    <strong class="mandatory">*</strong>
+                                                                    <mat-form-field appearance="outline"
+                                                                        class="mb-form-0">
+                                                                        <mat-label><span class=""> {{
+                                                                                'add-project.project-manager' |
+                                                                                translate }}</span></mat-label>
+                                                                        <mat-select formControlName="managers"
+                                                                            (selectionChange)="fillOtherManagerData(j,$event)">
+                                                                            <ng-container
+                                                                                *ngFor="let individual of individualList">
+                                                                                <ng-container
+                                                                                    *ngIf="individual.organization.id===orgIndRel.get(j)">
+                                                                                    <mat-option [value]="individual.id"
+                                                                                        matTooltip="{{individual.names}}&nbsp;{{individual.nicknames}}"
+                                                                                        [matTooltipPosition]="'right'"
+                                                                                        matTooltipClass="custom-tooltip">
+                                                                                        {{individual.names}}&nbsp;{{individual.nicknames}}
+                                                                                    </mat-option>
+                                                                                </ng-container>
+                                                                            </ng-container>
+                                                                        </mat-select>
+                                                                    </mat-form-field>
+                                                                </div>
+                                                            </ng-template>
+
+                                                            <ng-container
+                                                                *ngIf=" column === 'Start Date'; then manageSartDate;">
+                                                            </ng-container>
+
+                                                            <ng-template #manageSartDate>
+                                                                <mat-form-field appearance="outline" class="mb-form-0">
+                                                                    <mat-label><span
+                                                                            class="label-enter-dac-crs-sector">{{
+                                                                            'add-project.start-date' | translate
+                                                                            }}</span></mat-label>
+                                                                    <input matInput [matDatepicker]="picker11"
+                                                                        formControlName="startDate"
+                                                                        (dateChange)="dateChangeProMan(j)"
+                                                                        (focus)="picker11?.open()">
+                                                                    <!-- <ng-container *ngIf="viewProjectId == null">
+                                                                        <mat-icon matDatepickerToggleIcon (click)="clearStartDateManager($event,j)">clear</mat-icon>
+                                                                    </ng-container> -->
+                                                                    <mat-datepicker-toggle matSuffix [for]="picker11">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #picker11></mat-datepicker>
+                                                                </mat-form-field>
+                                                            </ng-template>
+
+                                                            <ng-container
+                                                                *ngIf=" column === 'End Date'; then manageEndDate;">
+                                                            </ng-container>
+
+                                                            <ng-template #manageEndDate>
+                                                                <mat-form-field appearance="outline" class="mb-form-0">
+                                                                    <mat-label><span
+                                                                            class="label-enter-dac-crs-sector">{{
+                                                                            'add-project.end-date' | translate }}
+                                                                        </span></mat-label>
+                                                                    <input matInput [matDatepicker]="picker111"
+                                                                        [min]="projectForm.get('tableDataManager')['controls'][j].get('startDate').value"
+                                                                        formControlName="endDate"
+                                                                        (dateChange)="dateChangeProMan(j)"
+                                                                        (focus)="picker111?.open()">
+                                                                    <!-- <ng-container *ngIf="viewProjectId == null">
+                                                                        <mat-icon matDatepickerToggleIcon (click)="clearEndDateManager($event,j)">clear</mat-icon>
+                                                                    </ng-container> -->
+                                                                    <mat-datepicker-toggle matSuffix [for]="picker111">
+                                                                    </mat-datepicker-toggle>
+                                                                    <mat-datepicker #picker111></mat-datepicker>
+                                                                </mat-form-field>
+                                                            </ng-template>
+
+                                                            <ng-container *ngIf=" column === 'Post'; then manage2;">
+                                                            </ng-container>
+
+                                                            <ng-template #manage2>
+                                                                <mat-form-field appearance="outline" class="mb-form-0">
+                                                                    <mat-label><span
+                                                                            class="label-amount(agreement-currency)"> {{
+                                                                            'add-project.postLabel' | translate
+                                                                            }}</span></mat-label>
+                                                                    <input type="text" matInput autocomplete="off"
+                                                                        formControlName="post" />
+                                                                </mat-form-field>
+                                                            </ng-template>
+
+                                                            <ng-container *ngIf=" column === 'Email ID'; then manage3;">
+                                                            </ng-container>
+
+                                                            <ng-template #manage3>
+                                                                <mat-form-field appearance="outline" class="mb-form-0">
+                                                                    <mat-label><span
+                                                                            class="label-amount(agreement-currency)"> {{
+                                                                            'add-project.email' | translate }}</span>
+                                                                    </mat-label>
+                                                                    <input type="text" matInput autocomplete="off"
+                                                                        formControlName="emailId" />
+                                                                </mat-form-field>
+                                                            </ng-template>
+
+                                                            <ng-container
+                                                                *ngIf=" column === 'Contact Phone No'; then manage4;">
+                                                            </ng-container>
+
+                                                            <ng-template #manage4>
+                                                                <mat-form-field appearance="outline" class="mb-form-0">
+                                                                    <mat-label><span
+                                                                            class="label-amount(agreement-currency)"> {{
+                                                                            'add-project.contact' | translate }}</span>
+                                                                    </mat-label>
+                                                                    <input type="number" matInput autocomplete="off"
+                                                                        formControlName="contactNo" />
+                                                                </mat-form-field>
+                                                            </ng-template>
+
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <label class="col-xl-4 col-lg-4 col-sm-12 pt-2">
+                            <span class="label-list-of-associated-funding">{{ 'add-project.associated-funding' |
+                                translate }}</span>
+                        </label>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <!-- <strong class="mandatory">*</strong> -->
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label><span class="label-SelectListOfAssociatedFunding">{{
+                                        'add-project.select-List-Of-Associated-Funding' | translate }}</span>
+                                </mat-label>
+                                <mat-select #select1 (openedChange)="openedChangeListOfAsso($event)"
+                                    placeholder="Select" formControlName="SelectListOfAssociatedFunding"
+                                    (selectionChange)="validateOnChange();" (closed)="validateDacCRS1(select1);"
+                                    multiple>
+                                    <!-- <mat-select-trigger>
+                                        {{associatedFundingName ? associatedFundingName[0] : ""}}
+                                        <span *ngIf="associatedFundingName?.length> 1" class="additional-selection">
+                                            (+{{associatedFundingName.length - 1}} {{associatedFundingName?.length === 2 ? 'other' : 'others'}})
+                                        </span>
+                                    </mat-select-trigger> -->
+                                    <div class="select-container" *ngIf="filteredOptionListOfAsso">
+                                        <mat-optgroup>
+                                            <mat-form-field style="width:100%;">
+                                                <input #searchListOfAsso autocomplete="off" placeholder="Search"
+                                                    aria-label="Search" matInput
+                                                    [formControl]="searchTextboxControlListOfAsso">
+                                                <button [disableRipple]="true" *ngIf="searchListOfAsso.value" matSuffix
+                                                    mat-icon-button aria-label="Clear"
+                                                    (click)="clearSearchListOfAsso($event)">
+                                                    <mat-icon>close</mat-icon>
+                                                </button>
+                                            </mat-form-field>
+                                        </mat-optgroup>
+                                        <mat-optgroup *ngIf="(filteredOptionListOfAsso | async).length == 0">
+                                            <div>{{'common.No results found!' | translate}}</div>
+                                        </mat-optgroup>
+                                        <mat-option (onSelectionChange)="selectionChangeListOfAsso($event);"
+                                            *ngFor="let list of  filteredOptionListOfAsso | async"
+                                            [value]="list.funding_id" matTooltip="{{list.donor_funding_title}}"
+                                            [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                                            {{list.donor_funding_title}}&nbsp;-&nbsp;{{list.fundingOrganization}}
+                                        </mat-option>
+                                    </div>
+                                </mat-select>
+                            </mat-form-field>
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ng-container *ngIf="validateListFundFlag===false">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <!-- <strong class="mandatory">*</strong> -->
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-dac-crs-purpose label-provinces">
+                                            {{ 'add-project.provinces' | translate }}
+                                        </span>
+                                    </mat-label>
+                                    <mat-select (openedChange)="openedChangeProvinces($event)" placeholder="Select"
+                                        formControlName="provinces" multiple
+                                        (selectionChange)="validateOnChange();showDistrict();">
+                                        <mat-select-trigger>
+                                            {{selectedprovincename ? selectedprovincename[0] : ''}}
+                                            <span *ngIf="selectedprovincename?.length > 1" class="additional-selection">
+                                                (+{{selectedprovincename.length - 1}} {{selectedprovincename?.length ===
+                                                2 ? 'other' : 'others'}})
+                                            </span>
+                                        </mat-select-trigger>
+                                        <div class="select-container">
+                                            <mat-optgroup>
+                                                <mat-form-field style="width:100%;">
+                                                    <input #searchprovinces autocomplete="off" placeholder="Search"
+                                                        aria-label="Search" matInput
+                                                        [formControl]="searchTextboxControlProvinces">
+                                                    <button [disableRipple]="true" *ngIf="searchprovinces.value"
+                                                        matSuffix mat-icon-button aria-label="Clear"
+                                                        (click)="clearSearchProvinces($event)">
+                                                        <mat-icon>close</mat-icon>
+                                                    </button>
+                                                </mat-form-field>
+                                            </mat-optgroup>
+                                            <!-- <ng-container *ngIf="provinceList1!==null">
+                                                <mat-optgroup *ngIf="(filteredOptionProvinces | async).length == 0">
+                                                    <div>{{'common.No results found!' | translate}}</div>
+                                                </mat-optgroup>
+                                            </ng-container> -->
+                                            <!-- <ng-container *ngIf="select_options_for_prv_opt_flag1==false">
+                                                <mat-option class="bg" [disabled]="true" (onSelectionChange)="selectionChangeProvinces($event)" [value]="0">NATIONAL</mat-option>
+                                            </ng-container> -->
+                                            <!-- <ng-container *ngIf="select_options_for_prv_opt_flag1==true">
+                                                <mat-option class="bg" [disabled]="false" (onSelectionChange)="selectionChangeProvinces($event)" (click)="provinceFlag();" [value]="0">NATIONAL</mat-option>
+                                            </ng-container> -->
+                                            <!-- <ng-container *ngIf="select_options_for_prv_opt_flag==false">
+                                            </ng-container> -->
+                                            <!-- <ng-container *ngIf="select_options_for_prv_opt_flag==true"> -->
+                                            <mat-option (onSelectionChange)="selectionChangeProvinces($event)"
+                                                *ngFor="let option of filteredOptionProvinces | async"
+                                                [value]="option.provinces_id">
+                                                {{option.provinces_name}}
+                                            </mat-option>
+                                            <!-- </ng-container> -->
+                                        </div>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <!-- <ng-container *ngIf="select_options_for_district_hdn_flag==true">
+                            </ng-container>
+                            <ng-container *ngIf="select_options_for_district_hdn_flag==false"> -->
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-select-options-for-findings">{{
+                                            'add-project.districts' | translate }}</span>
+                                    </mat-label>
+                                    <mat-select formControlName="districts" multiple>
+                                        <ng-container
+                                            *ngFor="let provId of this.projectForm.controls['provinces'].value">
+                                            <mat-optgroup [label]="provname(provId)">
+                                                <ng-container *ngFor="let districts of district">
+                                                    <ng-container *ngIf="provId===districts.provinces_id">
+                                                        <mat-option [value]="districts.districts_id">
+                                                            {{districts.districts_name}}</mat-option>
+                                                    </ng-container>
+                                                </ng-container>
+                                            </mat-optgroup>
+                                        </ng-container>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </ng-container>
+                        <!-- </ng-container> -->
+                        <!-- <div class="col-xl-4 col-lg-4 col-sm-12">
+                            <mat-form-field appearance="outline" class="mb-form-0">
+                                <mat-label>
+                                    <span class="label-support-for-the-private-sector">{{ 'add-project.support-for-the-private-sector' | translate }} </span>
+                                </mat-label>
+                                <mat-select formControlName="support">
+                                    <mat-option value="Yes" class="label-yes">Yes</mat-option>
+                                    <mat-option value="No" class="label-no">No</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div> -->
+                    </div>
+
+
+                    <div class="row">
+
+                        <ng-container *ngIf="validateListFundFlag===false">
+                            <div class="col-xl-12 col-lg-12 col-sm-12">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered assofun" formArrayName="tableData">
+                                        <tr>
+                                            <th *ngFor="let column of headersListofassociatedFunding">
+                                                <ng-container *ngIf="column==='Action'">
+                                                    {{ 'common.action' | translate }}
+                                                </ng-container>
+                                                <ng-container *ngIf="column==='Funding Reference'">
+                                                    {{ 'add-project.fundingReference' | translate }}
+                                                </ng-container>
+                                                <ng-container *ngIf="column==='Funding Title'">
+                                                    {{ 'add-project.fundingTitle' | translate }}
+                                                </ng-container>
+                                                <ng-container *ngIf="column==='Funding Organization'">
+                                                    {{ 'add-project.fundingOrg' | translate }}
+                                                </ng-container>
+                                                <ng-container *ngIf="column==='Start Date'">
+                                                    {{ 'add-project.start-date' | translate }}
+                                                </ng-container>
+                                                <ng-container *ngIf="column==='End Date'">
+                                                    {{ 'add-project.end-date' | translate }}
+                                                </ng-container>
+                                                <ng-container
+                                                    *ngIf="column==='Amount Allocated in Financial Agreement (USD)'">
+                                                    {{ 'add-project.amount-allo-fin-usd' | translate }}
+                                                </ng-container>
+                                            </th>
+                                        </tr>
+                                        <tr *ngFor="let row of projectForm.get('tableData')['controls']; let j = index">
+                                            <td class="whitesp-nowrap"
+                                                *ngFor="let column of headersListofassociatedFunding">
+                                                <ng-container>
+                                                    <ng-container [formGroupName]="j">
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+
+                                                        <ng-template #tem>
+                                                            <button class="btn btn-success btn-sm mr-2" tabindex="-1"
+                                                                (click)='viewMoreFunding(fundingDetails[j].funding_id)'>
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <ng-container *ngIf="viewProjectId==null">
+                                                                <button class="btn btn-danger btn-sm mr-2"
+                                                                    popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                                    (click)="deleteAssociateRows(j)">
+                                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                        </ng-template>
+
+                                                        <ng-container
+                                                            *ngIf=" column === 'Funding Reference'; then loggedIn;">
+                                                        </ng-container>
+
+                                                        <ng-template #loggedIn>
+                                                            <mat-form-field appearance="outline" class="mb-form-0">
+                                                                <mat-label><span class="label-enter-dac-crs-sector">{{
+                                                                        'add-project.fundingReference' | translate }}
+                                                                    </span></mat-label>
+                                                                <input type="text" placeholder="Pick one" matInput
+                                                                    formControlName="fundingRef">
+                                                            </mat-form-field>
+                                                        </ng-template>
+
+                                                        <ng-container
+                                                            *ngIf=" column === 'Funding Title'; then loggedIn1;">
+                                                        </ng-container>
+
+                                                        <ng-template #loggedIn1>
+                                                            <mat-form-field class="mb-form-0" appearance="outline"
+                                                                class="mb-form-0">
+                                                                <mat-label><span class="label-enter-funds">{{
+                                                                        'add-project.fundingTitle' | translate }}
+                                                                    </span> </mat-label>
+                                                                <input type="text" matInput autocomplete="off"
+                                                                    formControlName="fundingTitle" />
+                                                            </mat-form-field>
+                                                        </ng-template>
+
+                                                        <ng-container
+                                                            *ngIf=" column === 'Funding Organization'; then loggedIn2;">
+                                                        </ng-container>
+
+                                                        <ng-template #loggedIn2>
+                                                            <mat-form-field appearance="outline" class="mb-form-0">
+                                                                <mat-label><span
+                                                                        class="label-amount(agreement-currency)">{{
+                                                                        'add-project.fundingOrg' | translate }}</span>
+                                                                </mat-label>
+                                                                <input type="text" placeholder="Pick one"
+                                                                    aria-label="Number" matInput
+                                                                    formControlName="fundingOrg"
+                                                                    [matAutocomplete]="auto2">
+                                                                <mat-autocomplete #auto2="matAutocomplete">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredOptionsC | async"
+                                                                        [value]="option">
+                                                                        {{option}}
+                                                                    </mat-option>
+                                                                </mat-autocomplete>
+                                                            </mat-form-field>
+                                                        </ng-template>
+
+                                                        <ng-container *ngIf=" column === 'Start Date'; then loggedIn4;">
+                                                        </ng-container>
+
+                                                        <ng-template #loggedIn4>
+                                                            <mat-form-field appearance="outline" class="mb-form-0">
+                                                                <mat-label><span
+                                                                        class="label-amount(agreement-currency)">{{
+                                                                        'add-project.start-date' | translate }}</span>
+                                                                </mat-label>
+                                                                <input type="text" placeholder="Pick one"
+                                                                    aria-label="Number" matInput
+                                                                    formControlName="startDate"
+                                                                    [matAutocomplete]="auto2">
+                                                                <mat-autocomplete #auto2="matAutocomplete">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredOptionsC | async"
+                                                                        [value]="option">
+                                                                        {{option}}
+                                                                    </mat-option>
+                                                                </mat-autocomplete>
+                                                            </mat-form-field>
+                                                        </ng-template>
+
+                                                        <ng-container *ngIf=" column === 'End Date'; then loggedIn5;">
+                                                        </ng-container>
+
+                                                        <ng-template #loggedIn5>
+                                                            <mat-form-field appearance="outline" class="mb-form-0">
+                                                                <mat-label><span
+                                                                        class="label-amount(agreement-currency)">{{
+                                                                        'add-project.end-date' | translate }}</span>
+                                                                </mat-label>
+                                                                <input type="text" placeholder="Pick one"
+                                                                    aria-label="Number" matInput
+                                                                    formControlName="endDate" [matAutocomplete]="auto2">
+                                                                <mat-autocomplete #auto2="matAutocomplete">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredOptionsC | async"
+                                                                        [value]="option">
+                                                                        {{option}}
+                                                                    </mat-option>
+                                                                </mat-autocomplete>
+                                                            </mat-form-field>
+                                                        </ng-template>
+
+                                                        <ng-container
+                                                            *ngIf=" column === 'Amount Allocated in Financial Agreement (USD)'; then loggedIn6;">
+                                                        </ng-container>
+
+                                                        <ng-template #loggedIn6>
+                                                            <mat-form-field appearance="outline" class="mb-form-0">
+                                                                <mat-label><span
+                                                                        class="label-amount(agreement-currency)">{{
+                                                                        'add-project.amount-allo-fin-usd' | translate
+                                                                        }}</span></mat-label>
+                                                                <input type="text" placeholder="Pick one"
+                                                                    aria-label="Number" matInput
+                                                                    formControlName="amountAloFinUsd"
+                                                                    [matAutocomplete]="auto2">
+                                                                <mat-autocomplete #auto2="matAutocomplete">
+                                                                    <mat-option
+                                                                        *ngFor="let option of filteredOptionsC | async"
+                                                                        [value]="option">
+                                                                        {{option}}
+                                                                    </mat-option>
+                                                                </mat-autocomplete>
+                                                            </mat-form-field>
+                                                        </ng-template>
+
+                                                    </ng-container>
+                                                </ng-container>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                            <h6><b>{{ 'add-project.comments' | translate }} </b></h6>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered" formArrayName="tableComments">
+                                    <tr>
+                                        <ng-container *ngIf="viewProjectId==null">
+                                            <th class="add-comments">
+                                                <button (click)="addCommentRow()"
+                                                    class="btn btn-success btn-sm label-add">{{ 'common.add' | translate
+                                                    }}
+                                                </button>
+                                            </th>
+                                        </ng-container>
+                                        <th *ngFor="let column of commentHeaders">
+                                            <ng-container *ngIf="column==='Comments'">
+                                                {{ 'add-project.comments' | translate }}
+                                            </ng-container>
+                                        </th>
+                                    </tr>
+                                    <tr *ngFor="let row of projectForm.get('tableComments')['controls']; let j = index">
+                                        <ng-container *ngIf="viewProjectId==null">
+                                            <td class="whitesp-nowrap">
+                                                <ng-container *ngIf="this.permissionDeleteComment[j]==true">
+                                                    <button popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                        class="btn btn-danger btn-sm mt-3 ml-2"
+                                                        (click)="deleteCommentsRow(j)">
+                                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                                    </button>
+                                                </ng-container>
+                                            </td>
+                                        </ng-container>
+                                        <td class="whitesp-nowrap" *ngFor="let column of commentHeaders">
+                                            <ng-container>
+                                                <ng-container [formGroupName]="j">
+                                                    <ng-container *ngIf=" column === 'Comments'; then manageComments;">
+                                                    </ng-container>
+                                                    <ng-template #manageComments>
+                                                        <mat-form-field appearance="outline" class="mb-form-0">
+                                                            <mat-label><span class="label-comments">{{
+                                                                    'add-project.comments' | translate }} </span>
+                                                            </mat-label>
+                                                            <textarea matInput #comments maxlength="1000"
+                                                                placeholder="{{
+                                                                    'add-project.comments' | translate }}" formControlName="comments"
+                                                                cols="30" rows="4"
+                                                                (blur)="generateCommentsData(j)"></textarea>
+                                                            <mat-hint align="end">{{comments.value?.length || 0}}/1000
+                                                            </mat-hint>
+                                                        </mat-form-field>
+                                                    </ng-template>
+                                                </ng-container>
+                                            </ng-container>
+                                            <mat-label class="col-xl-4 col-lg-4 col-sm-12 pt-2">
+                                                <span class="label-comment-by">{{"common.Commented By" | translate}} {{
+                                                    commentsData[j].commentedBy }}, {{ commentsData[j].commentedOn
+                                                    }}</span>
+                                            </mat-label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <mat-checkbox formControlName="confidentialProject" [checked]="confidentialProjectFlag">
+                        {{'add-project.confidential projects' | translate}}</mat-checkbox>
+
+                    <ng-container *ngIf="projectId !== null">
+                        <mat-action-row class="border-top-none">
+                            <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+                                (click)="clearForm1(projectForm)">{{ 'common.reset' | translate }}</button>
+                            <button class="btn btn-outline-success btn-sm label-next mr-2 "
+                                (click)="(projectForm.invalid) ?  openMandatoryAlert():validateGeneralInformation()">{{
+                                'common.next' | translate }}</button>
+                        </mat-action-row>
+                    </ng-container>
+
+                    <ng-container *ngIf="viewProjectId !== null">
+                        <mat-action-row class="border-top-none">
+                            <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                        </mat-action-row>
+                    </ng-container>
+
+                    <ng-container *ngIf="projectId==null && viewProjectId==null">
+                        <mat-action-row class="border-top-none">
+                            <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+                                (click)="clearForm1(projectForm)">{{ 'common.reset' | translate }}</button>
+                            <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                (click)="(projectForm.invalid) ?  openMandatoryAlert():validateGeneralInformation()">{{
+                                'common.next' | translate }}</button>
+                        </mat-action-row>
+                    </ng-container>
+
+                </div>
+
+            </mat-expansion-panel>
+            <button class="checkValidation" [hidden]="true"></button>
+        </form>
+        <!-- end of projectForm FormGroup (Project General Information expainson)  -->
+
+        <ng-container *ngIf="allocation_flag==='false'">
+            <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="custom-expansion-panel"
+                [disabled]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6> {{ 'add-project.secondExpansion' | translate }}</h6>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+            </mat-expansion-panel>
+        </ng-container>
+
+        <ng-container *ngIf="allocation_flag==='true'">
+            <!-- creating projectForm2 FormGroup by declaring the fields of Project Financial Information / Allocation expainson -->
+            <form id="myForm" [formGroup]="projectForm2" (change)="validateOnChange()">
+                <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle
+                    class="custom-expansion-panel" [disabled]="false">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h6> {{ 'add-project.secondExpansion' | translate }}</h6>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                                <h6>{{ 'add-project.odaAmount' | translate }} </h6>
+                                <table class="table table-responsive table-striped table-bordered"
+                                    formArrayName="tableData">
+                                    <tr>
+                                        <ng-container *ngIf="viewProjectId == null">
+                                            <th class="add-width">
+                                                <button (click)="addItem1()" class="btn btn-success btn-sm label-add">{{
+                                                    'common.add' | translate }}
+                                                </button>
+                                            </th>
+                                        </ng-container>
+                                        <th *ngFor="let column of headers">
+                                            <ng-container *ngIf="column==='Purpose DAC-CRS'">
+                                                {{ 'add-project.purpose-of-DAC-CRS' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngIf="column==='Fund'">
+                                                {{ 'add-project.funds' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngIf="column==='Currency'">
+                                                {{ 'add-project.currency' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngIf="column==='Funds (MZN)'">
+                                                {{ 'add-project.funds(mzn)' | translate }}
+                                            </ng-container>
+                                            <ng-container *ngIf="column==='Funds (USD)'">
+                                                {{ 'add-project.funds(usd)' | translate }}
+                                            </ng-container>
+                                        </th>
+                                    </tr>
+                                    <tr *ngFor="let row of projectForm2.get('tableData')['controls']; let j = index">
+                                        <ng-container *ngIf="viewProjectId == null">
+                                            <td>
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                    class="btn btn-danger btn-sm" (click)="deletePurposeDaccrsData(j);triggerEvent2()">
+                                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </ng-container>
+                                        <td *ngFor="let column of headers">
+                                            <ng-container>
+                                                <ng-container [formGroupName]="j">
+
+                                                    <ng-container
+                                                        *ngIf=" column === 'Purpose DAC-CRS'; then loggedInp;">
+                                                    </ng-container>
+
+                                                    <ng-template #loggedInp>
+                                                        <div class="col-xl-12 col-lg-4 col-sm-12">
+                                                            <strong class="mandatory">*</strong>
+                                                            <mat-form-field appearance="outline" class="mb-form-0"
+                                                                (click)="getValueByLang()">
+                                                                <mat-label><span class="label-purpose-of-DAC-CRS">{{
+                                                                        'add-project.purpose-of-DAC-CRS' | translate
+                                                                        }}</span></mat-label>
+                                                                <!-- <input type="text" placeholder="Pick one" matInput formControlName="purposeDACCRS" [matAutocomplete]="auto"> -->
+                                                                <mat-select
+                                                                    (openedChange)="purdaccrsSearch.patchValue('')"
+                                                                    placeholder="Select" formControlName="purposeDACCRS"
+                                                                    (selectionChange)="validateDacCRS();triggerEvent(j);validateOnChange();">
+                                                                    <div *ngIf="purposeDACCRSfilteredOption"
+                                                                        class="select-container">
+                                                                        <mat-optgroup>
+                                                                            <mat-form-field style="width:100%;">
+                                                                                <input autocomplete="off"
+                                                                                    placeholder="Search"
+                                                                                    aria-label="Search" matInput
+                                                                                    [formControl]="purdaccrsSearch">
+                                                                                <button [disableRipple]="true"
+                                                                                    *ngIf="purdaccrsSearch.value"
+                                                                                    matSuffix mat-icon-button
+                                                                                    aria-label="Clear"
+                                                                                    (click)="purdaccrsSearch.patchValue('')">
+                                                                                    <mat-icon>close</mat-icon>
+                                                                                </button>
+                                                                            </mat-form-field>
+                                                                        </mat-optgroup>
+                                                                        <ng-container *ngIf="browserLang=='en'">
+                                                                            <mat-option
+                                                                                *ngFor="let descriptionOptions of purposeDACCRSfilteredOption |async"
+                                                                                [value]="descriptionOptions.purpose_codes_Id"
+                                                                                matTooltip="{{descriptionOptions.dac5_code}}&nbsp; - &nbsp; {{descriptionOptions.name_EN}}"
+                                                                                [matTooltipPosition]="'right'"
+                                                                                matTooltipClass="custom-tooltip">
+                                                                                {{descriptionOptions.dac5_code}}&nbsp; -
+                                                                                &nbsp; {{descriptionOptions.name_EN}}
+                                                                            </mat-option>
+                                                                        </ng-container>
+                                                                        <ng-container *ngIf="browserLang=='pt'">
+                                                                            <mat-option
+                                                                                *ngFor="let descriptionOptions of purposeDACCRSfilteredOption |async"
+                                                                                [value]="descriptionOptions.purpose_codes_Id"
+                                                                                matTooltip="{{descriptionOptions.dac5_code}}&nbsp; - &nbsp; {{descriptionOptions.name_PT}}"
+                                                                                [matTooltipPosition]="'right'"
+                                                                                matTooltipClass="custom-tooltip">
+                                                                                <ng-container
+                                                                                    *ngIf="descriptionOptions.difference<=7 || descriptionOptions.updateDifference<=7">
+                                                                                    <i class="fas fa-star"
+                                                                                        style="color: darkgreen;"></i>
+                                                                                    &nbsp;
+                                                                                </ng-container>
+                                                                                {{descriptionOptions.dac5_code}}&nbsp; -
+                                                                                &nbsp; {{descriptionOptions.name_PT}}
+                                                                            </mat-option>
+                                                                        </ng-container>
+                                                                    </div>
+                                                                </mat-select>
+                                                            </mat-form-field>
+                                                        </div>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf=" column === 'Fund'; then loggedIn1;">
+                                                    </ng-container>
+
+                                                    <ng-template #loggedIn1>
+                                                        <mat-form-field class="mb-form-0" appearance="outline"
+                                                            class="mb-form-0">
+                                                            <mat-label><span class="label-enter-funds">{{
+                                                                    'add-project.funds' | translate }} </span>
+                                                            </mat-label>
+                                                            <input type="text" matInput autocomplete="off"
+                                                                formControlName="enter_funds" placeholder="0.00"
+                                                                (keypress)="regex_Currency($event);"
+                                                                (change)="onBlurFunds($event.target.value,j);triggerFundsOnBlur(j);" />
+                                                        </mat-form-field>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf=" column === 'Currency'; then loggedIn2;">
+                                                    </ng-container>
+
+                                                    <ng-template #loggedIn2>
+                                                        <mat-form-field appearance="outline" class="mb-form-0">
+                                                            <mat-label><span class="label-amount(agreement-currency)">{{
+                                                                    'add-project.currency' | translate }}</span>
+                                                            </mat-label>
+                                                            <mat-select formControlName="currency1"
+                                                                (selectionChange)="triggerCurr(j);triggerUSDtoMznEvent();triggerEvent2();">
+                                                                <mat-option *ngFor="let option of currOptions"
+                                                                    [value]="option.currency_id" class="label-inactive">
+                                                                    <ng-container
+                                                                        *ngIf="option.difference<=7 || option.updateDifference<=7">
+                                                                        <i class="fas fa-star"
+                                                                            style="color: darkgreen;"></i> &nbsp;
+                                                                    </ng-container>
+                                                                    {{(option.currency_fullname +" (
+                                                                    "+option.currency_shortname)+" )"}}
+                                                                </mat-option>
+                                                            </mat-select>
+                                                        </mat-form-field>
+                                                    </ng-template>
+                                                    <ng-container *ngIf=" column === 'Funds (MZN)'; then loggedIn3;">
+                                                    </ng-container>
+                                                    <ng-template #loggedIn3>
+                                                        <mat-form-field class="mb-form-0" appearance="outline"
+                                                            class="mb-form-0">
+                                                            <mat-label><span class="label-enter-funds">{{
+                                                                    'add-project.funds(mzn)' | translate }} </span>
+                                                            </mat-label>
+                                                            <input type="text" matInput autocomplete="off"
+                                                                formControlName="funds_mzn" />
+                                                        </mat-form-field>
+                                                    </ng-template>
+                                                    <ng-container *ngIf=" column === 'Funds (USD)'; then loggedIn4;">
+                                                    </ng-container>
+                                                    <ng-template #loggedIn4>
+                                                        <mat-form-field class="mb-form-0" appearance="outline"
+                                                            class="mb-form-0">
+                                                            <mat-label><span class="label-enter-funds">{{
+                                                                    'add-project.funds(usd)' | translate }} </span>
+                                                            </mat-label>
+                                                            <input type="text" matInput autocomplete="off"
+                                                                formControlName="funds_usd" />
+                                                        </mat-form-field>
+                                                    </ng-template>
+
+                                                </ng-container>
+                                            </ng-container>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-oda-amount-allocated(mzn)">{{
+                                            'add-project.oda-amount-allocated(mzn)' | translate }} </span>
+                                    </mat-label>
+                                    <!-- <input matInput readonly autocomplete="off" class="" placeholder="Total ODA Amount Allocated (MZN)" formControlName="odaAmountMzn" value="" [(ngModel)]="TotalODAAmountAllocatedMZN"> -->
+                                    <input matInput readonly autocomplete="off" class=""
+                                        placeholder="Total ODA Amount Allocated (MZN)" formControlName="odaAmountMzn">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12 pr-0">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-oda-amount-allocated(usd)">{{
+                                            'add-project.oda-amount-allocated(usd)' | translate }} </span>
+                                    </mat-label>
+                                    <!-- <input matInput readonly autocomplete="off" class="" placeholder="Total ODA Amount Allocated (USD)" formControlName="odaAmountUsd" value="" [(ngModel)]="TotalODAAmountAllocatedUSD"> -->
+                                    <input matInput readonly autocomplete="off" class=""
+                                        placeholder="Total ODA Amount Allocated (USD)" formControlName="odaAmountUsd">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-amount-allocated-of-national-participation(mzn)">
+                                            {{ 'add-project.amount-allocated-of-national-participation(mzn)' | translate
+                                            }}
+                                        </span>
+                                    </mat-label>
+                                    <input type="text" min="0" matInput autocomplete="off" class="" placeholder="0.00"
+                                        formControlName="nationalAmountmzn" (blur)="onBlur($event.target.value)"
+                                        (keypress)="regex_Currency($event)" (change)="triggerEvent2()">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-amount-allocated-of-national-participation(usd)">
+                                            {{ 'add-project.amount-allocated-of-national-participation(usd)' | translate
+                                            }}
+                                        </span>
+                                    </mat-label>
+                                    <input matInput autocomplete="off" class="" placeholder="0.00"
+                                        formControlName="nationalAmountusd" (blur)="onBlurUsd($event.target.value)"
+                                        (keypress)="regex_Currency($event)" (change)="triggerUSDtoMznEvent()">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12 pr-0">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-amount-allocated(mzn)">{{
+                                            'add-project.total-amount-allocated(mzn)' | translate }} </span>
+                                    </mat-label>
+                                    <!-- <input matInput readonly autocomplete="off" class="" placeholder="Total Amount Allocated (MZN)" formControlName="totalAmountMzn" value="" [(ngModel)]="TotalAmountAllocatedMZN"> -->
+                                    <input matInput readonly autocomplete="off" class=""
+                                        placeholder="Total Amount Allocated (MZN)" formControlName="totalAmountMzn">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-amount-allocated(usd)">{{
+                                            'add-project.total-amount-allocated(usd)' | translate }} </span>
+                                    </mat-label>
+                                    <!-- <input matInput readonly autocomplete="off" class="" placeholder="Total Amount Allocated (USD)" formControlName="totalAmountUsd" value="" [(ngModel)]="TotalAmountAllocatedUSD"> -->
+                                    <input matInput readonly autocomplete="off" class=""
+                                        placeholder="Total Amount Allocated (USD)" formControlName="totalAmountUsd">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="projectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+                                    (click)="clearForm2(projectForm2)">{{ 'common.reset' | translate }}</button>
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="(projectForm2.invalid) ?  openMandatoryAlert():validateAllocation()">{{
+                                    'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="viewProjectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateAllocation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="projectId == null && viewProjectId == null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-reset"
+                                    (click)="clearForm2(projectForm2)">{{ 'common.reset' | translate }}</button>
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="(projectForm2.invalid) ?  openMandatoryAlert():validateAllocation()">{{
+                                    'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+                    </div>
+                </mat-expansion-panel>
+                <button class="checkValidation" [hidden]="true"></button>
+            </form>
+        </ng-container>
+
+        <ng-container *ngIf="commitment_flag==='false'">
+            <mat-expansion-panel hideToggle [disabled]="true" class="custom-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6> {{ 'add-project.fourthExpansion' | translate }}</h6>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <mat-icon></mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+            </mat-expansion-panel>
+        </ng-container>
+
+        <ng-container *ngIf="commitment_flag==='true'">
+            <form [formGroup]="projectFormCommitment">
+                <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle
+                    class="custom-expansion-panel">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h6> {{ 'add-project.fourthExpansion' | translate }}</h6>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-12 col-lg-12 col-sm-12 pr-0 label-list-of-disbursements">
+                                <div class="table-responsive mb-4">
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th *ngFor="let column of listofcommitments">
+                                                    {{column | translate}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let fundRow of fundingCommitmentDetails">
+                                                <td *ngFor="let column of listofcommitments;let i = index;">
+                                                    <ng-container *ngIf="viewProjectId !== null">
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+                                                        <ng-template #tem>
+                                                            <button class="btn btn-success btn-sm" placement="top"
+                                                                ngbTooltip="{{ 'create-envelope.view' | translate }}"
+                                                                tabindex="-1"
+                                                                (click)='viewMoreFunding(fundRow.funding_id)'>
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </ng-template>
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="viewProjectId == null">
+
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+
+                                                        <ng-template #tem>
+                                                            <ng-container *ngIf="userFundingPermission.indexOf(3)!=-1">
+                                                                <button class="btn btn-primary btn-sm mr-1"
+                                                                    placement="top"
+                                                                    ngbTooltip="{{ 'create-envelope.edit' | translate }}"
+                                                                    tabindex="-1"
+                                                                    (click)='moveToSelectedTabFunding(fundRow.funding_id)'>
+                                                                    <i class="far fa-edit"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                            <!-- <ng-container *ngIf="userFundingPermission.indexOf(4)!=-1">
+                                                                <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.delete' | translate }}" tabindex="-1" (click)='opensweetalertDeleteFunding(fundRow.funding_id)'>
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                            </ng-container> -->
+                                                            <ng-container *ngIf="userFundingPermission.indexOf(2)!=-1">
+                                                                <button class="btn btn-success btn-sm" placement="top"
+                                                                    ngbTooltip="{{ 'create-envelope.view' | translate }}"
+                                                                    tabindex="-1"
+                                                                    (click)='viewMoreFunding(fundRow.funding_id)'>
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                        </ng-template>
+
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="column == 'Year';then temp;"></ng-container>
+
+                                                    <ng-template #temp>
+                                                        {{ fundRow.start_date | date: 'yyyy'}}
+                                                    </ng-template>
+
+                                                    <ng-container
+                                                        *ngIf="column == 'Financial Agreement';then TempFinAgreement;">
+                                                    </ng-container>
+
+                                                    <ng-template #TempFinAgreement>
+                                                        {{ fundRow.reference_for_financing_donor }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Funding Organization';then temp1;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp1>
+                                                        {{ fundRow.fundingOrganization }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount (MZN)';then temp5;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp5>
+                                                        <span style="float: right;"> {{ fundRow.amt_mzn| number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount (USD)';then temp6;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp6>
+                                                        <span style="float: right;"> {{ fundRow.amt_usd| number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td *ngFor="let column of listofcommitments;let i = index;">
+                                                    <ng-container *ngIf="column == 'Action';then totCmmt;">
+                                                    </ng-container>
+                                                    <ng-template #totCmmt>
+                                                        <b>Total</b>
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Year';then tempCmmt1;">
+                                                    </ng-container>
+                                                    <ng-template #tempCmmt1>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container
+                                                        *ngIf="column == 'Financial Agreement';then tempCmmt2;">
+                                                    </ng-container>
+                                                    <ng-template #tempCmmt2>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container
+                                                        *ngIf="column == 'Funding Organization';then tempCmmt3;">
+                                                    </ng-container>
+                                                    <ng-template #tempCmmt3>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (MZN)';then totMzn;">
+                                                    </ng-container>
+                                                    <ng-template #totMzn>
+                                                        <span style="float: right;">{{totalAmtMZNCmmt | number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (USD)';then totUSD;">
+                                                    </ng-container>
+                                                    <ng-template #totUSD>
+                                                        <span style="float: right;">{{totalAmtUSDCmmt | number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-commitment_rate">{{ 'add-project.commitment-rate' | translate
+                                            }}</span>
+                                    </mat-label>
+                                    <input matInput formControlName="commitmentRate" readonly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="projectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <!-- <button class="btn btn-outline-primary btn-sm mr-2 label-reset" (click)="clearForm4(projectFormCommitment)">{{ 'common.reset' | translate }}</button> -->
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="viewProjectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="projectId == null && viewProjectId == null">
+                            <mat-action-row class="border-top-none">
+                                <!-- <button class="btn btn-outline-primary btn-sm mr-2 label-reset" (click)="clearForm4(projectFormCommitment)">{{ 'common.reset' | translate }}</button> -->
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                    </div>
+                </mat-expansion-panel>
+                <button class="checkValidation" [hidden]="true"></button>
+            </form>
+        </ng-container>
+
+        <ng-container *ngIf="disbursement_flag==='false'">
+            <mat-expansion-panel hideToggle [disabled]="true" class="custom-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6> {{ 'add-project.Project/Financial Information/Disbursements' | translate }}</h6>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <mat-icon></mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+            </mat-expansion-panel>
+        </ng-container>
+
+        <ng-container *ngIf="disbursement_flag==='true'">
+            <form [formGroup]="projectFormDisbursements">
+                <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)" hideToggle
+                    class="custom-expansion-panel">
+
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h6> {{ 'add-project.Project/Financial Information/Disbursements' | translate }}</h6>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-paymentreference label-total-amount-disbursed(mzn)">{{
+                                            'add-project.total-amount-disbursed(mzn)' | translate }}</span>
+                                    </mat-label>
+                                    <input matInput formControlName="totalAmountOfDisbursedMZN" readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-amount-disbursed(usd)">{{
+                                            'add-project.total-amount-disbursed(usd)' | translate }} </span>
+                                    </mat-label>
+                                    <input matInput formControlName="totalAmountOfDisbursedUSD" readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12 pr-0">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-disbursement-rate">{{ 'add-project.disbursement-rate' |
+                                            translate }}</span>
+                                    </mat-label>
+                                    <input matInput formControlName="disbursementRate" readonly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-xl-12 col-lg-12 col-sm-12 pr-0 label-list-of-disbursements">
+
+                                <h6>{{ 'add-project.listOfDisbursment' | translate }}</h6>
+                                <div class="table-responsive mb-4">
+
+                                    <table class="table table-striped table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th *ngFor="let column of listofdisbursements">
+                                                    {{column | translate}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let row of disbursementDetails;let sl = index;">
+                                                <td *ngFor="let column of listofdisbursements;let i = index;">
+
+                                                    <ng-container *ngIf="viewProjectId !== null">
+
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+
+                                                        <ng-template #tem>
+                                                            <button class="btn btn-success btn-sm" placement="top"
+                                                                ngbTooltip="{{ 'create-envelope.view' | translate }}"
+                                                                tabindex="-1"
+                                                                (click)='viewMoreDisbursement(row.disbursement_id)'>
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </ng-template>
+
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="viewProjectId == null">
+
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+
+                                                        <ng-template #tem>
+                                                            <ng-container
+                                                                *ngIf="userDisbursementPermission.indexOf(3)!=-1">
+                                                                <button class="btn btn-primary btn-sm mr-1"
+                                                                    placement="top"
+                                                                    ngbTooltip="{{ 'create-envelope.edit' | translate }}"
+                                                                    tabindex="-1"
+                                                                    (click)='moveToSelectedTabDisbursement(row.disbursement_id)'>
+                                                                    <i class="far fa-edit"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                            <ng-container
+                                                                *ngIf="userDisbursementPermission.indexOf(4)!=-1">
+                                                                <button class="btn btn-danger btn-sm mr-1"
+                                                                    placement="top"
+                                                                    ngbTooltip="{{ 'create-envelope.delete' | translate }}"
+                                                                    tabindex="-1"
+                                                                    (click)='opensweetalertDeleteDisubrsement(row.disbursement_id)'>
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                            <ng-container
+                                                                *ngIf="userDisbursementPermission.indexOf(2)!=-1">
+                                                                <button class="btn btn-success btn-sm" placement="top"
+                                                                    ngbTooltip="{{ 'create-envelope.view' | translate }}"
+                                                                    tabindex="-1"
+                                                                    (click)='viewMoreDisbursement(row.disbursement_id)'>
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                        </ng-template>
+
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="column == 'ID';then temp;"></ng-container>
+
+                                                    <ng-template #temp>
+                                                        {{ sl+1 }}
+                                                    </ng-template>
+
+                                                    <ng-container
+                                                        *ngIf="column == 'Financial Agreement';then TempFinAgreement;">
+                                                    </ng-container>
+
+                                                    <ng-template #TempFinAgreement>
+                                                        {{ row.fundingReference }}
+                                                    </ng-template>
+
+
+                                                    <ng-container *ngIf="column == 'Funding Organization';then temp1;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp1>
+                                                        {{ row.names }}
+                                                    </ng-template>
+
+                                                    <!-- <ng-container *ngIf="column == 'Donor';then temp2;"></ng-container>
+                                                    <ng-template #temp2>
+                                                        {{ row.disbursementReference }}
+                                                    </ng-template> -->
+
+                                                    <ng-container *ngIf="column == 'Date';then temp3;"></ng-container>
+
+                                                    <ng-template #temp3>
+                                                        {{ row.date | date: 'dd/MM/yyyy' }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount';then temp4;"></ng-container>
+
+                                                    <ng-template #temp4>
+                                                        <span style="float: right;"> {{ row.amount}}</span>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Disbursement Currency';then temp7;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp7>
+                                                        {{ row.currency }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount (MZN)';then temp5;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp5>
+                                                        <span style="float: right;"> {{
+                                                            row.disbursementAmountMZN}}</span>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount (USD)';then temp6;">
+                                                    </ng-container>
+
+                                                    <ng-template #temp6>
+                                                        <span style="float: right;"> {{
+                                                            row.disbursementAmountUSD}}</span>
+                                                    </ng-template>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td *ngFor="let column of listofdisbursements;let i = index;">
+                                                    <ng-container *ngIf="column == 'Action';then tot;"></ng-container>
+                                                    <ng-template #tot>
+                                                        <b>Total</b>
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'ID';then tempDum1;"></ng-container>
+                                                    <ng-template #tempDum1>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container
+                                                        *ngIf="column == 'Financial Agreement';then tempDum2;">
+                                                    </ng-container>
+                                                    <ng-template #tempDum2>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container
+                                                        *ngIf="column == 'Funding Organization';then tempDum3;">
+                                                    </ng-container>
+                                                    <ng-template #tempDum3>
+                                                        -
+                                                    </ng-template>
+                                                    <!-- <ng-container *ngIf="column == 'Donor';then tempDum4;"></ng-container>
+                                                    <ng-template #tempDum4>
+                                                        -
+                                                    </ng-template> -->
+                                                    <ng-container *ngIf="column == 'Date';then tempDum5;">
+                                                    </ng-container>
+                                                    <ng-template #tempDum5>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount';then tempDum6;">
+                                                    </ng-container>
+                                                    <ng-template #tempDum6>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container
+                                                        *ngIf="column == 'Disbursement Currency';then tempDum7;">
+                                                    </ng-container>
+                                                    <ng-template #tempDum7>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (MZN)';then totMzn;">
+                                                    </ng-container>
+                                                    <ng-template #totMzn>
+                                                        <span style="float: right;">{{totalAmtMZNDisb | number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (USD)';then totUSD;">
+                                                    </ng-container>
+                                                    <ng-template #totUSD>
+                                                        <span style="float: right;">{{totalAmtUSDDisb | number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="projectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <!-- <button class="btn btn-outline-primary btn-sm mr-2 label-reset" (click)="clearForm5(projectFormDisbursements)">{{ 'common.reset' | translate }}</button> -->
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="viewProjectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="projectId == null && viewProjectId == null">
+                            <mat-action-row class="border-top-none">
+                                <!-- <button class="btn btn-outline-primary btn-sm mr-2 label-reset" (click)="clearForm5(projectFormDisbursements)">{{ 'common.reset' | translate }}</button> -->
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                                <button class="btn btn-outline-success btn-sm label-next mr-2"
+                                    (click)="validateGeneralInformation()">{{ 'common.next' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+                    </div>
+                </mat-expansion-panel>
+                <button class="checkValidation" [hidden]="true"></button>
+            </form>
+        </ng-container>
+
+        <ng-container *ngIf="payment_flag==='false'">
+            <mat-expansion-panel hideToggle [disabled]="true" class="custom-expansion-panel">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h6>{{ 'add-project.sixthExpansion' | translate }}</h6>
+                    </mat-panel-title>
+                    <mat-panel-description>
+                        <mat-icon></mat-icon>
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+            </mat-expansion-panel>
+        </ng-container>
+
+        <ng-container *ngIf="payment_flag==='true'">
+            <form [formGroup]="projectFormPayments">
+                <mat-expansion-panel [expanded]="step === 4" (opened)="setStep(4)" hideToggle
+                    class="custom-expansion-panel">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            <h6>{{ 'add-project.sixthExpansion' | translate }}</h6>
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-amount-paid(mzn)"> {{ 'add-project.amount-paid(mzn)' |
+                                            translate }}</span>
+                                    </mat-label>
+                                    <input matInput formControlName="totalAmountPaidMZN" readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-total-amount-paid(usd)">{{ 'add-project.amount-paid(usd)' |
+                                            translate }}</span>
+                                    </mat-label>
+                                    <input matInput formControlName="totalAmountPaidUSD" readonly>
+                                </mat-form-field>
+                            </div>
+                            <div class="col-xl-4 col-lg-4 col-sm-12 pr-0">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>
+                                        <span class="label-financial-execution-rate">{{
+                                            'add-project.financial-execution-rate' | translate }}</span>
+                                    </mat-label>
+                                    <input matInput formControlName="financialExecutionRate" readonly>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-xl-12 col-lg-12 col-sm-12 pr-0 label-payment-list">
+                                <h6>{{ 'add-project.payment-list' | translate }} </h6>
+                                <div class="table-responsive  mb-4">
+                                    <table class="table table-striped table-bordered mb-2">
+                                        <thead>
+                                            <tr>
+                                                <th *ngFor="let column of paymentList">
+                                                    {{column | translate}}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let pmtRow of paymentDetails;let j = index;">
+                                                <td *ngFor="let column of paymentList;let i = index;">
+
+                                                    <ng-container *ngIf="viewProjectId !== null">
+
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+
+                                                        <ng-template #tem>
+                                                            <button class="btn btn-success btn-sm" placement="top"
+                                                                ngbTooltip="{{'common.view' | translate}}" tabindex="-1"
+                                                                (click)='viewMorePayment(pmtRow.payment_id)'>
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </ng-template>
+
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="viewProjectId == null">
+
+                                                        <ng-container *ngIf="column == 'Action';then tem;">
+                                                        </ng-container>
+
+                                                        <ng-template #tem>
+                                                            <ng-container *ngIf="userPaymentPermission.indexOf(3)!=-1">
+                                                                <button class="btn btn-primary btn-sm mr-1"
+                                                                    placement="top"
+                                                                    ngbTooltip="{{'common.edit' | translate}}"
+                                                                    tabindex="-1"
+                                                                    (click)='moveToSelectedTabPayment(pmtRow.payment_id)'>
+                                                                    <i class="far fa-edit"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="userPaymentPermission.indexOf(3)!=-1">
+                                                                <button class="btn btn-danger btn-sm mr-1"
+                                                                    placement="top"
+                                                                    ngbTooltip="{{'common.delete' | translate}}"
+                                                                    tabindex="-1"
+                                                                    (click)='opensweetalertDeletePayment(pmtRow.payment_id)'>
+                                                                    <i class="fas fa-trash-alt"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                            <ng-container *ngIf="userPaymentPermission.indexOf(3)!=-1">
+                                                                <button class="btn btn-success btn-sm" placement="top"
+                                                                    ngbTooltip="{{'common.view' | translate}}"
+                                                                    tabindex="-1"
+                                                                    (click)='viewMorePayment(pmtRow.payment_id)'>
+                                                                    <i class="fas fa-eye"></i>
+                                                                </button>
+                                                            </ng-container>
+                                                        </ng-template>
+
+                                                    </ng-container>
+
+                                                    <ng-container *ngIf="column == 'ID';then data;"></ng-container>
+
+                                                    <ng-template #data>
+                                                        {{ j+1 }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Financial Agreement';then data1;">
+                                                    </ng-container>
+
+                                                    <ng-template #data1>
+                                                        {{ pmtRow.financialAgreement }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Date';then data2;"></ng-container>
+
+                                                    <ng-template #data2>
+                                                        {{ pmtRow.paymentDate | date: 'dd/MM/yyyy' }}
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount';then data3;"></ng-container>
+
+                                                    <ng-template #data3>
+                                                        <span style="float: right;">{{ pmtRow.amount}}</span>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Payment Currency';then data6;">
+                                                    </ng-container>
+
+                                                    <ng-template #data6>
+                                                        {{ pmtRow.currency }}
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (MZN)';then data4;">
+                                                    </ng-container>
+
+                                                    <ng-template #data4>
+                                                        <span style="float: right;">{{ pmtRow.paymentAmountMZN}}</span>
+                                                    </ng-template>
+
+                                                    <ng-container *ngIf="column == 'Amount (USD)';then data5;">
+                                                    </ng-container>
+
+                                                    <ng-template #data5>
+                                                        <span style="float: right;">{{ pmtRow.paymentAmountUSD}}</span>
+                                                    </ng-template>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td *ngFor="let column of paymentList;let i = index;">
+                                                    <ng-container *ngIf="column == 'Action';then totPmt;">
+                                                    </ng-container>
+                                                    <ng-template #totPmt>
+                                                        <b>Total</b>
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'ID';then tempPmt1;"></ng-container>
+                                                    <ng-template #tempPmt1>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container
+                                                        *ngIf="column == 'Financial Agreement';then tempPmt2;">
+                                                    </ng-container>
+                                                    <ng-template #tempPmt2>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Date';then tempPmt3;">
+                                                    </ng-container>
+                                                    <ng-template #tempPmt3>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount';then tempPmt4;">
+                                                    </ng-container>
+                                                    <ng-template #tempPmt4>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Payment Currency';then tempDum5;">
+                                                    </ng-container>
+                                                    <ng-template #tempDum5>
+                                                        -
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (MZN)';then totMzn;">
+                                                    </ng-container>
+                                                    <ng-template #totMzn>
+                                                        <span style="float: right;">{{totalAmtMZNPmt | number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+                                                    <ng-container *ngIf="column == 'Amount (USD)';then totUSD;">
+                                                    </ng-container>
+                                                    <ng-template #totUSD>
+                                                        <span style="float: right;">{{totalAmtUSDPmt | number :
+                                                            '1.2-2'}}</span>
+                                                    </ng-template>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="projectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="viewProjectId !== null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+
+                        <ng-container *ngIf="projectId == null && viewProjectId == null">
+                            <mat-action-row class="border-top-none">
+                                <button class="btn btn-outline-primary btn-sm mr-2 label-previous"
+                                    (click)="prevStep()">{{ 'common.previous' | translate }}</button>
+                            </mat-action-row>
+                        </ng-container>
+                    </div>
+                </mat-expansion-panel>
+                <button class="checkValidation" [hidden]="true"></button>
+            </form>
+        </ng-container>
+    </mat-accordion>
+    <div class="row">
+        <div class="col-lg-12 mb-2">
+            <div class="example-button">
+                <ng-container *ngIf="projectId == null && viewProjectId == null">
+                    <div class="row">
+                        <div class="col-lg-12 mt-3 mb-2">
+                            <div class="example-button">
+                                <!-- <span [tooltipClass]="(projectForm.invalid ) ? 'custom-class': ''" [ngbTooltip]="( projectForm.invalid) ?  ( 'common.Pleasefillallmandatoryfields' | translate  )  : ('create-envelope.submit' | translate)">
+                                    <button class="btn btn-success mr-2" (click)="opensweetalert()"
+                                        [disabled]="projectForm.invalid">{{ 'common.submit' | translate }}
+                                    </button>
+                                </span> -->
+                                <button class="btn btn-success mr-2"
+                                    (click)="(projectForm.invalid || projectForm2.invalid)?openMandatoryAlert():opensweetalert()">{{
+                                    'common.submit' | translate }}
+                                </button>
+                                <button class="btn btn-primary mr-2" (click)="opensweetalert2()">{{
+                                    'common.save-as-draft' | translate }}</button>
+                                <button class="btn btn-reset mr-2" (click)="clearForm()">{{ 'common.reset' | translate
+                                    }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="projectId !== null">
+                    <div class="row">
+                        <div class="col-lg-12 mb-2">
+                            <div class="example-button">
+                                <button class="btn btn-success mr-2 mt-2"
+                                    (click)="(projectForm.invalid || projectForm2.invalid) ?  openMandatoryAlert():opensweetalert()">{{
+                                    'common.update' | translate }}</button>
+                                <button class="btn btn-primary mr-2 mt-2" (click)="opensweetalert2()">{{
+                                    'common.save-as-draft' | translate }}</button>
+                                <button class="btn btn-reset mr-2 mt-2" (click)="clearForm()"> {{ 'common.reset' |
+                                    translate }}</button>
+                                <button class="btn btn-danger mr-2 mt-2" (click)="moveToProjectTab()">{{ 'common.cancel'
+                                    | translate }}</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="viewProjectId !== null">
+                    <div class="row">
+                        <div class="col-lg-12 mb-2 mt-2">
+                            <div class="example-button">
+                                <button class="btn btn-danger mr-2" (click)="moveToProjectTab()">{{ 'common.cancel' |
+                                    translate }}</button>
+                                <button class="btn btn-primary mr-2" (click)='moveToSelectedTabEdit()'>{{'common.edit' |
+                                    translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-container *ngIf="draftedId !==null">
+                    <div class="row mt-5">
+                        <div class="col-lg-12 mb-6 ">
+                            <div class="example-button">
+                                <button class="btn btn-success mr-2" (click)="publish()">
+                                    Publish
+                                </button>
+                                <button class="btn btn-reset mr-2" (click)="discard()">
+                                    Discard
+                                </button>
+                                <button class="btn btn-danger mr-2"
+                                    (click)="goBack()">{{'add-disbursement-component.cancel' |
+                                    translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-container>

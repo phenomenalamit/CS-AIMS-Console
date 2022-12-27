@@ -1,0 +1,43 @@
+table {
+    width: 100%;
+  }
+  mat-header-cell, mat-cell {
+    justify-content: left;
+  }
+  .left-text {
+    text-align: left;
+  }
+  .action-label{
+    width: 140px;
+  }
+  
+  th{
+    font-weight: bold;
+  }
+  
+.customROW{
+  margin-bottom: 15px;
+}
+.mat-form-field[_ngcontent-vrb-c14] + .mat-form-field[_ngcontent-vrb-c14] {
+  margin-left: 2px;
+}
+.width25 {
+  width: 33%;
+    float: left;
+    padding-right: 17px;
+}
+.example-container2 {
+  height: 400px;
+  overflow: auto;
+}
+.mat-datepicker-input {
+  width: 85%;
+}
+
+mat-icon {
+  position: relative;
+  float: right;
+  top: -3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+}

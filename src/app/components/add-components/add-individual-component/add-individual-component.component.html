@@ -1,0 +1,483 @@
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div class="">
+        <form class="example-form" [formGroup]="individualForm"  autocomplete="off" novalidate (ngSubmit)="createIndividual(individualForm.value)" (change)="createIndividual(individualForm.value)">
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field   appearance="outline" class="mb-form-0">
+                <mat-label ><span class="label-name">{{ 'add-individual.name' | translate }} </span> </mat-label>
+                <input matInput type="text" placeholder="Name " formControlName="names" maxlength="150"  (blur)="chkNameFormat()" (keyup)="validateName(event)" >
+                </mat-form-field>
+                <ng-container *ngIf="nameWhiteSpace == true || nameSpecialChar== true" >
+                    <p style="color: red;"> {{nmValidation}} </p>
+                </ng-container>
+
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-nick-names"> {{ 'add-individual.surname' | translate }}</span></mat-label>
+                <input matInput type="text" placeholder="Surname " maxlength="20" formControlName="nicknames" (blur)="chkSurNameFormat()">
+            </mat-form-field>
+            <ng-container *ngIf="surNameWhiteSpace == true || surSpecialChar ==true">
+                <p style="color: red;"> {{surNmValidation}} </p>
+            </ng-container>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-12 justify-content-end d-flex">
+            <ng-container *ngIf="viewByTableId ==null || draftedId==null">
+                <mat-form-field appearance="outline" class="mb-form-0">
+                    <mat-label><span class="label-view-save-as-draft">{{ 'create-envelope.save-as-draft' |
+                            translate }}</span></mat-label>
+                    <mat-select formControlName="viewSaveAsDraft" (selectionChange)="draftValue($event)" (click)="chkDraft();"
+                    (openedChange)="searchDraft.patchValue('')">
+                        <div class="select-container" *ngIf="draftfilteredOption">
+                            <mat-optgroup>
+                                <mat-form-field style="width:100%;">
+                                    <input autocomplete="off" placeholder="Search" aria-label="Search"
+                                        matInput [formControl]="searchDraft">
+                                    <button [disableRipple]="true" *ngIf="searchDraft.value" matSuffix mat-icon-button
+                                        aria-label="Clear" (click)="searchDraft.patchValue('')">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </mat-optgroup>
+                            <mat-optgroup *ngIf="(draftfilteredOption | async).length == 0">
+                                <div>{{'common.No results found!' | translate}}</div>
+                            </mat-optgroup>
+                        <mat-option *ngFor="let option of draftfilteredOption | async" [value]="option.id" matTooltip=" DraftID-{{option.id}} &nbsp; {{option.timeStramp}}"
+                        [matTooltipPosition]="'right'"
+                        matTooltipClass="custom-tooltip">
+                            DraftID-{{option.id}} &nbsp; {{option.timeStramp}}
+                        </mat-option>
+                        </div>
+                    </mat-select>
+                </mat-form-field>
+                </ng-container>
+            </div>
+        </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-post">  {{ 'add-individual.post' | translate }}</span></mat-label>
+                <input matInput placeholder="Post" maxlength="80" formControlName="post"  (blur)="chkPostFormat()">
+            </mat-form-field>
+            <!-- <ng-container *ngIf="postWhiteSpace == true || postSpecialChar == true"> -->
+                <ng-container *ngIf="postWhiteSpace == true ">
+                <p style="color: red;"> {{postValidation}} </p>
+            </ng-container>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-Organization">{{ 'add-individual.organization' | translate }} </span></mat-label>
+                <!-- <input type="text" placeholder="Pick one" matInput formControlName="organization" [matAutocomplete]="auto">
+                <!-- <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayOrganization.bind(this)">
+                    <mat-option *ngFor="let organizationOptions of filteredOptions | async" [value]="organizationOptions.organizationId">
+                    {{organizationOptions.organizationName}}
+                    </mat-option> -->
+
+                    <!-- <mat-option value="option" (click)="openDialog()"> <i
+                        class="fas fa-plus text-primary label-add-new-donor"></i>&nbsp;{{
+                    'add-individual.add-new-donor' | translate }}
+                </mat-option> -->
+                    <!-- <mat-option *ngFor="let organizationOptions of organizationOptionList" [value]="organizationOptions.organizationId">
+                        {{organizationOptions.organizationName}}
+                    </mat-option> -->
+                <!-- </mat-autocomplete> -->
+                <mat-select (openedChange)="searchOrganization.patchValue('')"  placeholder="Select" formControlName="organization">
+                    <div class="select-container" *ngIf="filteredOptions">
+                        <mat-optgroup>
+                            <mat-form-field style="width:100%;">
+                                <input  autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchOrganization">
+                                <button [disableRipple]="true" *ngIf="searchOrganization.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchOrganization.patchValue('')">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </mat-optgroup>
+                        <mat-optgroup *ngIf="(filteredOptions | async).length == 0">
+                            <div>{{'common.No results found!' | translate}}</div>
+                        </mat-optgroup>
+                        <mat-option *ngFor="let organizationOptions of filteredOptions | async" [value]="organizationOptions.id">
+                            {{organizationOptions.names}}
+                        </mat-option>
+                        <mat-option value="optionAddFundingOrg" (click)="openDialog()"> <i
+                            class="fas fa-plus text-primary label-add-new-donor"></i>&nbsp;{{
+                        'create-envelope.Addorganization' | translate }}
+                    </mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-email1">{{ 'add-individual.email1' | translate }}</span></mat-label>
+                <input matInput type="text" placeholder="Email1 " formControlName="email1" (keyup)="validateEmail1()">
+            </mat-form-field>
+            <ng-container *ngIf="check_email_flag1==false &&    chkEmail1 == true">
+                <mat-error >{{'user-account.invalid' | translate}}  </mat-error>
+            </ng-container>
+            <ng-container *ngIf="check_email_flag2==false &&    chkEmail1 == true">
+                <p style="color: green;"> {{'user-account.valid' | translate}} </p>
+            </ng-container>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-email2">{{ 'add-individual.email2' | translate }}</span></mat-label>
+                <input matInput type="text" placeholder="Email2" formControlName="email2" (keyup)="validateEmail2()">
+            </mat-form-field>
+            <ng-container *ngIf="check_email2_flag1==false &&    chkEmail2 == true">
+                <mat-error >{{'user-account.invalid' | translate}} </mat-error>
+            </ng-container>
+            <ng-container *ngIf="check_email2_flag2==false &&    chkEmail2 == true">
+                <p style="color: green;">{{'user-account.valid' | translate}}</p>
+            </ng-container>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <!-- <strong class="mandatory">*</strong> -->
+                    <mat-form-field appearance="outline" class="mb-form-0 code-width" >
+                        <mat-label>{{ 'add-individual.Code' | translate }}</mat-label>
+                        <!-- <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="code1"
+                            [matAutocomplete]="code1" >
+                        <mat-autocomplete #code1="matAutocomplete" (optionSelected)="getCountryName($event)" panelWidth="270px" [displayWith]="displayPhoneCode1.bind(this)">
+                            <mat-option *ngFor="let option of countryDialingCodeFilteredOption | async" [value]="option.dialingCodeid" [id]="option.countryName">
+                                {{option.dialingCode}}&nbsp;({{option.countryName}})
+                            </mat-option>
+                        </mat-autocomplete> -->
+
+                        <mat-select (openedChange)="searchCode1.patchValue('')" (selectionChange)="getCountryName()" (selectionChange)="enablephone1()"  placeholder="Select" formControlName="code1">
+                            <!-- <header>
+                                <button mat-raised-button (click)="clearPhone1($event)">Clear</button>
+                            </header> -->
+                            <div class="select-container" *ngIf="countryDialingCodeFilteredOption">
+                                <!-- <mat-optgroup>
+                                    <span style="cursor: pointer; align-items: flex-end;" class="mb-form-0 "><mat-icon (click)="clearPhone1($event)">clear</mat-icon></span>
+                                </mat-optgroup> -->
+                                <mat-optgroup>
+                                    <mat-form-field style="width:100%;">
+                                        <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchCode1">
+                                        <button [disableRipple]="true" *ngIf="searchCode1.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchCode1.patchValue('')">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </mat-form-field>
+                                </mat-optgroup>
+                                <mat-optgroup *ngIf="(countryDialingCodeFilteredOption | async).length == 0">
+                                    <div>{{'common.No results found!' | translate}}</div>
+                                </mat-optgroup>
+                                <mat-option *ngFor="let option of countryDialingCodeFilteredOption | async" [value]="option.dialingCodeid">
+                                    {{option.dialingCode}}&nbsp;({{option.countryName}})
+                                </mat-option>
+                            </div>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- <strong class="mandatory">*</strong> -->
+                <mat-form-field appearance="outline" class="mb-form-0 phone-number-width">
+                    <mat-label>{{ 'add-individual.phone1' | translate }}</mat-label>
+                    <input type="number" id="myInput" matInput  formControlName="phone1" placeholder="{{ 'add-individual.phone1' | translate }}" (keyup)="validatePhone()">
+                    <span matSuffix class="cursor_style"><mat-icon (click)="clearPhone1($event)">clear</mat-icon></span>
+                    </mat-form-field> 
+                   
+                    <ng-container *ngIf="check_phone_flag==false">
+                        <mat-error > {{'add-individual.invalidPhone' | translate}}</mat-error>
+                    </ng-container>
+                    <ng-container *ngIf="check_phone1_flag==false">
+                        <p style="color: green;">{{'add-individual.validPhone' | translate}} </p>
+                    </ng-container>
+                    <ng-container *ngIf="phoneMessage=='blank'">
+                    </ng-container>
+
+
+
+    </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+
+                <mat-form-field appearance="outline" class="mb-form-0 code-width">
+                    <mat-label>{{ 'add-individual.Code' | translate }}</mat-label>
+                    <!-- <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="code2"
+                        [matAutocomplete]="code2">
+                    <mat-autocomplete #code2="matAutocomplete" panelWidth="270px" [displayWith]="displayPhoneCode2.bind(this)">
+                        <mat-option *ngFor="let option of countryDialingCodeFilteredOption2 | async" [value]="option.dialingCodeid">
+                            {{option.dialingCode}}&nbsp;({{option.countryName}})
+                        </mat-option>
+                    </mat-autocomplete> -->
+                    <mat-select (openedChange)="searchCode2.patchValue('')" (selectionChange)="enablephone2()" placeholder="Select" formControlName="code2">
+                    <!-- <mat-select (openedChange)="searchCode2.patchValue('')" placeholder="Select" formControlName="code2"> -->
+                        <!-- <header>
+                            <button mat-raised-button (click)="clearPhone2($event)">Clear</button>
+                        </header> -->
+                        <div class="select-container" *ngIf="countryDialingCodeFilteredOption2">
+                            <mat-optgroup>
+                                <mat-form-field style="width:100%;">
+                                    <input  autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchCode2">
+                                    <button [disableRipple]="true" *ngIf="searchCode2.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchCode2.patchValue('')">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </mat-optgroup>
+                            <mat-optgroup *ngIf="(countryDialingCodeFilteredOption2 | async).length == 0">
+                                <div>{{'common.No results found!' | translate}}</div>
+                            </mat-optgroup>
+                            <mat-option *ngFor="let option of countryDialingCodeFilteredOption2 | async" [value]="option.dialingCodeid">
+                                {{option.dialingCode}}&nbsp;({{option.countryName}})
+                            </mat-option>
+                        </div>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-form-0 phone-number-width">
+                <mat-label>{{ 'add-individual.phone2' | translate }}</mat-label>
+                <input type="number" matInput formControlName="phone2" placeholder="{{ 'add-individual.phone2' | translate }}" (keyup)="validatePhone2()">
+                <span matSuffix class="cursor_style"><mat-icon  (click)="clearPhone2($event)">clear</mat-icon></span>
+            </mat-form-field>
+            
+            <!-- <span style="cursor: pointer;"><mat-icon (click)="clearPhone2()">clear</mat-icon></span> -->
+                <ng-container *ngIf="check_phone_flag2==false">
+                    <mat-error > {{'add-individual.invalidPhone' | translate}}</mat-error>
+                </ng-container>
+                <ng-container *ngIf="check_phone1_flag2==false">
+                    <p style="color: green;">{{'add-individual.validPhone' | translate}} </p>
+                </ng-container>
+                <ng-container *ngIf="phoneMessage=='blank'">
+                </ng-container>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0 code-width" >
+                <mat-label>{{ 'add-individual.Code' | translate }}</mat-label>
+                <!-- <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="code3"
+                    [matAutocomplete]="code3" >
+                <mat-autocomplete #code3="matAutocomplete"  panelWidth="270px" [displayWith]="displayFaxCode.bind(this)">
+                    <mat-option *ngFor="let option of countryDialingCodeFilteredOption3 | async" [value]="option.dialingCodeid" [id]="option.countryName">
+                        {{option.dialingCode}}&nbsp;({{option.countryName}})
+                    </mat-option>
+                </mat-autocomplete> -->
+                <mat-select (openedChange)="searchCode3.patchValue('')" (selectionChange)="enablefax()" placeholder="Select" formControlName="code3">
+                    <!-- <header>
+                        <button mat-raised-button (click)="clearFax($event)">Clear</button>
+                    </header> -->
+                    <div class="select-container" *ngIf="countryDialingCodeFilteredOption3">
+                        <mat-optgroup>
+                            <mat-form-field style="width:100%;">
+                                <input  autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchCode3">
+                                <button [disableRipple]="true" *ngIf="searchCode3.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchCode3.patchValue('')">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </mat-optgroup>
+                        <mat-optgroup *ngIf="(countryDialingCodeFilteredOption3 | async).length == 0">
+                            <div>{{'common.No results found!' | translate}}</div>
+                        </mat-optgroup>
+                        <mat-option *ngFor="let option of countryDialingCodeFilteredOption3 | async" [value]="option.dialingCodeid">
+                            {{option.dialingCode}}&nbsp;({{option.countryName}})
+                        </mat-option>
+                    </div>
+                </mat-select>
+            </mat-form-field>
+                <mat-form-field appearance="outline" class="mb-form-0 phone-number-width" >
+                    <mat-label><span class="label-fax">{{ 'add-individual.fax' | translate }}</span></mat-label>
+                    <input type="number" matInput class="" placeholder="Fax"  formControlName="fax" (keyup)="validateFax()">
+                    <span matSuffix class="cursor_style"><mat-icon (click)="clearFax($event)">clear</mat-icon></span>
+                </mat-form-field>
+                <!-- <span style="cursor: pointer;"><mat-icon (click)="clearFax()">clear</mat-icon></span> -->
+                <ng-container *ngIf="check_fax_flag==false">
+                    <mat-error > {{'add-organization.invalidFax' | translate}}</mat-error>
+                </ng-container>
+                <ng-container *ngIf="check_fax1_flag==false">
+                    <p style="color: green;">{{'add-organization.validFax' | translate}} </p>
+                </ng-container>
+                <ng-container *ngIf="phoneMessage=='blank'">
+                </ng-container>
+
+
+        </div>
+
+
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-address"> {{ 'add-individual.address' | translate }}</span></mat-label>
+                <input matInput class="" placeholder="Give your Address" maxlength="300" formControlName="address" (blur)="chkAdrs()">
+            </mat-form-field>
+            <ng-container *ngIf="adrsWhiteSpace == true || adrsSpecialChar==true">
+                <p style="color: red;"> {{adrsValidation}} </p>
+            </ng-container>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-city">{{ 'add-individual.city' | translate }}</span></mat-label>
+                <input matInput class=""  placeholder="city" maxlength="50" formControlName="city" (blur)="chkCity()">
+            </mat-form-field>
+            <ng-container *ngIf="cityWhiteSpace == true || citySpecialChar==true">
+                <p style="color: red;"> {{cityValidation}} </p>
+            </ng-container>
+        </div>
+
+
+
+        <!-- <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-city">{{ 'add-individual.city' | translate }} </span></mat-label>
+                <input type="text" placeholder="Pick one" matInput formControlName="city" [matAutocomplete]="auto2">
+            <mat-autocomplete #auto2="matAutocomplete">
+            <mat-option *ngFor="let cityoptions of organizationCityfilteredOption | async" [value]="cityoptions.cityName">
+                {{cityoptions.cityName}}
+            </mat-option>
+            </mat-autocomplete>
+            </mat-form-field>
+
+        </div> -->
+
+
+        <!-- <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-country">{{ 'add-individual.country' | translate }}</span></mat-label>
+                <input type="text" placeholder="Pick one" matInput formControlName="country" [matAutocomplete]="auto1">
+            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayCountry.bind(this)">
+            <!-- <mat-option *ngFor="let countryoptions of countryfilteredOptions | async" [value]="countryoptions">
+                {{countryoptions}}
+            </mat-option> -->
+            <!--<mat-option *ngFor="let countryoptions of countryfilteredOption | async" [value]="countryoptions.countryId">
+                {{countryoptions.countryName}}
+            </mat-option>
+            </mat-autocomplete>
+            </mat-form-field>
+        </div> -->
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-country">{{ 'add-individual.country' | translate }}</span></mat-label>
+                <!-- <input type="text" placeholder="Pick one" matInput formControlName="country" [matAutocomplete]="auto1">
+            <mat-autocomplete #auto1="matAutocomplete" [displayWith]="displayCountry.bind(this)">-->
+            <!-- <mat-option *ngFor="let countryoptions of countryfilteredOptions | async" [value]="countryoptions">
+                {{countryoptions}}
+            </mat-option> -->
+            <!-- <mat-option *ngFor="let countryoptions of countryfilteredOption | async" [value]="countryoptions.countryId">
+                {{countryoptions.countryName}}
+            </mat-option>
+            </mat-autocomplete> -->
+            <mat-select (openedChange)="searchCountry.patchValue('')"  placeholder="Select" formControlName="country">
+                <div class="select-container" *ngIf="countryfilteredOption">
+                    <mat-optgroup>
+                        <mat-form-field style="width:100%;">
+                            <input  autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchCountry">
+                            <button [disableRipple]="true" *ngIf="searchCountry.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchCountry.patchValue('')">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </mat-optgroup>
+                    <mat-optgroup *ngIf="(countryfilteredOption | async).length == 0">
+                        <div>{{'common.No results found!' | translate}}</div>
+                    </mat-optgroup>
+                    <mat-option *ngFor="let countryoptions of countryfilteredOption | async" [value]="countryoptions.countryId">
+                        <ng-container *ngIf="countryoptions.difference<=7 || countryoptions.updateDifference<=7">
+                            <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                        </ng-container>
+                        {{countryoptions.countryName}}
+                    </mat-option>
+                </div>
+            </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-other-contact-details">{{ 'add-individual.otherContact' | translate }}</span></mat-label>
+                <input matInput  formControlName="othercontacts" maxlength="300" placeholder="Contact Details"  (blur)="chkOtherContactDtls()" >
+            </mat-form-field>
+            <ng-container *ngIf="otherContactWhiteSpace == true || otherContactSpecialChar== true">
+                <p style="color: red;"> {{otherContactValidation}} </p>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- <ng-container *ngIf="EditInd!=='EditInd' && ViewMoreInd!=='ViewMoreInd'"> -->
+        <ng-container *ngIf="id ==null && viewByTableId== null && draftedId==null">
+        <div class="row">
+            <div class="col-lg-12 mt-3 mb-2">
+                <div class="example-button">
+                    <!-- <button class="btn btn-success mr-2" (click)="(individualForm.invalid || check_email_flag1==false || check_email2_flag1==false || check_phone_flag==false || check_phone_flag2==false|| check_fax_flag==false || phoneChk==true || faxChk==true || phone2Chk==true || nameWhiteSpace==true || surNameWhiteSpace==true || postWhiteSpace==true || adrsWhiteSpace==true ||
+                    cityWhiteSpace==true || otherContactWhiteSpace== true || nameSpecialChar== true || surSpecialChar==true || postSpecialChar==true ||
+                    adrsSpecialChar==true ||citySpecialChar==true || otherContactSpecialChar==true) ?  openMandatoryAlert():opensweetalert()"
+                    >{{ 'common.submit' | translate }}</button> -->
+                    <button class="btn btn-success mr-2" (click)="(individualForm.invalid || check_email_flag1==false || check_email2_flag1==false || check_phone_flag==false || check_phone_flag2==false|| check_fax_flag==false || nameWhiteSpace==true || surNameWhiteSpace==true || postWhiteSpace==true || adrsWhiteSpace==true ||
+                    cityWhiteSpace==true || otherContactWhiteSpace== true || phoneChk==true || phone2Chk==true || faxChk==true || nameSpecialChar== true || surSpecialChar==true || postSpecialChar==true ||
+                    adrsSpecialChar==true ||citySpecialChar==true || otherContactSpecialChar==true) ?  openMandatoryAlert():opensweetalert()"
+                    >{{ 'common.submit' | translate }}</button>
+                    <!-- <button class="btn btn-success mr-2" (click)="(individualForm.invalid || check_email_flag2==true || check_email2_flag1==false || check_phone_flag==false || check_phone_flag2==false || check_fax_flag==false) ?  openMandatoryAlert():opensweetalert()"
+                        >{{ 'common.submit' | translate }}</button> -->
+                    <button class="btn btn-primary mr-2" (click)="opensweetalert2()" >
+                        {{ 'common.save-as-draft' | translate }}</button>
+                    <button class="btn btn-reset mr-2" (click)="clearForm(individualForm)">{{ 'common.reset' | translate }}</button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <!-- <ng-container *ngIf="EditInd=='EditInd'"> -->
+    <ng-container *ngIf="id!==null">
+    <div class="row">
+                <div class="col-lg-12 mt-3 mb-2">
+                    <div class="example-button">
+
+                        <!-- <button class="btn btn-success mr-2" (click)="(individualForm.invalid ||check_name_flag==false || check_email_flag2==true || check_email2_flag1==false || check_phone_flag==false || check_phone_flag2==false || check_fax_flag==false) ?  openMandatoryAlert():opensweetalertUpdate()" -->
+
+                            <button class="btn btn-success mr-2" (click)="(individualForm.invalid || check_email_flag1==false || check_email2_flag1==false || check_phone_flag==false || check_phone_flag2==false|| check_fax_flag==false  || phoneChk==true || faxChk==true || phone2Chk==true) ?  openMandatoryAlert():opensweetalertUpdate()"
+                    >{{ 'common.update' | translate }}</button>
+
+                            <!-- <button class="btn btn-success mr-2" (click)="(disbursementForm.invalid || check_swift_flag==false || check_swiftrecv_flag==false || check_Nib1_flag==false) ?  openMandatoryAlert():openSweetalertUpdate()"
+                            >{{'common.update' | translate}}</button> -->
+
+                            <button class="btn btn-primary mr-2" (click)="opensweetalert2()"
+                            >{{ 'common.save-as-draft' | translate }}</button>
+                        <button class="btn btn-reset mr-2" (click)="clearForm(individualForm)">{{ 'common.reset' | translate }}</button>
+                        <button class="btn btn-danger mr-2" (click)="moveToIndividualTab()">{{ 'common.cancel' | translate }}</button>
+                </div>
+            </div>
+            </div>
+        </ng-container>
+    <!-- <ng-container *ngIf="ViewMoreInd=='ViewMoreInd'"> -->
+        <ng-container *ngIf="viewByTableId !==null">
+    <div class="row">
+        <div class="col-lg-12 mt-3 mb-2">
+            <div class="example-button">
+                <button class="btn btn-danger mr-2" (click)="moveToIndividualTab()">{{ 'common.cancel' | translate }}</button>
+                <button class="btn btn-primary mr-2"  (click)='moveToSelectedTabEdit()'>Edit</button>
+            </div>
+        </div>
+    </div>
+    </ng-container>
+    <ng-container *ngIf="draftedId !==null">
+      <div class="row mt-5">
+          <div class="col-lg-12 mb-6 ">
+              <div class="example-button">
+                    <button class="btn btn-success mr-2" (click)="publish()">
+                      Publish
+                    </button>
+                    <button class="btn btn-reset mr-2" (click)="discard()">
+                      Discard
+                    </button>
+                  <button class="btn btn-danger mr-2"
+                      (click)="goBack()">{{'add-disbursement-component.cancel' |
+                      translate}}</button>
+              </div>
+          </div>
+      </div>
+  </ng-container>
+    </form>
+    </div>
+
+

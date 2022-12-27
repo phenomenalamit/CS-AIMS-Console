@@ -1,0 +1,78 @@
+<!-- <ng-container
+    *ngIf="usergroup==='dngdpadmin' ||  usergroup=='dngdpteam' || usergroup=='partner' || usergroup=='dntcef'"> -->
+    <div class="container-fluid">
+        <div class="innerbody">
+
+            <ng-container *ngIf="editId !==null">
+
+                <ng-container *ngIf="num===0 || num===undefined">
+
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-envelope" aria-current="page"> {{'field-management.Adminstration' | translate}}</li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{
+                                            'folder-str.edit-folderStr' | translate }}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><span class="indicates">{{ 'create-envelope.indicates-fields-are-mandatory'
+                                                | translate }}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-container>
+
+
+                <ng-container *ngIf="num===1">
+
+                </ng-container>
+                        <app-folder-structure-adminstration></app-folder-structure-adminstration>
+
+            </ng-container>
+
+            <ng-container *ngIf="viewId !==null">
+
+                <ng-container *ngIf="num===0 || num===undefined">
+
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-envelope" aria-current="page"> {{'field-management.Adminstration' | translate}}</li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{
+                                            'folder-str.view-folder-str-details' | translate }}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToPreviousTab()'><i
+                                                    class="fas fa-arrow-left"></i></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+                        <app-folder-structure-adminstration></app-folder-structure-adminstration>
+                  
+            </ng-container>
+
+        </div>
+    </div>
+<!-- </ng-container> -->

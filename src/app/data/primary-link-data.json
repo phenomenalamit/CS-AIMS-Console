@@ -1,0 +1,112 @@
+{
+    "primaryLink":[
+    {
+        "Primary_Link" : "Create Envelope",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Envelope",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Create Funding",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Funding",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "Create Project",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Project",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "Create Disbursement",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Disbursement",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Create Payment",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Payment",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Create Organization",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Organization",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Create Individual",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Individual",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Create Monitoring",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View Monitoring",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Create User Account",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "View User Account",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "User Type",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "Assign Group",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "User Mapping",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Manage User",
+        "Link_Status":"Active"
+    },
+    {
+        "Primary_Link" : "Global Link",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Primary_Link" : "Primary Link",
+        "Link_Status":"Active"
+    }
+
+    ]
+
+}

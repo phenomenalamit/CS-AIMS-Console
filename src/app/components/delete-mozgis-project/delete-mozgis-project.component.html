@@ -1,0 +1,63 @@
+<div class="container-fluid">
+    <div class="innerbody">
+  
+    <ng-container *ngIf="num===0 || num===undefined">
+  
+    <div class="breadcumb">
+     <div class="row">
+         <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item active label-create-envelope" aria-current="page">{{'deactivate-project-in-mozgis.Adminstration' | translate}}</li>
+  
+                  <li class="breadcrumb-item active label-envelope" aria-current="page">{{'deactivate-project-in-mozgis.Deactivate Project Mozgis' | translate}}</li>
+                </ol>
+              </nav>
+         </div>
+         <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+                <ul class="iconics-buttons">
+                   <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+  
+                    <!-- <li><a href="#" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Delete"><i class="far fa-trash-alt"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+                </ul>
+                </div>
+         </div>
+     </div>
+
+     </div>
+
+
+    </ng-container>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+        <mat-tab label="Create User Mapping" class="label-create-userMapping">
+          <div>
+          <form class="example-form" [formGroup]="projectForm" >
+            <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-Module">{{'deactivate-project-in-mozgis.Project' | translate}}</span></mat-label>
+                <mat-select placeholder="Select Project" formControlName="project_formControl">
+                  <mat-option *ngFor="let project of projectList" [value]="project.projectId">
+                    {{project.projectTitle }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            </div>
+            <div class="row mt-2">
+                <div class="col-sm-12 button-align">
+                  <button class="btn btn-outline-primary btn-sm mt-1 label-reset " (click)="deleteRecord()">Delete Project</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </mat-tab>
+</mat-tab-group>
+
+
+

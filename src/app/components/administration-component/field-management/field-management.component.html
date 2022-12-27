@@ -1,0 +1,318 @@
+<!-- HTML page for code List Management -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+  <div class="container-fluid">
+    <div class="innerbody">
+  
+      <ng-container *ngIf="num===0 || num===undefined">
+  
+        <div class="breadcumb">
+          <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item active label-create-envelope" aria-current="page">
+                    {{'field-management.Adminstration' | translate}}</li>
+  
+                  <li class="breadcrumb-item active label-envelope" aria-current="page">{{'field-management.Field
+                    Management' | translate}}</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                <ul class="iconics-buttons">
+                  <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+  
+                  <!-- <li><a href="#" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Delete"><i class="far fa-trash-alt"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+  
+          <!-- <h1 class="label-userMapping">User Mapping</h1> -->
+        </div>
+      </ng-container>
+  
+  
+  
+  
+      <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+        <mat-tab label="Create User Mapping" class="label-create-userMapping">
+          <div>
+            <form class="example-form" [formGroup]="fieldManagementForm">
+              <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                  <strong class="mandatory">*</strong>
+                  <mat-form-field appearance="outline" class="mb-form-0"  (click)="getValueByLang()">
+                    <mat-label><span class="label-Module">{{'field-management.Module' | translate}}</span></mat-label>
+                    <mat-select placeholder="Select Module" formControlName="Module_formControl"
+                      (selectionChange)="chkfieldChange();ModuleChangeAction()">
+                      <ng-container *ngIf="browserLang== 'en'"> 
+                      <mat-option *ngFor="let findings of findingsList" [value]="findings.findingsName">
+                        {{findings.findingsName }}</mat-option>
+                        </ng-container>
+                        <ng-container *ngIf="browserLang== 'pt'"> 
+                          <mat-option *ngFor="let findings of findingOptionPt" [value]="findings.findingsName">
+                            {{findings.findingsName }}</mat-option>
+                          </ng-container>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <ng-container *ngIf="select_options_for_finding_hdn_flag==true">
+                </ng-container>
+                <ng-container *ngIf="select_options_for_finding_hdn_flag==false">
+                  <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <strong class="mandatory">*</strong>
+                    <mat-form-field appearance="outline" class="mb-form-0"  (click)="getValueByLang();ModuleChangeAction()">
+                      <mat-label><span class="label-select-options-Fields">{{'field-management.Fields' |
+                          translate}}</span>
+                      </mat-label>
+                      <mat-select placeholder="Select Module" formControlName="Fields_FormControl"
+                        (selectionChange)="clearSearch();FieldChangeAction();">
+                         <ng-container *ngIf="browserLang== 'en'"> 
+                        <mat-option *ngFor="let option of findingOptionList" [value]="option">{{ option }}
+                        </mat-option>
+                      </ng-container>
+                      <ng-container *ngIf="browserLang== 'pt'">
+                        <mat-option *ngFor="let option of findingOptionListPt" [value]="option">{{ option }}
+                        </mat-option>
+                        <!-- <mat-option value="Purpose DAC-CRS"> Objectivo DAC-CRS</mat-option>
+                        <mat-option value="Active"> Moeda</mat-option> -->
+                      </ng-container>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </ng-container>
+              </div>
+              <ng-container *ngIf="select_options_for_field_hdn_flag==true">
+              </ng-container>
+              <ng-container *ngIf="select_options_for_field_hdn_flag==false">
+                <div class="row mt-2">
+                  <div class="col-sm-12 button-align">
+                    <button class="btn btn-outline-primary btn-sm mt-1 label-reset " (click)="addNew()">{{'field-management.Add New Item' | translate}}</button>
+                  </div>
+                  <mat-form-field class="input-filter"  style="margin-left: 17px;">
+                  <input matInput type="text" (keyup)="chkLength()" id="myInput" autocomplete="off" placeholder="{{'common.Filter' | translate}}">
+                </mat-form-field>
+                <div style="margin-top: 16px;margin-left: 16px;">
+                  <button class="btn btn-success btn-sm mt-1 " (click)="myFunction(this)">{{'common.Filter' | translate}}</button>
+                </div>
+                </div>
+                <!-- <mat-form-field class="input-filter">
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{ 'common.Filter' | translate }}" id="filter">
+                  </mat-form-field> -->
+                <div class="row">
+                  <div class="col-sm-12">
+  
+                    <table class="table table-striped table-bordered" formArrayName="tableData" id="myTable">
+                      <thead>
+                        <tr>
+                          <th class="edit-width">{{'field-management.Action' | translate}}</th>
+                          <th *ngFor="let column of headers">
+                            <!-- {{column | translate}} -->
+                            <!-- <ng-container *ngIf="dacCodeShow==true">
+                            <ng-container *ngIf="column=== 'DacCrsCode'">
+                              {{'field-management.DAC_CRS_CODE' | translate}}
+                            </ng-container>
+                          </ng-container> -->
+                            <ng-container *ngIf="column=== 'Input Field Element(En)'">
+                              {{'field-management.Input Field Element(En)' | translate}}
+                            </ng-container>
+                            <ng-container *ngIf="column=== 'Input Field Element(Pt)'">
+                              {{'field-management.Input
+                                        Field Element(Pt)' | translate}}
+                            </ng-container>
+                            <ng-container *ngIf="column=== 'Link Status'">
+                              {{'field-management.Link Status' |
+                              translate}}
+                            </ng-container>
+                          </th>
+                        </tr>
+                      </thead>
+  
+                      <tbody>
+                        <tr *ngFor="let row of fieldManagementForm.get('tableData')['controls']; let j = index">
+                          <ng-container *ngIf="isReadOnly[j]===true">
+  
+                            <td>
+                              <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                                <a popover-trigger="'mouseenter'" uib-popover="Delete" class="btn btn-danger btn-sm"
+                                  (click)="editRow(j)" ngbTooltip="{{'common.edit' | translate}}">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </a>
+                              </ng-container>
+                            </td>
+  
+  
+                            <td *ngFor="let column of headers">
+  
+                              <ng-container [formGroupName]="j">
+  
+                                <input hidden="true" matInput class="form-control" formControlName="id">
+                                <!-- <ng-container *ngIf=" column === 'DacCrsCode'; then dacCrs;"> </ng-container>
+                                  <ng-template #dacCrs>
+                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                      <mat-label><span class="label-enter-Input Field Element(En)"> {{'field-management.DAC_CRS_CODE' | translate}}</span> </mat-label>
+                                      <input type="text" matInput autocomplete="off" formControlName="dacCode" />
+                                    </mat-form-field>
+                                  </ng-template> -->
+                               
+                                <ng-container *ngIf=" column === 'Input Field Element(En)'; then loggedIn;">
+                                </ng-container>
+                                <ng-template #loggedIn>
+                                  <mat-form-field class="mb-form-0" [appearance]="fill">
+                                    <mat-label><span class="label-enter-Input Field Element(En)">{{'field-management.Input Field Element(En)' | translate}}</span> </mat-label>
+                                   <ng-container *ngIf="dacCodeShow==true">
+                                    <input type="number" matInput autocomplete="off"  (change)="changedaccrsCode(j);" formControlName="dacCode" />&nbsp;-&nbsp;
+                                  </ng-container>
+                                    <input type="text" matInput autocomplete="off" formControlName="inputEn" />
+                                  </mat-form-field>
+                                </ng-template>
+                                <ng-container *ngIf=" column === 'Input Field Element(Pt)'; then loggedIn1;">
+                                </ng-container>
+                                <div style="display: inline;">
+                                <ng-template #loggedIn1>
+                                  <mat-form-field class="mb-form-0" [appearance]="fill">
+                                    <mat-label><span class="label-enter-Input Field Element(Pt)">{{'field-management.Input
+                                        Field Element(Pt)' | translate}}</span> </mat-label>
+                                        <ng-container *ngIf="dacCodeShow==true">
+                                        <input type="number" matInput autocomplete="off"  (change)="changedaccrsCode(j);" formControlName="dacCode" style="width: 65px;"/>
+                                        <p style="display: inline;">&nbsp;-&nbsp;</p>
+                                    </ng-container>
+                                        <input type="text" matInput autocomplete="off" formControlName="inputPt"/>
+                                  </mat-form-field>
+                                </ng-template>
+                              </div>
+  
+                                <ng-container *ngIf=" column === 'Link Status'; then loggedIn2;">
+                                </ng-container>
+                                <ng-template #loggedIn2>
+                                  <mat-form-field class="mb-form-0" [appearance]="fill">
+                                    <mat-label><span class="label-enter-Link Status">{{'field-management.Link Status' |
+                                        translate}}</span> </mat-label>
+                                    <ng-container *ngIf="editing[j]==false">
+                                      <!-- <input type="text" matInput [readonly]="isReadOnly[j]" autocomplete="off"
+                                        formControlName="linkStatus" /> -->
+                                        <mat-select formControlName="linkStatus">
+                                          <mat-option value="Active"> {{'field-management.Active' | translate}}</mat-option>
+                                          <mat-option value="Inactive">{{'field-management.Inactive' | translate}}
+                                          </mat-option>
+                                        </mat-select>
+                                    </ng-container>
+                                    <ng-container *ngIf="editing[j]==true">
+                                      <mat-select formControlName="linkStatus">
+                                        <mat-option value="Active"> {{'field-management.Active' | translate}}</mat-option>
+                                        <mat-option value="Inactive">{{'field-management.Inactive' | translate}}
+                                        </mat-option>
+                                      </mat-select>
+                                    </ng-container>
+                                  </mat-form-field>
+                                </ng-template>
+                              </ng-container>
+                            </td>
+                          </ng-container>
+                          <ng-container *ngIf="isReadOnly[j]===false">
+                            <td style="white-space: nowrap;">
+                              <a popover-trigger="'mouseenter'" uib-popover="Delete" class="btn btn-success btn-sm mr-2"
+                                (click)="saveRow(j)">
+                                <i class="fa fa-save" aria-hidden="true" ngbTooltip="{{'common.save' | translate}}"></i>
+                              </a>
+  
+                              <a popover-trigger="'mouseenter'" uib-popover="Delete" class="btn btn-danger btn-sm"
+                                (click)="cancelRow(j)" ngbTooltip="{{'common.cancel' | translate}}">
+                                <i class="fa fa-window-close" aria-hidden="true"></i>
+                              </a>
+                            </td>
+  
+                            <td *ngFor="let column of headers">
+  
+                              <ng-container [formGroupName]="j">
+  
+                                <input hidden="true" matInput class="form-control" formControlName="id">
+                                <!-- <ng-container *ngIf=" column === 'DacCrsCode'; then dacCrs;"></ng-container>
+                                  <ng-template #dacCrs>
+                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                      <mat-label><span class="label-enter-Input Field Element(En)"> {{'field-management.DAC_CRS_CODE' | translate}}</span> </mat-label>
+                                      <input type="text" matInput autocomplete="off" formControlName="dacCode" />
+                                    </mat-form-field>
+                                  </ng-template> -->
+                                
+                                <ng-container *ngIf=" column === 'Input Field Element(En)'; then loggedIn;">
+                                </ng-container>
+                                <ng-template #loggedIn>
+                                  <ng-container *ngIf="dacCodeShow==true">
+                                  <mat-form-field class="mb-form-0" style="width: 212px;" [appearance]="fill">
+                                        <input type="number" matInput autocomplete="off" (change)="changedaccrsCode(j);" formControlName="dacCode" />
+                                        <span>&nbsp;-&nbsp;</span>
+                                  </mat-form-field>
+                                </ng-container>
+                                  
+                                  <!-- <mat-form-field class="mb-form-0" [appearance]="fill"  style="margin-left: 226px;margin-top: -69px;"> -->
+                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                    <mat-label><span class="label-enter-Input Field Element(En)">{{'field-management.Input
+                                      Field Element(En)' | translate}}</span> </mat-label>
+                                        <input type="text" matInput autocomplete="off" formControlName="inputEn" />
+                                  </mat-form-field>
+                                </ng-template>
+                                <ng-container *ngIf=" column === 'Input Field Element(Pt)'; then loggedIn1;">
+                                </ng-container>
+                                <ng-template #loggedIn1>
+                                  <div style="float: left;">
+                                    <ng-container *ngIf="dacCodeShow==true">
+                                  <mat-form-field class="mb-form-0" style="width: 212px;" [appearance]="fill">
+                                    <input type="number" matInput autocomplete="off"  (change)="changedaccrsCode(j);" formControlName="dacCode" />
+                                        <span> &nbsp;-&nbsp;</span>
+                                    </mat-form-field>
+                                  </ng-container>
+                                    <!-- <mat-form-field class="mb-form-0" [appearance]="fill" style="margin-left: 226px;margin-top: -69px;"> -->
+                                      <mat-form-field class="mb-form-0" [appearance]="fill">
+                                      <mat-label><span class="label-enter-Input Field Element(Pt)">{{'field-management.Input
+                                        Field Element(Pt)' | translate}}</span> </mat-label>
+                                        <input type="text" matInput autocomplete="off" formControlName="inputPt" />
+                                  </mat-form-field>
+                                </div>
+                                </ng-template>
+  
+                                <ng-container *ngIf=" column === 'Link Status'; then loggedIn2;">
+                                </ng-container>
+                                <ng-template #loggedIn2>
+                                  <mat-form-field class="mb-form-0" [appearance]="fill">
+                                    <mat-label><span class="label-enter-Link Status">{{'field-management.Link Status' |
+                                        translate}}</span> </mat-label>
+                                    <ng-container *ngIf="editing[j]==false">
+                                      <input type="text" matInput [readonly]="isReadOnly[j]" autocomplete="off"
+                                        formControlName="linkStatus" />
+                                    </ng-container>
+                                    <ng-container *ngIf="editing[j]==true">
+                                      <mat-select formControlName="linkStatus">
+                                        <mat-option value="Active">{{'field-management.Active' | translate}}</mat-option>
+                                        <mat-option value="Inactive">{{'field-management.Inactive' | translate}}
+                                        </mat-option>
+                                      </mat-select>
+                                    </ng-container>
+                                  </mat-form-field>
+  
+                                </ng-template>
+                              </ng-container>
+                            </td>
+                          </ng-container>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </ng-container>
+            </form>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</ng-container>

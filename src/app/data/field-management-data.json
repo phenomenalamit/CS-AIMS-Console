@@ -1,0 +1,72 @@
+{
+    "field_Management_Data_Json":[
+    {
+        "Id":"1",
+        "Field" : "Purpose-DAC-CRS",
+        "Input_Field_Element_En":"110 - Education",
+        "Input_Field_Element_Pt":"110 - Educação",
+        "Link_Status":"Active"
+    },
+    {
+        "Id":"2",
+        "Field" : "Financing Situation",
+        "Input_Field_Element_En":"Identification / Planning",
+        "Input_Field_Element_Pt":"Identificação / Planejamento",
+        "Link_Status":"Active"
+    }
+    ,
+    {
+        "Id":"3",
+        "Field" : "Project Situation",
+        "Input_Field_Element_En":"Identification / Planning",
+        "Input_Field_Element_Pt":"Identificação / Planejamento",
+        "Link_Status":"Active"
+    },
+    {
+        "Id":"4",
+        "Field" : "Project Title",
+       "Input_Field_Element_En":"Mozambique Infrastructure Project",
+       "Input_Field_Element_Pt":"Projecto de Infraestrutura de Moçambique",
+        "Link_Status":"Active"
+    },
+    {
+        "Id":"5",
+        "Field" : "Financing Agreement",
+        "Input_Field_Element_En":"Financing 001 - Health",
+        "Input_Field_Element_Pt":"Financiamento 001 - Saúde",
+        "Link_Status":"Active"
+    },
+    {
+        "Id":"6",
+        "Field" : "Category",
+        "Input_Field_Element_En":"Donor",
+        "Input_Field_Element_Pt":"Doador",
+        "Link_Status":"Active"
+    },
+    {
+        "Id":"7",
+        "Field" : "Organization",
+        "Input_Field_Element_En":"World Bank",
+        "Input_Field_Element_Pt":"Banco Mundial",
+        "Link_Status":"Active"
+    },
+    {
+        "Id":"8",
+        "Field" : "Project Name",
+        "Input_Field_Element_En":"Mozambique Infrastructure Project",
+        "Input_Field_Element_Pt":"Projecto de Infraestrutura de Moçambique",
+        "Link_Status":"Active"
+
+    }
+    ,
+    {
+        "Id":"9",
+        "Field" : "Type Of User",
+        "Input_Field_Element_En":"DNGDP Data Administrator",
+        "Input_Field_Element_Pt":"Administrador de dados DNGDP",
+        "Link_Status":"Active"
+    }
+   
+    ]
+
+}

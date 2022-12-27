@@ -1,0 +1,483 @@
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div class="container-fluid">
+        <div class="innerbody">
+            <div class="breadcumb">
+                <div class="row">
+                    
+                
+                </div>
+                <div>
+                    <h6>{{'assign-Group.Set Default Permission' | translate}}</h6>
+                </div>
+                <form class="form" [formGroup]="assignGroupForm" >
+                <div class="">
+                    
+                    <div class="row">
+                        <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+                            <strong class="mandatory">*</strong>
+                            <mat-form-field appearance="outline">
+                            <mat-label><span class="label-project-situation">{{'add-user-mapping.select-user' | translate}}</span></mat-label>
+                            <mat-select (openedChange)="searchUsername.patchValue('')" class="" formControlName="username" (selectionChange)="onSetUserName($event);">
+                              <div class="select-container" *ngIf="userMappingListFilteredOption">
+                                <mat-optgroup>
+                                    <mat-form-field style="width:100%;">
+                                        <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchUsername">
+                                        <button [disableRipple]="true" *ngIf="searchUsername.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchUsername.patchValue('')">
+                                            <mat-icon >close</mat-icon>
+                                        </button>
+                                    </mat-form-field>
+                                </mat-optgroup>
+                                <mat-optgroup *ngIf="(userMappingListFilteredOption | async).length == 0">
+                                    <div>{{'common.No results found!' | translate}}</div>
+                                </mat-optgroup>
+                                <mat-option *ngFor="let userNames of userMappingListFilteredOption | async" [value]="userNames">
+                                    {{userNames.userName}}
+                                </mat-option>
+                              </div>
+                            </mat-select>
+                            </mat-form-field>
+                        </div>
+                        <ng-container *ngIf="userPermissionFlag==true ; then defPermission"></ng-container>
+                        <ng-template #defPermission>
+                        <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                            <strong class="mandatory">*</strong>
+                            <mat-form-field appearance="fill">
+                                <mat-label><span class="label-usertype" >{{'assign-Group.Set Default Permission for:' | translate}}</span></mat-label>
+                                <mat-select placeholder="Select Default Permission" formControlName="defaultPermission"
+                                (selectionChange)="selectUser()">
+                                    <mat-option *ngFor="let userTypeIndicator of userMappingList" [value]="userTypeIndicator.userTypeId">
+                                        {{userTypeIndicator.userType }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+                    </ng-template>
+                    </div>
+                    <ng-container *ngIf="permissions=='true'">
+                        <div class="row form-group">
+                            <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" formArrayName="tableData">
+                                <thead>
+                                    <tr>
+                                        <th *ngFor="let column of headers">
+                                            <ng-container *ngIf="column==='Module'">
+                                                {{'assign-Group.Primary Link' | translate}}
+                                            </ng-container>
+                                            <ng-container *ngIf="column==='Access Permission'">
+                                                {{'assign-Group.Access Permission' | translate}}
+                                            </ng-container>
+                                        </th>
+                                    </tr>
+                                </thead>
+                
+                                <tbody>
+                                    <tr *ngFor="let row of assignGroupForm.get('tableData')['controls']; let j = index">
+                                        <td *ngFor="let column of headers">
+                                            <ng-container [formGroupName]="j">
+                                                <ng-container *ngIf=" column === 'Module'; then loggedIn2;"></ng-container>
+                                                <ng-template #loggedIn2>
+                                                    <ng-container *ngIf="browserLang == 'en'">
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Envelope'">
+                                                            {{'menu.Create Envelope' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Envelope List'">
+                                                            {{'create-envelope.view-envelope' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Financial Agreement'">
+                                                            {{'funding-component.create-funding' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Financial Agreement'">
+                                                            {{'menu.View Financial Agreement' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Project'">
+                                                            {{'menu.Create Project' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Project List'">
+                                                            {{'menu.View Project List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Disbursement'">
+                                                            {{'menu.Create Disbursement' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Disbursement List'">
+                                                            {{'menu.View Disbursement List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Payment'">
+                                                            {{'menu.Create Payment' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Payment List'">
+                                                            {{'menu.View Payment List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Organization'">
+                                                            {{'menu.Create Organization' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Organization List'">
+                                                            {{'menu.View Organization List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Individual'">
+                                                            {{'menu.Create Individual' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Individual List'">
+                                                            {{'menu.View Individual List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Monitoring'">
+                                                            {{'menu.Create Monitoring' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Monitoring'">
+                                                            {{'menu.View Monitoring' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Type'">
+                                                            {{'menu.User Type' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Access Management'">
+                                                            {{'menu.Assign Group' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Mapping'">
+                                                            {{'menu.User Mapping' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Account'">
+                                                            {{'menu.User Account' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Code List Management'">
+                                                            {{'menu.Field Management' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Exchange Rate Administration'">
+                                                            {{'menu.Exchange Rate Administration' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Suggestion Administration'">
+                                                            {{'menu.feedback administration' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Folder Structure'">
+                                                            {{'menu.folderStr' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Folder Structure'">
+                                                            {{'menu.viewfolderStr' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Report Administration'">
+                                                            {{'menu.report-administration' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Global Link'">
+                                                            {{'menu.Create Global Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Global Link'">
+                                                            {{'menu.View Global Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Primary Link'">
+                                                            {{'menu.Create Primary Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Primary Link'">
+                                                            {{'menu.View Primary Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Function Master'">
+                                                            {{'menu.Create Function Master' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Function Master'">
+                                                            {{'menu.View Function Master' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Delete Mozgis Project'">
+                                                            {{'menu.Delete Mozgis Project' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Bulk Mail Administration'">
+                                                            {{'menu.Bulk Mail Administration' | translate}}
+                                                        </ng-container>
+                                                    </ng-container>
+                                                    <ng-container *ngIf="browserLang == 'pt'">
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Envelope'">
+                                                            {{'menu.Create Envelope' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Envelope List'">
+                                                            {{'create-envelope.view-envelope' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Financial Agreement'">
+                                                            {{'funding-component.create-funding' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Financial Agreement'">
+                                                            {{'menu.View Financial Agreement' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Project'">
+                                                            {{'menu.Create Project' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Project List'">
+                                                            {{'menu.View Project List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Disbursement'">
+                                                            {{'menu.Create Disbursement' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Disbursement List'">
+                                                            {{'menu.View Disbursement List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Payment'">
+                                                            {{'menu.Create Payment' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Payment List'">
+                                                            {{'menu.View Payment List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Organization'">
+                                                            {{'menu.Create Organization' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Organization List'">
+                                                            {{'menu.View Organization List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Individual'">
+                                                            {{'menu.Create Individual' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Individual List'">
+                                                            {{'menu.View Individual List' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Monitoring'">
+                                                            {{'menu.Create Monitoring' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Monitoring'">
+                                                            {{'menu.View Monitoring' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Type'">
+                                                            {{'menu.User Type' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Access Management'">
+                                                            {{'menu.Assign Group' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Mapping'">
+                                                            {{'menu.User Mapping' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'User Account'">
+                                                            {{'menu.User Account' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Code List Management'">
+                                                            {{'menu.Field Management' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Exchange Rate Administration'">
+                                                            {{'menu.Exchange Rate Administration' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Suggestion Administration'">
+                                                            {{'menu.Suggestion Administration' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Folder Structure'">
+                                                            {{'menu.folderStr' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Folder Structure'">
+                                                            {{'menu.viewfolderStr' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Report Administration'">
+                                                            {{'menu.report-administration' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Global Link'">
+                                                            {{'menu.Create Global Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Global Link'">
+                                                            {{'menu.View Global Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Primary Link'">
+                                                            {{'menu.Create Primary Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Primary Link'">
+                                                            {{'menu.View Primary Link' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Create Function Master'">
+                                                            {{'menu.Create Function Master' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'View Function Master'">
+                                                            {{'menu.View Function Master' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Delete Mozgis Project'">
+                                                            {{'menu.Delete Mozgis Project' | translate}}
+                                                        </ng-container>
+                                                        <ng-container *ngIf="primaryLinkList[j].primaryLinkName == 'Bulk Mail Administration'">
+                                                            {{'menu.Bulk Mail Administration' | translate}}
+                                                        </ng-container>
+                                                    </ng-container>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Access Permission'; then loggedIn1;"></ng-container>
+                                                <ng-template #loggedIn1>
+                                                <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+                                                    <mat-form-field appearance="fill">
+                                                    <mat-label>{{'menu.Choose Permissions' | translate}}</mat-label>
+                                                    <mat-select  #select formControlName="permissionArr" multiple (closed)="setData(j,select)">
+                                                        <mat-option value="{{plp.permissionMasterId}}" *ngFor="let plp of primaryLinkList[j].primaryLinkPermissions" >
+                                                            <!-- {{plp.permissionMasterId==1?'CREATE':plp.permissionMasterId==2?'READ':plp.permissionMasterId==3?'UPDATE':'DELETE'}} -->
+                                                            <ng-container *ngIf="plp.permissionMasterId==1">
+                                                                {{'common.create' | translate}}
+                                                            </ng-container>
+                                                            <ng-container *ngIf="plp.permissionMasterId==2">
+                                                                {{'common.read' | translate}}
+                                                            </ng-container>
+                                                            <ng-container *ngIf="plp.permissionMasterId==3">
+                                                                {{'common.update' | translate}}
+                                                            </ng-container>
+                                                            <ng-container *ngIf="plp.permissionMasterId==4">
+                                                                {{'common.delete' | translate}}
+                                                            </ng-container>
+                                                        </mat-option>
+                                                    </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                                </ng-template>
+                                            </ng-container>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        </div>
+                    <!-- <mat-expansion-panel class="custom-expansion-panels" *ngFor="let module of modules_object">
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>{{module.moduleName}}</mat-panel-title>
+                        </mat-expansion-panel-header> -->
+                        <!-- <mat-expansion-panel class="custom-expansion-panels" [expanded]="true">
+                        <div class="row form-group">
+                            <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                                <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr> -->
+                                            <!-- <th>Submodule</th> -->
+                                            <!-- <th>
+                                                <mat-checkbox (change)="$event ? masterToggle() : null"
+                                                    [checked]="selection.hasValue() && isAllSelected()"
+                                                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                                                    [aria-label]="checkboxLabel()">
+                                                </mat-checkbox> 
+                                                <input type="checkbox"  name="list_name" value="{{module.moduleId}}"
+                                                (change)="parentCheck(module)" />
+                                                
+                                                
+                                                        <div *ngIf = "userType == 'DNGDP Admin' || userType == 'DNGDP Team' || userType == 'CEDCIF' || userType == 'DNPO'">
+                                                            <input  type="checkbox" [value]="module.moduleName" [checked]='true' (change)="categoryChange($event, module, module.subModule)"/>
+                                                        </div> 
+                                                        
+                                                
+                                                <div *ngIf="userType.length == 0">  -->
+                                                <!-- <input  type="checkbox" [value]="module.moduleName" (change)="categoryChange($event, module, module.subModule)"> -->
+                                                <!-- </div> -->
+        
+                                            <!-- </th> -->
+                                            <!-- <th>  {{'assign-Group.No.' | translate}} </th> -->
+                                            <!-- <th> {{'assign-Group.Primary Link' | translate}} </th>
+                                            <th> {{'assign-Group.Access Permission' | translate}} </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let sm of primaryLinkList"> -->
+                                            <!-- <td> -->
+                                                <!-- <mat-checkbox (click)="$event.stopPropagation()"
+                                                    (change)="$event ? selection.toggle(row) : null"
+                                                    [checked]="selection.isSelected(row)"
+                                                    [aria-label]="checkboxLabel(row)">
+                                                </mat-checkbox> -->
+                                                <!-- <input type="checkbox"  name="list_name_child"
+                        value="{{sm.subModuleId}}" [checked] = "sm.isSelected == 'true'" /> -->
+                        
+    
+                        
+                                <!-- <div *ngIf = "userType == 'DNGDP Admin' || userType == 'DNGDP Team' || userType == 'CEDCIF' || userType == 'DNPO'">
+                                    <div *ngIf = "status">
+                                        <input  type="checkbox" value="{{sm.subModuleId}}" [checked]="sm.selected" (change)="selectionChange(module.moduleName,sm.subModuleName,$event)"/>
+                                    </div>
+                                    <div *ngIf = "!status">
+                                        <input  type="checkbox" value="{{sm.subModuleId}}" [checked]='true' (change)="selectionChange(module.moduleName,sm.subModuleName,$event)"/>
+                                    </div>
+                                    
+                                </div> -->
+                        
+                        
+                        <!-- <div *ngIf="userType.length == 0">  -->
+                            <!-- <input  type="checkbox" value="{{sm.subModuleId}}" [checked]="sm.selected"/> -->
+                        <!-- </div> -->
+                        
+                                            <!-- </td> -->
+                                            <!-- <td>{{sm.subModuleId}}</td> -->
+                                            <!-- <td>{{sm.primaryLinkName}}</td>
+                                            <td> -->
+                                                <!-- <mat-radio-group aria-label="Select an option" class="mr-2">
+                                                    <div *ngIf="!subArray?.length">
+                                                        
+                                                        <mat-radio-button *ngFor="let option of permissionList"
+                                                        [value]="option.name" name="optionList" >{{ option.name}}</mat-radio-button>
+                                                        &nbsp;
+                                                    
+                                                    </div>
+                                                    <div *ngIf="subArray?.length">
+
+                                                    
+                                                        <div *ngFor = "let option1 of subArray">
+                                                            <div *ngIf = "option1.name == sm.moduleName">
+                                                            <mat-radio-button *ngFor="let option of permissionList" [checked]="option1.permission == option.name"
+                                                            [value]="option.name" name="optionList" >{{ option.name}}</mat-radio-button>
+                                                            &nbsp;
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                    
+                                                </mat-radio-group> -->
+                                                <!-- <span *ngFor="let plp of sm.primaryLinkPermissions">
+                                                    <mat-checkbox [value]="plp.permissionMasterId">
+                                                    {{plp.permissionMasterId==1?'CREATE':plp.permissionMasterId==2?'READ':plp.permissionMasterId==3?'UPDATE':'DELETE'}}
+                                                    </mat-checkbox>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    
+                                </table>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </mat-expansion-panel> -->
+                    <!-- </mat-expansion-panel> -->
+            </ng-container>
+                    <!-- <div *ngFor="let module of modules_object">
+                        <div>{{module.moduleName}}</div>
+                        <table width="100%">
+                            <thead>
+                                <tr>
+                                    <th>Submodule</th>
+                                    <th>
+                                        <input type="radio" name="{{module.moduleName}}_head_radio"   [value]="1"> Read Only
+                                    </th>
+                                    <th>
+                                        <input type="radio" name="{{module.moduleName}}_head_radio"  [value]="2"> Read Write
+                                    </th>
+                                    <th>
+                                        <input type="radio" name="{{module.moduleName}}_head_radio"  [value]="3"> No Access
+                                    </th>
+                                </tr>
+                            </thead>
+        
+                            <tbody>
+                                <tr *ngFor="let sm of module.subModule">
+                                    <td>{{sm.subModuleName}}</td>
+                                    <td>
+                                        <input type="radio" [checked]="sm.selectedRightType == '1'"  name="{{sm.subModuleId}}_radio" [value]="1"> 
+                                    </td>
+                                    <td class="cl-left">
+                                        <input type="radio" [checked]="sm.selectedRightType == '2'"  name="{{sm.subModuleId}}_radio" [value]="2"> 
+                                    </td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+
+            <div class="row">
+                        <div class="col-lg-12 mt-3 mb-2">
+                            <div class="example-button">
+                                <button class="btn btn-success mr-2" (click)="(assignGroupForm.invalid) ?  openMandatoryAlert():opensweetalert()">{{'common.submit' | translate}}</button>
+
+                                <button class="btn btn-reset mr-2" (click)="clearForm(assignGroupForm)">{{'common.reset' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- </form> -->
+                </div>
+            </form>
+
+                <!-- <h1 class="label-manageUser">RU User</h1> -->
+            </div>
+        </div>
+    </div>
+</ng-container>

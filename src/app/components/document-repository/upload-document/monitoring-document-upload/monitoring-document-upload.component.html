@@ -1,0 +1,142 @@
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="onCloseDialog()"><i class="fas fa-times"></i></a>
+
+
+<div class="breadcumb">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <!-- <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+          <li class="breadcrumb-item active label-organization" aria-current="page">{{'monitoring-component.monitoring' | translate}}
+          </li> -->
+          <li class="breadcrumb-item active label-create-organization" aria-current="page">{{'monitoring-component.upload' | translate}}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<hr>
+<div class="mat-dialog-container1">
+  <div class="container-fluid">
+
+    <div class="col-sm-12">
+      <form class="example-form" [formGroup]="monitoringUploadForm" (ngSubmit)="submit()">
+        <div class="row">
+
+            <div class="col-xl-5 col-lg-5 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline" class="mb-form-0">
+                  <mat-label><span class="label-disbursement-reference"> {{'monitoring-component.module' | translate}}</span> </mat-label>
+                  <input matInput type="text" placeholder="Envelope" formControlName="module" autocomplete="off">
+                </mat-form-field>
+            </div>
+            <div class="col-xl-5 col-lg-5 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline">
+                <mat-label><span class="label-disbursement-reference">{{'monitoring-component.Budget Project' | translate}}</span>
+                </mat-label>
+                <input matInput placeholder="{{'monitoring-component.Budget Project' | translate}}" formControlName="budgetPrj"
+                  autocomplete="off" />
+              </mat-form-field>
+            </div>
+            </div>
+            <div class="row">
+            <div class="col-xl-5 col-lg-5 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline">
+                <mat-label><span class="label-disbursement-reference">{{'create-envelope.filePath' | translate}}</span>
+                </mat-label>
+                <!-- <input matInput type="text" placeholder="File Path " formControlName="filePath" autocomplete="off"> -->
+                <mat-select (openedChange)="filePath.patchValue('')" placeholder="{{'common.Select'|translate}}" formControlName="filePath">
+                  <div class="select-container" *ngIf="pathFilterOption">
+                    <mat-optgroup>
+                      <mat-form-field style="width:100%;">
+                        <input #searchFS autocomplete="off" placeholder="{{'common.Search'|translate}}" aria-label="Search" matInput
+                          [formControl]="filePath">
+                        <button [disableRipple]="true" *ngIf="searchFS.value" matSuffix mat-icon-button aria-label="Clear"
+                          (click)="filePath.patchValue('')">
+                          <mat-icon>close</mat-icon>
+                        </button>
+                      </mat-form-field>
+                    </mat-optgroup>
+                    <mat-optgroup *ngIf="(pathFilterOption | async).length == 0">
+                      <div>{{'common.No results found!' | translate}}</div>
+                    </mat-optgroup>
+                    <ng-container *ngFor="let option of pathFilterOption | async">
+                      <ng-container *ngIf="option.moduleName=='Monitoring'">
+                        <mat-option [value]="option.folderStrId"
+                          matTooltip="/{{option.moduleName}}/{{option.folderName}}/{{budgetPrjNm}}"
+                          [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                          /{{option.moduleName}}/{{option.folderName}}/{{budgetPrjNm}}
+                        </mat-option>
+                      </ng-container>
+                    </ng-container>
+                  </div>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+        
+
+          <!-- <div class="col-xl-4 col-lg-4 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-disbursement-reference">{{'create-envelope.donor' | translate}} </span> </mat-label>
+                <mat-select (openedChange)="donorName.patchValue('')" 
+                placeholder="Select" formControlName="donorName">
+                <div class="select-container" *ngIf="fundingOrganizationfilteredOption">
+                    <mat-optgroup>
+                        <mat-form-field style="width:100%;">
+                            <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search"
+                                matInput [formControl]="donorName">
+                            <button [disableRipple]="true" *ngIf="searchFS.value" matSuffix mat-icon-button
+                                aria-label="Clear" (click)="donorName.patchValue('')">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </mat-optgroup>
+                    <mat-optgroup *ngIf="(fundingOrganizationfilteredOption | async).length == 0">
+                        <div>{{'common.No results found!' | translate}}</div>
+                    </mat-optgroup>
+                    <mat-option *ngFor="let option of fundingOrganizationfilteredOption | async"
+                        [value]="option.fundingOrganizationId">
+                        {{option.fundingOrganizationName}}
+                    </mat-option>
+                    
+                </div>
+            </mat-select>
+              </mat-form-field>
+          </div> -->
+          <div class="col-xl-6 col-lg-12 col-sm-12">
+          
+            <label for="files" title="{{'common.no file choosen' | translate}}" id="fileNameForLabel" 
+            onMouseOver="this.style.background='#dcdcdc';this.style.color='black'" onMouseOut="this.style.background='#e5e5e5';this.style.color='black'" 
+            style="background-color: #e5e5e5;border: 1px solid #4f4f4f;margin-top: 9px;" class="btn" onclick="document.getElementById('getFile').click()">{{'common.choose file' | translate}}</label>
+            <sup style="color:red;font-size: 20px;margin-left: 5px;"><b>*</b></sup>
+            <input type="file" style="display: none;" id="getFile" formControlName="uploadFile" (change)="selectFile($event)" class="mt-3"  autocomplete="off">
+            <span id="fileName" title="{{'common.no file choosen' | translate}}" style="
+            margin-left: 5px;font-size: 14px;
+        ">{{'common.no file choosen' | translate}}</span>
+          </div>
+          <!-- <div class="col-xl-4 col-lg-4 col-sm-12">
+            <a class="btn btn-danger btn-sm" (click)="resetFile()"><i class="fas fa-times"></i></a>
+           </div> -->
+          </div>
+          
+          
+        </form>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-12 mt-3 mb-2">
+    <div class="example-button">
+      <button class="btn btn-success mr-2" (click)="(monitoringUploadForm.invalid ) ?  openMandatoryAlert():opensweetalert()">{{'add-disbursement-component.submit' |
+        translate}}</button>
+      <button class="btn btn-reset mr-2"
+        (click)="clearForm(monitoringUploadForm)">{{'add-disbursement-component.reset' | translate}}</button>
+    </div>
+  </div>
+</div>

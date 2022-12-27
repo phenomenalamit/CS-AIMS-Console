@@ -1,0 +1,445 @@
+<!-- This referred to HTML of View List of Envelopes -->
+
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">   
+  <div class="container-fluid">
+    <div class="innerbody">
+      <div class="breadcumb">
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active label-view-envelope" aria-current="page">{{ 'create-envelope.envelope' | translate }}</li>
+                    <li class="breadcrumb-item active label-view-envelope" aria-current="page">{{ 'menu.View Envelope List' | translate }}</li>
+                  </ol>
+                </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                  <ul class="iconics-buttons">
+                    <!-- <li>
+                      <a class="iconsBG" title="{{'common.viewDocument' | translate}}" (click)='openDocumentDialog()' ><i class="fas fa-file-download"></i></a>
+                      </li> -->
+					  
+                      <li><a onclick="document.title='Envelope_'+new Date().toISOString();window.print()" class="iconsBG" title="{{'common.Print' | translate}}" ><i class="fas fa-print"></i></a></li>
+                      <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                      <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                      <li><a  class="iconsBG" title="{{'common.Back'|translate}}" (click)='moveToSelectedTab1("Create Envelope")'><i class="fas fa-arrow-left"></i></a></li>
+
+                  </ul>
+                  </div>
+            </div>
+        </div>
+
+
+  <h1 class="label-envelope">View Envelope List</h1>
+  <hr>
+  <div class="customROW printremove">
+    
+  <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline" class="mb-form-0 width25">
+    
+    <mat-label>{{ 'common.Filter' | translate }} {{filter.name}}</mat-label>
+    <ng-container *ngIf="filter.name === ''"></ng-container>
+    <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+    (selectionChange)="filterChange(filter,$event)" multiple (openedChange)="openOptionSearch(filter)">
+    <mat-optgroup>
+      <mat-form-field style="width:100%;">
+        <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+          [formControl]="searchFilter" (keyup)="chkValue(filter)">
+      </mat-form-field>
+    </mat-optgroup>
+    <mat-optgroup *ngIf="(filter.options).length == 0">
+      <div>{{ 'common.No results found!' | translate }}</div>
+    </mat-optgroup>
+    <mat-option [value]="item" *ngFor="let item of filter.options">{{item}}</mat-option>
+  </mat-select>
+  </mat-form-field>
+
+  <ngx-slider  [(value)]="minValueMZN" [(highValue)]="maxValueMZN" [options]="optionsMT" (mouseup)="getRangeForMZN()"></ngx-slider>
+  <ngx-slider  [(value)]="minValue" [(highValue)]="maxValue" [options]="options1" (mouseup)="getRange()"></ngx-slider>
+  <button mat-flat-button color="warn" (click)="resetFilters()" class="mt-2">{{ 'common.reset' | translate }}</button>
+  </div>
+
+
+
+  <div class="row">
+
+    <div class="col-xl-12 col-lg-12 col-sm-12 pr-0 ">
+
+      <p class="printremove">
+
+
+
+        {{'common.totalrows' | translate}} : {{totalRows}} 
+         &nbsp;&nbsp; 
+       <!-- <select id="limitDropDown" (change)="fetchEnvelopeData()">
+          <option value="0" selected></option>
+        </select> -->
+        <a popover-trigger="'mouseenter'" uib-popover="Delete" href="javascript: void(0);"
+        (click)="loadAllData();"> Show All Records
+      </a>
+
+      </p>
+      
+      <div class="mat-elevation-z8 table-responsive">
+        <!-- <table mat-table [dataSource]="dataSource" class="table table-bordered" matSort> -->
+          <table id = "ExampleMaterialTable" mat-table [dataSource]="envelopedataSource" class="table table-bordered " matSort>
+            <ng-container matColumnDef="select">
+              <th *matHeaderCellDef style="width: 70px;" class="printremove">S/N</th>
+              <td *matCellDef="let row;let i = index;" class="printremove">
+                
+                <ng-container *ngIf="usergroup == 'Development Partner Administrator' || usergroup == 'DNGDP Team'">
+                  <ng-container *ngIf="row.emailChk == true">
+                      <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                          [checked]="selection.isSelected(row)"> 
+                          {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                      </mat-checkbox>
+                  </ng-container>
+                  <ng-container *ngIf="row.emailChk == false">
+                      <b>{{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}</b>
+                  </ng-container>
+                </ng-container>
+                <ng-container *ngIf="usergroup != 'Development Partner Administrator' && usergroup != 'DNGDP Team'">
+                  <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                      <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                          [checked]="selection.isSelected(row)">
+                          {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                      </mat-checkbox>
+                  </ng-container>
+                  <ng-container *ngIf="userPermission.indexOf(3)==-1">
+                    <b>{{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}</b>
+                  </ng-container>
+                </ng-container>
+              </td>
+              <td class="printremove" mat-footer-cell *matFooterCellDef> - </td>
+          </ng-container>
+            <ng-container matColumnDef="partner">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100"> {{ 'create-envelope.funding-organization' |
+          translate }} </th>
+        <!-- <td mat-cell *matCellDef="let element"> {{element.partner}} </td> -->
+        <td mat-cell *matCellDef="let element"> {{element.fundingOrg}} </td>
+        <td mat-footer-cell *matFooterCellDef> - </td>
+      </ng-container>
+
+      <ng-container matColumnDef="envRef">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100"> {{ 'create-envelope.Envelope Reference' |
+          translate }} </th>
+        <!-- <td mat-cell *matCellDef="let element"> {{element.partner}} </td> -->
+        <td mat-cell *matCellDef="let element"> {{element.envelopeReference}} </td>
+        <td mat-footer-cell *matFooterCellDef> - </td>
+      </ng-container>
+
+        <ng-container matColumnDef="purdaccrs">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 70px;"> {{ 'create-envelope.purpose-DAC-CRS' | translate }} </th>
+          <!-- <td mat-cell *matCellDef="let element"> {{element.purdaccrs}} </td> -->
+          <ng-container *ngIf="browserLang=='en'">
+          <td mat-cell *matCellDef="let element"> {{element.purposeDacCrs}} </td>
+          </ng-container>
+          <ng-container *ngIf="browserLang=='pt'">
+            <td mat-cell *matCellDef="let element"> {{element.purposeDacCrsPt}} </td>
+            </ng-container>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+        <ng-container matColumnDef="year" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">{{ 'create-envelope.start-year' | translate }}  </th>
+          <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+
+        <ng-container matColumnDef="endYear" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">{{ 'create-envelope.end-year' | translate }}  </th>
+          <td mat-cell *matCellDef="let element"> {{element.endYear}} </td>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+
+        <ng-container matColumnDef="envagrcurr">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100"> {{ 'create-envelope.amount' | translate }} </th>
+          <!-- <td mat-cell *matCellDef="let element" style="text-align: right;">
+            {{element.envagrcurr | number : '1.2-2'}}</td> -->
+            <td mat-cell *matCellDef="let element" style="text-align: right;"> 
+            {{element.amount | number : '1.2-2'}}</td>
+
+            <!-- <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{ totalAmnt | number : '1.2-2' }} </td> -->
+            <td mat-footer-cell *matFooterCellDef> - </td>
+
+            </ng-container>
+
+        <ng-container matColumnDef="exchangerateUsd">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header style="width: 30px;">{{ 'create-envelope.currency' | translate }}</th>
+          <!-- <td mat-cell *matCellDef="let element"> {{element.exchangerateUsd }} </td> -->
+          <td mat-cell *matCellDef="let element"> {{element.currency }} </td>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+
+        <ng-container matColumnDef="exchangerateMzn">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtmzn' | translate }} </th>
+          <td mat-cell *matCellDef="let element"> {{element.exchangerateMzn}} </td>
+        </ng-container>
+        <ng-container matColumnDef="amtannenvmeti">
+          <th  mat-header-cell *matHeaderCellDef mat-sort-header class="width100"> {{ 'create-envelope.amtusd' | translate }} </th>
+          <!-- <td mat-cell *matCellDef="let element"  style="text-align: right;">
+          {{element.amtannenvmeti  | number : '1.2-2'}}
+          </td> -->
+          <td  mat-cell *matCellDef="let element"  style="text-align: right;"> 
+            {{element.usdAmount  | number : '1.2-2'}} 
+          </td>
+          <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{ totalAmntUsd | number : '1.2-2' }}</td>
+          <mat-cell id="custom-content-cell" *matCellDef="let row">
+
+          </mat-cell>
+        </ng-container>
+        <!-- <ng-container matColumnDef="annenvamtusd">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Amount Amt (USD) </th>
+          <td mat-cell *matCellDef="let element"> {{element.annenvamtusd}} </td>
+        </ng-container> -->
+
+        <!--<ng-container matColumnDef="comments" >
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Comments </th>
+          <td mat-cell *matCellDef="let element"> {{element.comments}} </td>
+        </ng-container>-->
+
+        <!-- <ng-container matColumnDef="edit">
+          <th mat-header-cell *matHeaderCellDef class="label-action"> Action </th>
+        <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" tabindex="-1" (click)='moveToSelectedTab("Create Envelope")'>Edit</button></td>
+    </ng-container> -->
+
+    <ng-container matColumnDef="edit" sticky>
+      <th *matHeaderCellDef class="label-action" > {{ 'create-envelope.action' | translate }} </th>
+      <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+      <td *matCellDef="let element;let i = index;" class="printremove">
+        <ng-container *ngIf="usergroup == 'Development Partner Administrator' || usergroup == 'DNGDP Team'">
+          <ng-container *ngIf="element.emailChk == true">
+            <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1" (click)='moveToSelectedTab(element.envelopeId)'>
+                <i class="far fa-edit"></i>
+            </button>
+            <button class="btn btn-warning btn-sm" placement="top" ngbTooltip="{{ 'common.uploadDocument' | translate }}"
+              tabindex="-1" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2(element.envelopeReference)'><i
+                class="fas fa-file-upload"></i></button>&nbsp;
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="usergroup != 'Development Partner Administrator' && usergroup != 'DNGDP Team'">
+          <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+            <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1" (click)='moveToSelectedTab(element.envelopeId)'>
+                <i class="far fa-edit"></i>
+            </button>
+            <button class="btn btn-warning btn-sm" placement="top" ngbTooltip="{{ 'common.uploadDocument' | translate }}"
+              tabindex="-1" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2(element.envelopeReference)'><i
+                class="fas fa-file-upload"></i></button>&nbsp;
+          </ng-container>
+        </ng-container>
+        <!-- <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+          <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.delete' | translate }}" tabindex="-1" (click)='opensweetalertDelete(element.envelopeTableId)'>
+              <i class="fas fa-trash-alt"></i>
+          </button>
+        </ng-container> -->
+        <ng-container *ngIf="userPermission.indexOf(2)!=-1">
+          <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{ 'create-envelope.view' | translate }}"
+            tabindex="-1" (click)='viewMoreEnvelope(element.envelopeId)'>
+            <i class="fas fa-eye"></i>
+          </button>&nbsp;
+        </ng-container>
+        <ng-container *ngIf="userPermission.indexOf(2)!=-1">
+          <button class="btn btn-info btn-sm" placement="top" ngbTooltip="{{'common.viewDocument' | translate}}" tabindex="-1"
+            title="{{'common.viewDocument' | translate}}" (click)='openDocumentDialog(element.envelopeReference)'><i
+              class="fas fa-file-download"></i></button>
+        </ng-container>
+        
+      </td>
+    <td mat-footer-cell *matFooterCellDef style="font-weight: bold;" class="printremove">{{ 'common.Total' | translate }}  </td>
+  </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns" style="background-color: #d9d9d9;"></tr>
+      </table>
+
+
+    </div>
+
+    </div>
+  </div>
+
+
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+
+    <div class="row">
+      <div class="col-lg-12 mt-3 mb-2">
+        <div class="example-button printremove">
+          <button mat-flat-button color="warn" class="btn-danger btn-reset mr-2" (click)="opensweetalertDelete()">
+            {{ 'common.delete' | translate }} 
+          </button>
+        </div>
+      </div>
+    </div>
+  
+
+  <ng-container *ngIf="usergroup==='dnpo' || usergroup==='dnped'
+  || usergroup==='dnma' || usergroup==='dncp' || usergroup==='cedsif' || usergroup==='bankomoz' ">
+    <mat-form-field class="input-filter">
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+    <div class="row">
+      <div class="col-sm-12">
+    <div class="mat-elevation-z8 table-responsive" #epltable>
+        <table id = "ExampleMaterialTable" mat-table [dataSource]="dataSource" class="table table-bordered " matSort>
+
+
+          <!-- <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sl# </th>
+            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          </ng-container> -->
+          <ng-container matColumnDef="viewmore">
+            <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+            <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+            <td *matCellDef="let element"> <button class="btn btn-success btn-sm" tabindex="-1" (click)='viewMoreEnvelope(element)'>
+              <i class="fas fa-eye"></i>
+            </button> </td>
+          </ng-container>
+          <ng-container matColumnDef="partner">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.funding-organization' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.partner}} </td>
+          </ng-container>
+          <ng-container matColumnDef="purdaccrs">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.purpose-DAC-CRS' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.purdaccrs}} </td>
+          </ng-container>
+          <ng-container matColumnDef="year">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header > {{ 'create-envelope.year' | translate }}</th>
+            <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="envagrcurr">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amount' | translate }}</th>
+            <td mat-cell *matCellDef="let element"> {{element.envagrcurr}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="exchangerateUsd">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.currency' | translate }}</th>
+            <td mat-cell *matCellDef="let element"> {{element.exchangerateUsd}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="exchangerateMzn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtmzn' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.exchangerateMzn}} </td>
+          </ng-container>
+          <ng-container matColumnDef="amtannenvmeti">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtusd' | translate }} </th>
+            <td mat-cell *matCellDef="let element"> {{element.amtannenvmeti}} </td>
+          </ng-container>
+          <!-- <ng-container matColumnDef="comments">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Comments </th>
+            <td mat-cell *matCellDef="let element"> {{element.comments}} </td>
+          </ng-container> -->
+          <!-- <ng-container matColumnDef="edit">
+            <th mat-header-cell *matHeaderCellDef class="label-action"> Action </th>
+          <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" tabindex="-1" (click)='moveToSelectedTab("Create Envelope")'>Edit</button></td>
+      </ng-container> -->
+  <!--
+      <ng-container matColumnDef="edit">
+        <th *matHeaderCellDef class="label-action"> Action </th>
+        <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='moveToSelectedTab("Create Envelope",element)'>
+            <i class="far fa-edit"></i>
+        </button> </td>
+    </ng-container> -->
+
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumnsReadOnly"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumnsReadOnly;"></tr>
+        </table>
+
+        <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+      </div>
+      </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="usergroup=='dngdpteam' || usergroup=='partner' || usergroup=='dntcef'">
+      <mat-form-field class="input-filter">
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'view-monitoring.filter' | translate}}">
+      </mat-form-field>
+
+      <div class="mat-elevation-z8 table-responsive" #epltable>
+          <table id = "ExampleMaterialTable" mat-table [dataSource]="dataSource" class="table table-bordered " matSort>
+
+
+            <!-- <ng-container matColumnDef="position">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Sl# </th>
+              <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+            </ng-container> -->
+
+            <ng-container matColumnDef="partner">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.funding-organization' | translate }} </th>
+              <td mat-cell *matCellDef="let element"> {{element.partner}} </td>
+            </ng-container>
+            <ng-container matColumnDef="purdaccrs">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.purpose-DAC-CRS' | translate }} </th>
+              <td mat-cell *matCellDef="let element"> {{element.purdaccrs}} </td>
+            </ng-container>
+            <ng-container matColumnDef="year">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.year' | translate }} </th>
+              <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="envagrcurr">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amount' | translate }} </th>
+              <td mat-cell *matCellDef="let element"> {{element.envagrcurr}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="exchangerateUsd">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.currency' | translate }}</th>
+              <td mat-cell *matCellDef="let element"> {{element.exchangerateUsd}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="exchangerateMzn">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtmzn' | translate }} </th>
+              <td mat-cell *matCellDef="let element"> {{element.exchangerateMzn}} </td>
+            </ng-container>
+            <ng-container matColumnDef="amtannenvmeti">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtusd' | translate }} </th>
+              <td mat-cell *matCellDef="let element"> {{element.amtannenvmeti}} </td>
+            </ng-container>
+            <!-- <ng-container matColumnDef="comments">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Comments </th>
+              <td mat-cell *matCellDef="let element"> {{element.comments}} </td>
+            </ng-container> -->
+            <!-- <ng-container matColumnDef="edit">
+              <th mat-header-cell *matHeaderCellDef class="label-action"> Action </th>
+            <td mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" tabindex="-1" (click)='moveToSelectedTab("Create Envelope")'>Edit</button></td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="edit">
+          <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+          <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+          <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" placement="top" ngbTooltip="Edit" tabindex="-1" (click)='moveToSelectedTab("Edit Envelope",element)'>
+              <i class="far fa-edit"></i>
+          </button> </td>
+      </ng-container>
+
+
+      <ng-container matColumnDef="viewmore">
+        <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+        <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+        <td *matCellDef="let element"> <button class="btn btn-success btn-sm" placement="top" ngbTooltip="View" tabindex="-1" (click)='viewMoreEnvelope(element)'>
+          <i class="fas fa-eye"></i>
+        </button> </td>
+      </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsReadUpdate"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsReadUpdate;"></tr>
+          </table>
+
+
+        </div>
+        <div class="col-sm-8">
+        <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator></div>
+      </ng-container>
+      </div>
+      </div>
+
+    </div>
+</ng-container>

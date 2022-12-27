@@ -1,0 +1,423 @@
+<!-- HTML Page component for Exchange rate administration -->
+<div *ngIf="FAExchangeRatePopUp=='Yes'">
+    <a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="closebuttonedit()"><i class="fas fa-times"></i></a>
+</div>
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div class="container-fluid">
+        <div class="innerbody">
+    
+            <ng-container *ngIf="num===0 || num===undefined">
+    
+                <div class="breadcumb">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                class="fas fa-home"></i></a></li>
+                                    <li class="breadcrumb-item active label-adminstration" aria-current="page">
+                                        {{'field-management.Adminstration' | translate}}</li>
+    
+                                    <li class="breadcrumb-item active label-exchange-rate" aria-current="page">
+                                        {{'menu.Exchange Rate Administration' | translate}}</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="iconics-div">
+                                <ul class="iconics-buttons">
+                                    <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+    
+    
+            </ng-container>
+            <div class="row">
+                <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline" class="mb-form-0 width25">
+                    <mat-label>{{filter.name |translate}}</mat-label>
+                    <ng-container *ngIf="filter.columnProp=='year'">
+                        <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                            (selectionChange)="filterChange(filter,$event)" multiple (openedChange)="openOptionSearch(filter)">
+                            <mat-optgroup>
+                                <mat-form-field style="width:100%;">
+                                    <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                                        [formControl]="searchFilter" (keyup)="chkValue(filter)">
+                                </mat-form-field>
+                            </mat-optgroup>
+                            <mat-optgroup *ngIf="(filter.options).length == 0">
+                                <div>{{'common.No results found!' | translate}}</div>
+                            </mat-optgroup>
+                            <mat-option [value]="item" *ngFor="let item of filter.options">{{item}}</mat-option>
+                        </mat-select>
+                    </ng-container>
+
+                    <ng-container *ngIf="filter.columnProp=='currencyFullName'">
+                        <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                            (selectionChange)="currencyChange(filter,$event)" multiple (openedChange)="openOptionSearch(filter)">
+                            <mat-optgroup>
+                                <mat-form-field style="width:100%;">
+                                    <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                                        [formControl]="searchFilter" (keyup)="chkValue(filter)">
+                                </mat-form-field>
+                            </mat-optgroup>
+                            <mat-optgroup *ngIf="(filter.options).length == 0">
+                                <div>{{'common.No results found!' | translate}}</div>
+                            </mat-optgroup>
+                            <mat-option [value]="item" *ngFor="let item of filter.options">{{item}}</mat-option>
+                        </mat-select>
+                    </ng-container>
+                </mat-form-field>
+               
+            </div><br>
+            <button class="btn btn-success mr-2" style="margin-top: -42px;margin-left: 8px;" (click)="submitData($event)">{{'common.Filter' | translate}}</button> 
+            <button class="btn btn-danger" style="margin-top: -42px;" (click)="resetFilters()">{{ 'common.reset' | translate
+            }}</button>
+            <form class="example-form" [formGroup]="exchangeRate">
+           
+                
+                <div class="row mt-2">
+                    <div class="col-sm-12 button-align">
+                        <button class="btn btn-primary mt-1 label-reset " style="margin-left: 7px;margin-bottom: 4px;" (click)="addNew()">
+                            {{'exchangeRate.addExchangeRAte' | translate}}
+                        </button>
+                    </div>
+                    </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-bordered table-responsive heightadjust" formArrayName="tableData">
+                            <thead>
+                                <tr>
+                                    <th class="edit-width">{{'common.action' | translate}}</th>
+                                    <th *ngFor="let column of headers">
+                                        <ng-container *ngIf="column==='Year'">
+                                            {{'common.year' | translate}}
+                                        </ng-container>
+    
+                                        <ng-container *ngIf="column==='Currency'">
+                                            {{'create-envelope.currency' | translate}}
+                                        </ng-container>
+                                        <ng-container *ngIf="column==='Unit'">
+                                        {{'create-envelope.unit' | translate}}
+                                        </ng-container>
+                                        <ng-container *ngIf="column==='Amount (MZN)'">
+                                            {{'create-envelope.amtmzn' | translate}}
+                                        </ng-container>
+                                        <ng-container *ngIf="column==='Amount (USD)'">
+                                            {{'create-envelope.amtusd' | translate}}
+                                        </ng-container>
+    
+                                    </th>
+                                </tr>
+                            </thead>
+    
+    
+                            <tbody>
+                                <tr *ngFor="let row of exchangeRate.get('tableData')['controls']; let j = index">
+    
+                                    <ng-container *ngIf="isReadOnly[j]===true">
+    
+                                        <td style="white-space: nowrap;">
+                                            <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                    class="btn btn-danger btn-sm" (click)="editRow(j)"
+                                                    ngbTooltip="{{'common.edit' | translate}}">
+                                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                                </a>
+                                            </ng-container>&nbsp;
+                                            <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                class="btn btn-danger btn-sm mr-2" (click)="deleteRow(j)">
+                                                <i class="fa fa-trash" aria-hidden="true"
+                                                    ngbTooltip="{{'common.delete' | translate}}"></i>
+                                                </a>
+                                            </ng-container>
+                                        </td>
+    
+    
+                                        <td *ngFor="let column of headers">
+    
+                                            <ng-container [formGroupName]="j">
+                                                <input type="hidden"  autocomplete="off"
+                                                formControlName="id" />
+                                                <ng-container *ngIf=" column === 'Year'; then loggedIn;">
+                                                </ng-container>
+                                                <ng-template #loggedIn>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-year">{{'common.year' |
+                                                                translate}}</span> </mat-label>
+                                                        <input type="number" maxlength="4" matInput autocomplete="off"
+                                                            formControlName="year" />
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Currency'; then loggedIn1;">
+                                                </ng-container>
+                                                <ng-template #loggedIn1>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-currency">{{'create-envelope.currency' |
+                                                                translate}}</span> </mat-label>
+                                                        <mat-select (openedChange)="openCurrencySearch($event,j)" (optionSelected)="getalert(j)" placeholder="Select"
+                                                            formControlName="currency">
+                                                            <div class="select-container" *ngIf="currencyfilteredOption">
+                                                                <mat-optgroup>
+                                                                    <mat-form-field style="width:100%;">
+                                                                        <input #searchCurncy autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                                                                            formControlName="searchCurrency">
+                                                                            <button [disableRipple]="true"
+                                                                            *ngIf="searchCurncy.value" matSuffix
+                                                                            mat-icon-button aria-label="Clear"
+                                                                            (click)="clearCurrencySearch($event,j)">
+                                                                            <mat-icon>close</mat-icon>
+                                                                            </button>
+                                                                    </mat-form-field>
+                                                                </mat-optgroup>
+                                                                <!-- <mat-optgroup *ngIf="(currencyfilteredOption[j] | async).length == 0">
+                                                                    <div>{{'common.No results found!' | translate}}</div>
+                                                                </mat-optgroup> -->
+    
+                                                                <mat-option *ngFor="let option of currencyfilteredOption[j]  | async" [value]="option.currency_id">
+                                                                    {{option.currency_fullname}}
+                                                                    &nbsp;({{option.currency_shortname}})
+                                                                </mat-option>
+                                                            </div>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                    
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Unit'; then loggedIn4;">
+                                                </ng-container>
+                                                <ng-template #loggedIn4>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-year">{{'create-envelope.unit' |
+                                                                translate}}</span> </mat-label>
+                                                            <mat-select formControlName="unit" (selectionChange)="enableMznUsd(j)">
+                                                            <mat-option value=1>1</mat-option>
+                                                            <mat-option value=10>10</mat-option>
+                                                            <mat-option value=100>100</mat-option>
+                                                            <mat-option value=1000>1000</mat-option>
+                                                            <mat-option value=10000>10000</mat-option>
+                                                            <mat-option value=100000>100000</mat-option>
+                                                            <mat-option value=1000000>1000000</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Amount (MZN)'; then loggedIn2;">
+                                                </ng-container>
+                                                <ng-template #loggedIn2>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span
+                                                                class="label-enter-amountMZN">{{'create-envelope.amtmzn' |
+                                                                translate}}</span> </mat-label>
+                                                       
+                                                            <input type="text" matInput 
+                                                                autocomplete="off" formControlName="amountMZN" />
+                                                        
+                                                        </mat-form-field>
+                                                        </ng-template>
+                                                        <ng-container *ngIf=" column === 'Amount (USD)'; then loggedIn3;">
+                                                        </ng-container>
+                                                        <ng-template #loggedIn3>
+                                                            <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                                <mat-label><span
+                                                                        class="label-enter-amountMZN">{{'create-envelope.amtusd'
+                                                                        | translate}}</span> </mat-label>
+                                                                
+                                                                    <input type="text" matInput 
+                                                                        autocomplete="off" formControlName="amountUSD" />
+                                                               
+                                                            </mat-form-field>
+    
+                                                        </ng-template>
+    
+    
+                                            </ng-container>
+    
+    
+                                        </td>
+    
+                                    </ng-container>
+    
+                                     <ng-container *ngIf="isReadOnly[j]===false">
+    
+                                        <td  style="white-space: nowrap;">
+                                            <ng-container *ngIf="userPermission.indexOf(1)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                    class="btn btn-success btn-sm mr-2" (click)="saveRow(j)">
+                                                    <i class="fa fa-save" aria-hidden="true"
+                                                        ngbTooltip="{{'common.save' | translate}}"></i>
+                                                </a>
+                                            </ng-container>
+                                            <!-- <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                class="btn btn-danger btn-sm mr-2" (click)="deleteRow(j)">
+                                                <i class="fa fa-trash" aria-hidden="true"
+                                                    ngbTooltip="{{'common.delete' | translate}}"></i>
+                                                </a>
+                                            </ng-container> -->
+                                            <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                class="btn btn-danger btn-sm" (click)="cancelRow(j)"
+                                                ngbTooltip="{{'common.cancel' | translate}}">
+                                                <i class="fa fa-window-close" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+    
+                                        <td *ngFor="let column of headers">
+    
+                                            <ng-container [formGroupName]="j">
+    
+                                                <input type="hidden"  autocomplete="off"
+                                                            formControlName="id" />
+                                                <ng-container *ngIf=" column === 'Year'; then loggedIn;">
+                                                </ng-container>
+                                                <ng-template #loggedIn>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-year">{{'common.year' |
+                                                                translate}}</span> </mat-label>
+                                                        <input type="text" matInput autocomplete="off"
+                                                            formControlName="year" maxlength="4"/>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Currency'; then loggedIn1;">
+                                                </ng-container>
+                                                <ng-template #loggedIn1>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-currency">{{'create-envelope.currency' |
+                                                                translate}}</span> </mat-label>
+                                                        <mat-select (openedChange)="openCurrencySearch($event,j)" (selectionChange)="MznUsdChk(j)" (optionSelected)="getalert(j)" placeholder="Select"
+                                                            formControlName="currency">
+                                                            <div class="select-container">
+                                                                <mat-optgroup>
+                                                                    <mat-form-field style="width:100%;">
+                                                                        <input #searchCurncy autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                                                                            formControlName="searchCurrency">
+                                                                            <button [disableRipple]="true"
+                                                                            *ngIf="searchCurncy.value" matSuffix
+                                                                            mat-icon-button aria-label="Clear"
+                                                                            (click)="clearCurrencySearch($event,j)">
+                                                                            <mat-icon>close</mat-icon>
+                                                                            </button>
+                                                                    </mat-form-field>
+                                                                </mat-optgroup>
+                                                
+                                                                <mat-option *ngFor="let option of currencyfilteredOption[j]  | async" [value]="option.currency_id">
+                                                                    {{option.currency_fullname}}
+                                                                    &nbsp;({{option.currency_shortname}})
+                                                                </mat-option>
+                                                            </div>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Unit'; then loggedIn4;">
+                                                </ng-container>
+                                                <ng-template #loggedIn4>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-year">{{'create-envelope.unit' |
+                                                                translate}}</span> </mat-label>
+                                                            <mat-select formControlName="unit" (selectionChange)="enableMznUsd(j)">
+                                                                <mat-option value=1>1</mat-option>
+                                                                <mat-option value=10>10</mat-option>
+                                                                <mat-option value=100>100</mat-option>
+                                                                <mat-option value=1000>1000</mat-option>
+                                                                <mat-option value=10000>10000</mat-option>
+                                                                <mat-option value=100000>100000</mat-option>
+                                                                <mat-option value=1000000>1000000</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Amount (MZN)'; then loggedIn2;">
+                                                </ng-container>
+                                                <ng-template #loggedIn2>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span
+                                                                class="label-enter-amountMZN">{{'create-envelope.amtmzn' |
+                                                                translate}}</span> </mat-label>
+    
+                                                        <input type="text" matInput 
+                                                            autocomplete="off" formControlName="amountMZN" />
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Amount (USD)'; then loggedIn3;">
+                                                </ng-container>
+                                                <ng-template #loggedIn3>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span
+                                                                class="label-enter-amountMZN">{{'create-envelope.amtusd' |
+                                                                translate}}</span> </mat-label>
+    
+                                                        <input type="text" matInput 
+                                                            autocomplete="off" formControlName="amountUSD" />
+    
+                                                    </mat-form-field>
+    
+                                                </ng-template>
+                                            </ng-container>
+                                        </td>
+                                     </ng-container> 
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                            <!-- <a href="javascript:prevPage()" (click)="changePage('btn_prev')">Prev</a>&nbsp;
+                            <a href="javascript:nextPage()" (click)="changePage('btn_next')">Next</a>
+                            page: <span id="page">{{page}}</span> -->
+
+
+                            <!-- <span class="row" style="margin-left: 778px;">
+                                <span class="col-sm-3" style="white-space: nowrap;color: grey;font-size: 13px;">
+                            Items per page:</span>
+                               
+                             <span class="col-sm-2 dropdownData" >
+                            <mat-select class="chkwidth" [(value)]="selected"   style="white-space: nowrap;">
+                                <mat-option value="5" class="label-regional" >5</mat-option>
+                                <mat-option value="10" class="label-national">10</mat-option>
+                                <mat-option value="20" class="label-national">20</mat-option>
+                                <mat-option value="40" class="label-national">40</mat-option>
+                                <mat-option value="80" class="label-national">80</mat-option>
+                            </mat-select> </span>
+                            <span  style="white-space: nowrap;margin-right: 20px;color: grey;font-size: 14px;"> {{page}} – {{rowAdd}} of {{totalRow}}</span>
+                           
+                            <span class="" style="white-space: nowrap;">
+                                <ng-container *ngIf="page==1">
+                                   <span style=" color: lightgray;"> |</span><i class="fas fa-angle-left fa-lg" style=" color: lightgray;"></i>&nbsp;&nbsp;
+                                </ng-container>
+                                <ng-container *ngIf="page!=1">
+                                    <span style=" color: gray;cursor: pointer;" (click)="changePage('first')"> |</span><i class="fas fa-angle-left fa-lg" style=" color: gray;cursor: pointer;" (click)="changePage('first')"></i>&nbsp;&nbsp;
+                                </ng-container>
+                                <ng-container *ngIf="page==1">
+                                <i class="fas fa-angle-left fa-lg" style=" color: lightgray;" ></i>&nbsp;&nbsp;
+                                </ng-container>
+                                <ng-container *ngIf="page!=1">
+                                    <i class="fas fa-angle-left fa-lg" style=" color: gray;cursor: pointer;" (click)="changePage('btn_prev')"></i>&nbsp;&nbsp;
+                                </ng-container>    
+                                <ng-container *ngIf="lastRow==true">                       
+                                <i class="fas fa-angle-right fa-lg" style=" color: lightgray;"></i>&nbsp;&nbsp;
+                                 </ng-container>     
+                                <ng-container *ngIf="lastRow==false">
+                                    <i class="fas fa-angle-right fa-lg" style=" color: gray;cursor: pointer;"
+                                        (click)="changePage('btn_next')"></i>&nbsp;&nbsp;
+                                </ng-container>
+                                <ng-container *ngIf="lastRow==false">
+                                    <i class="fas fa-angle-right fa-lg" style=" color: gray;cursor: pointer;" (click)="changePage('last')"></i>|
+                                </ng-container>
+                                <ng-container *ngIf="lastRow==true">
+                                    <i class="fas fa-angle-right fa-lg" style=" color: lightgray;" ></i><span style="color: lightgray;">|</span>
+                                </ng-container>
+                            </span>
+                        </span> -->
+                       
+                    </div>
+                </div>
+                
+                <!-- <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> -->
+            </form>
+    
+    
+    
+        </div>
+    </div>
+</ng-container>

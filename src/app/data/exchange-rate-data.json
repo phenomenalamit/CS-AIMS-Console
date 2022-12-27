@@ -1,0 +1,32 @@
+{
+    "exchange_rate_Data_Json":[
+    {
+        
+        "year":"2021",
+        "currency":"CAD",
+        "amountMZN":"19.28",
+        "amountUSD":"22.09"
+    },
+    {
+        "year":"2022",
+        "currency":"EUR",
+        "amountMZN":"35.28",
+        "amountUSD":"29.89"
+    }
+    ,
+    {
+        "year":"2023",
+        "currency":"CAD",
+        "amountMZN":"56.28",
+        "amountUSD":"72.09"
+    },
+    {
+        "year":"2024",
+        "currency":"JPY",
+        "amountMZN":"98.28",
+        "amountUSD":"45.09"
+    }
+    
+    ]
+
+}

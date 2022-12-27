@@ -1,0 +1,292 @@
+.example-headers-align .mat-expansion-panel-header-title,
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+/* table {
+    width: 100%;
+  } */
+  mat-header-cell{
+    color: rgb(17, 1, 1);
+    font-weight: bolder;
+    font-size: medium;
+  }
+
+  .mat-row:nth-child(2n+1){
+    background-color:#e4f0ec;
+  }
+  /* .mat-row:not(:nth-child(4n+1)){
+    background-color:#ffffff;
+  } */
+
+  
+  /* .mat-form-field + .mat-form-field {
+    margin-left: 75px;
+    
+  } */
+
+.customROW{ margin-bottom: 15px;}
+
+  .width25{     width: 23%;
+    float: left;
+    margin-right: 20px;
+    padding-left: 15px;}
+
+  .example-full-width {
+    width: auto;
+  }
+  .example-container{
+    margin-left:auto ;
+    margin-right: auto;
+  }
+  .width-50{width: 29%;}
+  .mandatory{
+    color: red;
+  }
+  /* table {
+    width: 100%;
+  } */
+
+
+
+
+
+  
+
+td,
+th {
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.sticky-header {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: #146775;
+  color: white;
+  z-index: 3;
+}
+
+.sticky-header:first-child {
+  left: 0;
+  z-index: 4;
+}
+
+.darkblue {
+  background: #1C4464;
+  width: 100%;
+}
+
+.sticky-row {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  top: 23px;
+  /* background: #1C4464; */
+  color: white;
+  z-index: 3;
+}
+.sticky-row:nth-child(2) {
+  left: 100px; /* How can I make this dynamic? */
+  z-index: 2;
+}
+span {
+  position: absolute;
+  top: 2px;
+  left: 113px;
+}
+
+.sticky-column {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  background: #569CA8;
+  color: white;
+  z-index: 1;
+  width: 100px; /* How can I make this dynamic? */
+}
+
+
+    .custom-slider .ngx-slider .ngx-slider-bar {
+      background: #ffe4d1;
+      height: 5px;
+    }
+    .custom-slider .ngx-slider .ngx-slider-selection {
+      background: orange;
+    }
+  
+    .custom-slider .ngx-slider .ngx-slider-pointer {
+      width: 10px;
+      height: 15px;
+      top: auto; /* to remove the default positioning */
+      bottom: 0;
+      background-color: blue;
+    }
+  
+    .custom-slider .ngx-slider .ngx-slider-pointer:after {
+      display: none;
+    }
+  
+    .custom-slider .ngx-slider .ngx-slider-bubble {
+      bottom: 14px;
+    }
+  
+    .custom-slider .ngx-slider .ngx-slider-limit {
+      font-weight: bold;
+      color: red;
+    }
+  
+    .custom-slider .ngx-slider .ngx-slider-tick {
+      width: 1px;
+      height: 15px;
+      margin-left: 4px;
+      border-radius: 0;
+      background: black;
+      top: -1px;
+    }
+  
+    .custom-slider .ngx-slider .ngx-slider-tick.ngx-slider-selected {
+      background: rgb(0, 110, 255);
+    }
+.range-slider {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+.range-slider label {
+  color: rgb(17, 17, 17);
+  font-size: 15px;
+}
+.range-slider .number-group {
+  flex: 1 0 auto;
+  text-align: left;
+  height: 30px;
+  font-weight: 300;
+  font-size: 15px;
+  color: rgb(7, 6, 6);
+}
+.range-slider .number-group .number-input {
+  width: auto;
+  height: 30px;
+  text-align: center;
+  color: #ffffff;
+  background-color: #3faffa;
+  border: 0;
+  border-radius: 4px;
+}
+.range-slider .number-group .number-input:first-of-type {
+  margin-right: 7px;
+}
+.range-slider .number-group .number-input:last-of-type {
+  margin-left: 7px;
+}
+.range-slider .number-group .number-input::-webkit-outer-spin-button, .range-slider .number-group .number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+.range-slider .number-group .number-input:invalid, .range-slider .number-group .number-input:out-of-range {
+  border: 2px solid red;
+}
+.range-slider .range-group {
+  position: relative;
+  flex: 0 0 100%;
+  height: 47px;
+}
+.range-slider .range-group .range-input {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  margin-bottom: 0;
+  -webkit-appearance: none;
+  width: 100%;
+  border-bottom: 0;
+}
+.range-slider .range-group .range-input:focus {
+  outline: 0;
+}
+.range-slider .range-group .range-input::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  -webkit-animation: 0.2s;
+          animation: 0.2s;
+  background: #3FAFFA;
+  border-radius: 1px;
+  box-shadow: none;
+  border: 0;
+}
+.range-slider .range-group .range-input::-webkit-slider-thumb {
+  z-index: 2;
+  position: relative;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -7px;
+  border: 5px solid #3FAFFA;
+}
+.range-slider .range-group .range-input::-moz-range-track {
+  width: 100%;
+  height: 2px;
+  cursor: pointer;
+  animation: 0.2s;
+  background: #3FAFFA;
+  border-radius: 1px;
+  box-shadow: none;
+  border: 0;
+}
+.range-slider .range-group .range-input::-moz-range-thumb {
+  z-index: 2;
+  position: relative;
+  box-shadow: 0px 0px 0px #000;
+  border: 1px solid #2497e3;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #3FAFFA;
+  cursor: pointer;
+}
+.range-slider .range-group .range-input::-ms-track {
+  width: 100%;
+  height: 5px;
+  cursor: pointer;
+  animation: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+.range-slider .range-group .range-input::-ms-fill-lower, .range-slider .range-group .range-input::-ms-fill-upper {
+  background: #3FAFFA;
+  border-radius: 1px;
+  box-shadow: none;
+  border: 0;
+}
+.range-slider .range-group .range-input::-ms-thumb {
+  z-index: 2;
+  position: relative;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #3FAFFA;
+  cursor: pointer;
+}
+
+/* for demo purposes */
+body {
+  background-color: #323334;
+}
+
+.range-slider,
+.filter {
+  margin: 0 auto 30px;
+}

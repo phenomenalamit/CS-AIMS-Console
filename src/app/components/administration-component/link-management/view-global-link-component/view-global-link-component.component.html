@@ -1,0 +1,194 @@
+<!-- HTML page component for View Global Link -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+  <div class="container-fluid">
+    <div class="innerbody">
+      <div class="breadcumb">
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+               <nav aria-label="breadcrumb">
+                   <ol class="breadcrumb">
+                     <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                     <li class="breadcrumb-item label-envelope">{{ 'menu.Link Management' | translate }}</li>
+                     <li class="breadcrumb-item active label-view-envelope" aria-current="page">{{ 'global-Link.View Global Link' | translate }}</li>
+                   </ol>
+                 </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+               <div class="iconics-div">
+                   <ul class="iconics-buttons">
+  
+                       <li><a onclick="window.print()" class="iconsBG" title="{{'common.Print' | translate}}" ><i class="fas fa-print"></i></a></li>
+                       <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                       <li><a class="iconsBG" title="Excel" (click)="generateExcel('ExcelFile.xlsx')"><i class="far fa-file-excel"></i></a></li>
+                       <li><a  class="iconsBG" title="{{'common.Back' | translate}}" (click)="moveToSelectedTab1()"><i class="fas fa-arrow-left"></i></a></li>
+  
+                   </ul>
+                   </div>
+            </div>
+        </div>
+  
+  
+  <h1 class="label-envelope">View Global Link List</h1>
+  <hr>
+  <ng-container>
+  <!-- <mat-form-field class="input-filter">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field> -->
+  
+  <div class="row">
+    <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline" class="mb-form-0 width25">
+     
+      <mat-label>{{filter.name}}</mat-label>
+        <ng-container *ngIf="filter.columnProp=='globalLinkName'">
+         
+          <mat-select #select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue" multiple
+          (selectionChange)="globalLinkChange(filter,$event)"  (openedChange)="openOptionSearch(filter)">
+            <mat-optgroup>
+              <mat-form-field style="width:100%;">
+                <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                  [formControl]="searchFilter" (keyup)="chkValue(filter)">
+              </mat-form-field>
+            </mat-optgroup>
+            <mat-optgroup *ngIf="(filter.options).length == 0">
+              <div>{{'common.No results found!' | translate}}</div>
+            </mat-optgroup>
+            <mat-option [value]="item" *ngFor="let item of filter.options">
+              {{item}}</mat-option>
+          </mat-select>
+        </ng-container>
+       
+        <ng-container *ngIf="filter.columnProp=='status'">
+          
+          <mat-select #select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue" multiple
+          (selectionChange)="statusChange(filter,$event)"   (openedChange)="openOptionSearch(filter)">
+            <mat-optgroup>
+              <mat-form-field style="width:100%;">
+                <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                  [formControl]="searchFilter" (keyup)="chkValue(filter)">
+              </mat-form-field>
+            </mat-optgroup>
+            <mat-optgroup *ngIf="(filter.options).length == 0">
+              <div>{{'common.No results found!' | translate}}</div>
+            </mat-optgroup>
+            <mat-option  [value]="item" *ngFor="let item of filter.options">
+              <ng-container *ngIf="item=='InActive'">
+                {{'function-Master.InActive' | translate}}
+              </ng-container>
+              <ng-container *ngIf="item=='Active'">
+                {{'function-Master.Active' | translate}}
+              </ng-container>
+            </mat-option>
+          </mat-select>
+        </ng-container>
+    </mat-form-field>
+  </div>
+  <br/>
+  <button class="btn btn-success mr-2" style="margin-top: -42px;margin-left: 8px;" (click)="submitData()">{{'common.Filter' | translate}}</button> 
+  <button class="btn btn-danger" style="margin-top: -42px;" (click)="resetFilters()">{{ 'common.reset' | translate}}</button>
+  <div class="row">
+    
+      <!-- <mat-form-field *ngFor="let filter of filterSelectObj" style="margin-left: 5px;">
+        <div>
+        <mat-label>Filter {{filter.name}}</mat-label>
+        <select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+          (change)="filterChange(filter,$event)" >
+          <option value="">-- Select {{filter.name}} --</option>
+          <option [value]="item" *ngFor="let item of filter.options">{{item}}</option>
+        </select>
+      </div>
+      </mat-form-field>
+      &nbsp;
+      <button mat-flat-button color="warn" (click)="resetFilters()">Reset</button> -->
+    
+    <div class="col-sm-12">
+      <p>
+        {{'common.totalrows' | translate}} : {{ totalRows }} <br>
+      </p>
+  
+  <div class="mat-elevation-z8 table-responsive print-size-font">
+      <table id = "ExampleMaterialTable" mat-table [dataSource]="globalLinkdataSource" class="table table-bordered " matSort>
+  
+  
+       
+  
+          <ng-container matColumnDef="globalLinkName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'global-Link.Global Link Name' | translate }} </th>
+            <ng-container *ngIf="browserLang == 'en'">
+              <td mat-cell *matCellDef="let element"> {{element.globalLinkName}} </td>
+            </ng-container>
+            <ng-container *ngIf="browserLang == 'pt'">
+              <td mat-cell *matCellDef="let element"> {{element.globalLinkNamePt}} </td>
+            </ng-container>
+          </ng-container>
+          <ng-container matColumnDef="icon">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'global-Link.Icon' | translate }}</th>
+            <td mat-cell *matCellDef="let element"> {{element.icon}} </td>
+          </ng-container>
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'global-Link.status' | translate }}</th>
+            <ng-container *ngIf="browserLang == 'en'">
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.status == 'Active'">
+                  {{ 'primary-Link.Active' | translate }}
+                </ng-container>
+                <ng-container *ngIf="element.status == 'InActive'">
+                  {{ 'primary-Link.InActive' | translate }}
+                </ng-container>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="browserLang == 'pt'">
+              <td mat-cell *matCellDef="let element">
+                <ng-container *ngIf="element.status == 'Active'">
+                  {{ 'primary-Link.Active' | translate }}
+                </ng-container>
+                <ng-container *ngIf="element.status == 'InActive'">
+                  {{ 'primary-Link.InActive' | translate }}
+                </ng-container>
+              </td>
+            </ng-container>
+          </ng-container>
+  
+        
+       
+       
+     <ng-container matColumnDef="edit" sticky>
+      <th *matHeaderCellDef class="label-action" >{{ 'common.action' | translate }} </th>
+      <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+      <td *matCellDef="let element;let i = index;" class="printremove">
+         <!-- <button class="btn btn-primary btn-sm mr-1" (click)='updateGlobalLink(element.globalLinkId)' placement="top" ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1">
+          <i class="far fa-edit"></i>
+      </button> -->
+      <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+        <button class="btn btn-primary btn-sm mr-1" (click)='updateGlobalLink(element.globalLinkId)' placement="top" ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1">
+          <i class="far fa-edit"></i>
+        </button>
+      </ng-container>
+      <!-- <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{ 'create-envelope.view' | translate }}" tabindex="-1" (click)='viewGlobalLink(element.globalLinkId)'>
+      <i class="fas fa-eye"></i>
+    </button> -->
+     
+  
+    </td>
+  </ng-container>
+  
+  
+  
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+  
+  
+    </div>
+    </div>
+  </div>
+  
+  
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </ng-container>
+    </div>
+    </div>
+  </div>
+</ng-container>

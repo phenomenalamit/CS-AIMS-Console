@@ -1,0 +1,165 @@
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <!-- <strong>report-administration works!</strong> -->
+    <div class="container-fluid">
+        <div class="innerbody">
+            <ng-container *ngIf="num===0 || num===undefined">
+
+                <div class="breadcumb">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                class="fas fa-home"></i></a></li>
+                                    <li class="breadcrumb-item active label-adminstration" aria-current="page">
+                                        {{'field-management.Adminstration' | translate}}</li>
+
+                                    <li class="breadcrumb-item active label-exchange-rate" aria-current="page">
+                                        {{'menu.report-administration' | translate}}</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="iconics-div">
+                                <ul class="iconics-buttons">
+                                    <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+
+            </ng-container>
+            <form class="example-form" [formGroup]="reportAdminForm">
+            <div class="row mt-2">
+                    <div class="col-sm-12 button-align">
+                        <button class="btn btn-outline-primary btn-sm mt-1 label-reset " (click)="addNew()">
+                            {{'report-admin.addReports' | translate}}
+                        </button>
+                    </div>
+                </div><br>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table class="table table-striped table-bordered" formArrayName="tableData">
+                            <thead>
+                                <tr>
+                                    <th class="edit-width">{{'common.action' | translate}}</th>
+                                    <th *ngFor="let column of headers">
+                                        <ng-container *ngIf="column==='Report Name'">
+                                            {{'report-admin.reportName' | translate}}
+                                        </ng-container>
+
+                                        <ng-container *ngIf="column==='Status'">
+                                        {{'report-admin.status' | translate}}
+                                        </ng-container>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr *ngFor="let row of reportAdminForm.get('tableData')['controls']; let j = index">
+                                    <ng-container *ngIf="isReadOnly[j]===true">
+                                        <td>
+                                            <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"  class="btn btn-danger btn-sm"
+                                                (click)="editRow(j)"  ngbTooltip="{{'common.edit' | translate}}">
+                                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                                </a>
+                                            </ng-container>
+                                        </td>
+                                        <td *ngFor="let column of headers">
+                                            <ng-container [formGroupName]="j">
+                                                <input type="hidden"  autocomplete="off"
+                                                formControlName="id" />
+                                                <ng-container *ngIf=" column === 'Report Name'; then loggedIn;">
+                                                </ng-container>
+                                                <ng-template #loggedIn>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-name">  {{'report-admin.reportName' | translate}}</span> </mat-label>
+                                                        <input type="text" matInput autocomplete="off"
+                                                        formControlName="reportName" />
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Status'; then loggedIn1;">
+                                                </ng-container>
+                                                <ng-template #loggedIn1>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-name">  {{'report-admin.status' | translate}}</span> </mat-label>
+                                                        <!-- <input type="text"  matInput autocomplete="off"
+                                                        formControlName="status" /> -->
+                                                            <mat-select formControlName="status">
+                                                            <mat-option value="Active">{{'field-management.Active' | translate}}</mat-option>
+                                                            <mat-option value="Inactive" >{{'field-management.Inactive' | translate}}</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                            </ng-container>
+                                        </td>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="isReadOnly[j]===false">
+
+                                        <td>
+                                            <ng-container *ngIf="userPermission.indexOf(1)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                    class="btn btn-success btn-sm mr-2" (click)="saveRow(j)">
+                                                    <i class="fa fa-save" aria-hidden="true"
+                                                        ngbTooltip="{{'common.save' | translate}}"></i>
+                                                </a>
+                                            </ng-container>
+                                            <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+                                                <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                class="btn btn-danger btn-sm mr-2" (click)="deleteRow(j)">
+                                                <i class="fa fa-trash" aria-hidden="true"
+                                                    ngbTooltip="{{'common.delete' | translate}}"></i>
+                                                </a>
+                                            </ng-container>
+                                            <a popover-trigger="'mouseenter'" uib-popover="Delete"
+                                                class="btn btn-danger btn-sm" (click)="cancelRow(j)"
+                                                ngbTooltip="{{'common.cancel' | translate}}">
+                                                <i class="fa fa-window-close" aria-hidden="true"></i>
+                                            </a>
+                                        </td>
+                                        <td *ngFor="let column of headers">
+                                            <ng-container [formGroupName]="j">
+                                                <input type="hidden"  autocomplete="off"
+                                                formControlName="id" />
+                                                <ng-container *ngIf=" column === 'Report Name'; then loggedIn;">
+                                                </ng-container>
+                                                <ng-template #loggedIn>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-name">  {{'report-admin.reportName' | translate}}</span> </mat-label>
+                                                        <input type="text"  matInput autocomplete="off"
+                                                        formControlName="reportName" />
+                                                    </mat-form-field>
+                                                </ng-template>
+                                                <ng-container *ngIf=" column === 'Status'; then loggedIn1;">
+                                                </ng-container>
+                                                <ng-template #loggedIn1>
+                                                    <mat-form-field class="mb-form-0" [appearance]="fill">
+                                                        <mat-label><span class="label-enter-name">  {{'report-admin.status' | translate}}</span> </mat-label>
+                                                        <!-- <input type="text"  matInput autocomplete="off"
+                                                        formControlName="status" /> -->
+                                                            <mat-select formControlName="status">
+                                                            <mat-option value="Active">{{'field-management.Active' | translate}}</mat-option>
+                                                            <mat-option value="Inactive" >{{'field-management.Inactive' | translate}}</mat-option>
+                                                        </mat-select>
+                                                    </mat-form-field>
+                                                </ng-template>
+                                            </ng-container>
+                                        </td>
+                                    </ng-container>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-container>

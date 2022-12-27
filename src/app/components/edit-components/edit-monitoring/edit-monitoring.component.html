@@ -1,0 +1,137 @@
+<div class="container-fluid">
+        <div class="innerbody">
+            <ng-container *ngIf="monitoringId !==null">
+                <ng-container *ngIf="num===0 || num===undefined">
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <ng-container *ngIf="contractId !==null">
+                                            <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                        class="fas fa-home"></i></a></li>
+                                            <li class="breadcrumb-item active label-monitoring" aria-current="page">
+                                                {{'view-monitoring.monitoring' | translate}}
+                                            </li>
+                                            <li class="breadcrumb-item active label-create-monitoring"
+                                                aria-current="page">
+                                                {{'view-monitoring.view-monitoring-list' | translate}}
+                                            </li>
+                                        </ng-container>
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-monitoring" aria-current="page">
+                                            {{'monitoring-component.monitoring' | translate}}</li>
+                                        <li class="breadcrumb-item active label-create-individual" aria-current="page">
+                                            {{'monitoring-component.editmonitoring' | translate}}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <!-- <li><span class="indicates">(*) Indicates fields are mandatory</span></li> -->
+                                        <!-- <li>
+                                            <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2()' ><i class="fas fa-file-upload"></i></a>
+                                        </li> -->
+                                        <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToMonitoringTab()'><i
+                                                    class="fas fa-arrow-left"></i></a></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <h1 class="label-envelope">Envelope</h1> -->
+                    </div>
+
+                </ng-container>
+                <ng-container *ngIf="num===1">
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-monitoring" aria-current="page">
+                                            {{'monitoring-component.monitoring' | translate}}</li>
+                                        <li class="breadcrumb-item active label-create-individual" aria-current="page">
+                                            {{'monitoring-component.editmonitoring' | translate}}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><a onclick="window.print()" class="iconsBG" title="Print"><i
+                                                    class="fas fa-print"></i></a></li>
+                                        <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                                        <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i
+                                                    class="far fa-file-excel"></i></a></li>
+                                        <li><a class="iconsBG" title="{{'common.Back'|translate}}" (click)='moveToMonitoringTab()'><i
+                                                    class="fas fa-arrow-left"></i></a></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <h1 class="label-envelope">Envelope</h1> -->
+                    </div>
+                </ng-container>
+
+
+                <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                    <mat-tab label="Edit Monitoring Details" class="label-Monitoring">
+                        <app-add-monitoring-revised></app-add-monitoring-revised>
+                    </mat-tab>
+
+
+                </mat-tab-group>
+            </ng-container>
+
+            <ng-container *ngIf="contractId !==null">
+                <ng-container *ngIf="num===0 || num===undefined">
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-monitoring" aria-current="page">
+                                            {{'view-monitoring.monitoring' | translate}}
+                                        </li>
+                                        <li class="breadcrumb-item active label-create-monitoring" aria-current="page">
+                                            {{'view-monitoring.view-monitoring-list' | translate}}
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToMonitoringTab()'><i
+                                                    class="fas fa-arrow-left"></i></a></li>
+
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+                </ng-container>
+                <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                    <mat-tab label="View Monitoring Details" class="label-edit-disbursement">
+                        <app-add-monitoring-revised></app-add-monitoring-revised>
+                    </mat-tab>
+                </mat-tab-group>
+            </ng-container>
+
+        </div>
+    </div>

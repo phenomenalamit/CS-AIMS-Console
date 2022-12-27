@@ -1,0 +1,166 @@
+<div style="text-align: right;">
+    <select #langSelect (change)="switchLanguage(langSelect.value)" class="lang-bg" aria-placeholder="LN">
+  
+        <option *ngFor="let lang of translate.getLangs()" [value]="lang" [selected]="lang === translate.currentLang">
+          <ng-container *ngIf="lang === 'en'" >
+            English
+          </ng-container>
+          <ng-container *ngIf="lang === 'pt'">
+            Português
+          </ng-container>
+         
+        </option>
+      </select>
+</div>
+<div class="login-page" style='background-image:url("./assets/images/bg.jpg");
+align-items: center;justify-content: center;height: 100vh;
+position: relative;background-size: cover;'>
+
+    <div class="container">
+
+      <div class="loginscreen">
+          <div class="img-log-screen">
+            <img src="./assets/images/group.png" />
+          </div>
+        <form class="login-form" fxFlex  [formGroup]="loginform">
+            <div class="text-center">
+                <img src="./assets/images/loginlogo.png" class="loginBG" />
+                <h2 class="app-name">{{ 'leftSideMenu.aims-full-form' | translate }}</h2>
+            </div>
+            <mat-error *ngIf="lockpass==='true'">Your account is blocked.You can try after sometime.</mat-error>
+            <mat-error *ngIf="wrongpass==='true'">UserName & Password doesn't match</mat-error>
+            <mat-error *ngIf="catpchaerror==='true'">Captcha Mismatch,Retry Again</mat-error>
+            <mat-error *ngIf="jwtTokenExpiry==='true'">Token has been expired</mat-error>
+            <div fxFlex  fxlayout="row" fxlayout.lt-md="column">
+                <div fxFlexFill>
+                    <mat-form-field appearance="legacy" class="undilineinput">
+                        <mat-label class="labeluser">{{ 'common.username' | translate }}</mat-label>
+                        <input matInput placeholder="" onmousedown="return true" formControlName="userName" >
+                        <mat-icon matPrefix><i class="i-sm fas fa-user"></i></mat-icon>
+                    <mat-error *ngIf="hasError('userName', 'required')">User Name is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div fxFlex  fxLayout="row" fxLayout.lt-md="column">
+                <div fxFlexFill>
+                    <mat-form-field appearance="legacy">
+                        <mat-label class="labeluser">{{ 'common.password' | translate }}</mat-label>
+                        <input matInput [type]="showPassword ? 'text' : 'password'"  onmousedown="return true"
+                         placeholder="" formControlName="password" id="password2">
+                        <mat-icon matPrefix><i class="i-sm fas fa-key"></i></mat-icon>
+                        <!-- <i class="fas fa-info-circle info-font carte_button"></i>
+                        <div class="carte" >
+                            <ul>
+                                <li>Passwords must be at least 8 characters long</li>
+                                <li>Passwords must include a combination of at least 1 upper case letter, 1 lower case letter, 1 number & 1 special character( $, #, @, !, %, ^, &, *, (, ) )</li>
+                                <li>Passwords must not be similar to 5 old passwords.</li>
+                            </ul>
+                        </div> -->
+                        <mat-icon matSuffix (click)="showPassword = !showPassword" class="showPassword-i">
+                            <i class="fa fa-eye" aria-hidden="true" *ngIf="showPassword"></i>
+                                <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!showPassword"></i>
+                        </mat-icon>
+
+                        <mat-error *ngIf="hasError('password', 'required')">Password is required</mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+<!-- <div class="row"> -->
+    <!-- <div class="col-xl-5 col-lg-5 col-md-5">
+        <mat-form-field appearance="legacy" class="undilineinput">
+            <mat-label class="labeluser">Enter captcha</mat-label>
+            <input matInput >
+        </mat-form-field>
+    </div>
+    <div class="col-xl-5 col-lg-5 col-md-5">
+     <div class="capImg">
+        <img src="./assets/images/Captcha.png"  />
+     </div>
+    </div>
+
+    <div class="col-xl-2 col-lg-2 col-md-2">
+        <a href="javascript:void(0)" class="cpt-btn reload" (click)="createCaptcha()">&#x21bb;</a>
+    </div> -->
+
+    <!-- <div class="col-xl-5 col-lg-5 col-md-6">
+        <ngx-captcha [config]="captchaConfig" (click)="check()"></ngx-captcha>
+    </div> -->
+
+    <!-- <ngx-recaptcha2 #captchaElem siteKey="6LeFR6cUAAAAAGviLYm9xPsWGyVaTLjBCDFma9Yp" (success)="handleSuccess($event)" [size]="size"
+	 [hl]="lang" [theme]="theme" [type]="type" formControlName="recaptcha">
+	</ngx-recaptcha2> -->
+
+    <!-- <ngx-recaptcha2 #captchaElem
+    [siteKey]="'6LeOZ4YUAAAAAJ8clQYNtOXNDHsd58KZHyJeILk6'"
+    (success)="handleSuccess($event)"
+    [useGlobalDomain]="false"
+    [size]="size"
+    [hl]="lang"
+    [theme]="theme"
+    [type]="type"
+    formControlName="recaptcha">
+  </ngx-recaptcha2> -->
+  <!-- <ngx-recaptcha2 #captchaElem siteKey="6LcMxYkcAAAAAO526mxW1aQVFC3QsmC5SEadEEQJ" (success)="handleSuccess($event)" [size]="size"
+  [hl]="lang" [theme]="theme" [type]="type" formControlName="recaptcha">
+ </ngx-recaptcha2> -->
+  
+   
+ <mat-error *ngIf="wrongcaptcha==='true'">Please type Correct Captcha</mat-error>
+ <mat-error *ngIf="wrongcaptcha==='false'">Captcha Matched!!</mat-error>
+<div class="row">
+
+<div class="col-xl-5 col-lg-5 col-md-6">
+<mat-form-field appearance="legacy" class="undilineinput" (keydown.enter)="$event.preventDefault()">
+ <mat-label class="labeluser">{{ 'common.enter-captcha' | translate }}</mat-label>
+ <input matInput formControlName="catptchaValue">
+ <mat-error *ngIf="hasError('catptchaValue', 'required')">Captcha is required</mat-error>
+</mat-form-field>
+</div>
+
+<div class="col-xl-4 col-lg-4 col-md-6">
+<!-- <div class="capImg"> -->
+<!-- <img src="./assets/images/Captcha.png"  /> -->
+
+<!-- <div class="wrapper"></div> -->
+<!-- <h2 id="status" style="color: #ee7e6a;"></h2> -->
+<mat-form-field appearance="legacy" >
+<input matInput readonly formControlName="captchaValueReadonly">
+</mat-form-field>
+</div>
+<div class="col-xl-2 col-lg-2 col-md-6 mt-3">
+<button  (click)="generate()" >
+<i class="fas fa-redo-alt"></i>
+<!-- Generate -->
+</button>
+<!-- </div> -->
+</div>
+
+</div>
+<!-- </div> -->
+
+
+            <div fxFlex  fxLayout="row">
+                <div fxFlexFill>
+                    <div class="loging-button">
+                    
+                   <a mat-raised-button (click)="loginFormSubmit()" class="btn-custom">Login</a>
+                </div>
+
+                </div>
+            </div>
+
+            <ul class="ul-login">
+                <li> <a [routerLink]="'/forgotpassword'" class="marginLeft">Forgot Password?</a></li>
+
+            </ul>
+
+        </form>
+
+
+
+      </div>
+
+
+    </div>
+</div>

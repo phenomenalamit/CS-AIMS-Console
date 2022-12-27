@@ -1,0 +1,250 @@
+ <div class="container-fluid">
+        <form class="example-form" [formGroup]="userAccountForm"  autocomplete="off" novalidate (ngSubmit)="createUserAccount(userAccountForm.value)">
+        <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field   appearance="outline" class="mb-form-0">
+                <mat-label ><span class="label-first-name">{{'user-account.first-name' | translate}}</span> </mat-label>
+                <input matInput type="text" placeholder="First name: " formControlName="firstName" >
+                <!-- <mat-error *ngIf="hasError('firstName', 'required')">First is required</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field   appearance="outline" class="mb-form-0">
+                <mat-label ><span class="label-last-name">{{'user-account.last-name' | translate}}</span> </mat-label>
+                <input matInput type="text" placeholder="Last name " formControlName="lastName" >
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-user-name"> {{'user-account.user-name' | translate}} </span></mat-label>
+                <input matInput class="example-right-align" placeholder="User Name" formControlName="userName">
+                </mat-form-field>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-email">{{'user-account.email' | translate}}</span></mat-label>
+                <input matInput type="text" placeholder="Email " formControlName="email" (keyup)="validEmail()">
+            </mat-form-field>
+                <ng-container *ngIf="checkEmail_flag==false">
+                    <mat-error > {{'user-account.invalid' | translate}} </mat-error>
+                </ng-container>
+                <ng-container *ngIf="checkEmail1_flag==false">
+                        <p style="color: green;"> {{'user-account.valid' | translate}} </p>
+                </ng-container>
+        </div>
+    </div>
+
+
+
+
+    <div class="row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+
+            <mat-form-field appearance="outline" class="mb-form-0 code-width" >
+                <mat-label>{{'user-account.Code' | translate}}</mat-label>
+                <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="code1"
+                    [matAutocomplete]="code1">
+                <mat-autocomplete #code1="matAutocomplete"  panelWidth="270px">
+                    <mat-option *ngFor="let option of countryDialingCodeFilteredOption | async" [value]="option.dialingCode" [id]="option.countryName">
+                        {{option.dialingCode}}&nbsp;({{option.countryName}})
+                    </mat-option>
+
+                </mat-autocomplete>
+            </mat-form-field>
+
+
+            <mat-form-field appearance="outline" class="mb-form-0 phone-number-width">
+                <mat-label>{{ 'add-organization.telephone' | translate }}</mat-label>
+                <input type="text" matInput  formControlName="telephone" placeholder="{{ 'add-organization.telephone' | translate }}" (keyup)="validatePhone()">
+            </mat-form-field>
+
+        <ng-container *ngIf="check_phone_flag==false">
+            <mat-error > {{'add-organization.invalidPhone' | translate}}</mat-error>
+        </ng-container>
+        <ng-container *ngIf="check_phone1_flag==false">
+            <p style="color: green;">{{'add-organization.validPhone' | translate}} </p>
+        </ng-container>
+        <ng-container *ngIf="check_phone1_flag==false && phoneMessage==' '">
+        </ng-container>
+
+
+</div>
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+           
+
+
+
+
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-type-of-user">
+                    {{'user-account.type-of-user' | translate}}
+                  </span></mat-label>
+               <mat-select formControlName="typeOfUser">
+                  <mat-option *ngFor="let typeOfUserIndicator of TypeOfUserList" [value]="typeOfUserIndicator.typeOfUserId">{{typeOfUserIndicator.typeOfUserNameEn}}</mat-option>
+                </mat-select>
+               
+              </mat-form-field>
+
+
+
+
+
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+           
+
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-user-group">
+                    {{'user-account.user-group' | translate}}
+                  </span></mat-label>
+               <mat-select formControlName="userGroup">
+                  <mat-option *ngFor="let userGroupIndicator of UserGroupDetailsList" [value]="userGroupIndicator.userGroupId">{{userGroupIndicator.userGroupNameEn}}</mat-option>
+                </mat-select>
+                <!-- <mat-error *ngIf="hasError('provinces', 'required')"></mat-error> -->
+              </mat-form-field>
+
+        </div>
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <!-- <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-permissions">{{'user-account.permissions' | translate}}</span></mat-label>
+                <mat-select formControlName="permissions">
+                    <mat-option value="crud">Create Read Update Delete</mat-option>
+                    <mat-option value="cru">Create Read Update</mat-option>
+                    <mat-option value="ru">Read Update</mat-option>
+                    <mat-option value="r">Read</mat-option>
+                </mat-select>
+            </mat-form-field> -->
+
+
+
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-permissions">
+                    {{'user-account.permissions' | translate}}
+                  </span></mat-label>
+               <mat-select formControlName="permissions">
+                  <mat-option *ngFor="let permissionsIndicator of PermissionsList" [value]="permissionsIndicator.permissionMasterId">{{permissionsIndicator.permissionMasterNameEn}}</mat-option>
+                </mat-select>
+                <!-- <mat-error *ngIf="hasError('provinces', 'required')"></mat-error> -->
+              </mat-form-field>
+
+
+
+        </div>
+        </div>
+        <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <!-- <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-operations">{{'user-account.operations' | translate}}</span></mat-label>
+                <mat-select formControlName="operations" >
+                    <mat-option value="Operations 1">Operations 1</mat-option>
+                    <mat-option value="Operations 2">Operations 2</mat-option>
+                    <mat-option value="Operations 3">Operations 3</mat-option>
+                </mat-select>
+            </mat-form-field> -->
+
+
+
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-operations">
+                    {{'user-account.operations' | translate}}
+                  </span></mat-label>
+               <mat-select formControlName="operations" multiple>
+                   <mat-option *ngFor="let operationsIndicator of OperationsList" [value]="operationsIndicator.operationsId">{{operationsIndicator.operationsNameEn}}</mat-option>
+                  <!-- <mat-option *ngFor="let operationsIndicator of OperationsList" [value]="operationsIndicator.operationsNameEn">{{operationsIndicator.operationsNameEn}}</mat-option> -->
+                </mat-select>
+                <!-- <mat-error *ngIf="hasError('provinces', 'required')"></mat-error> -->
+              </mat-form-field>
+
+
+
+
+        </div>
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <!-- <mat-form-field appearance="outline" class="mb-form-0" >
+                <mat-label><span class="label-features">{{'user-account.features' | translate}}</span></mat-label>
+                <mat-select formControlName="features">
+                    <mat-option value="admin">Admin</mat-option>
+                    <mat-option value="user">User</mat-option>
+                    <mat-option value="partner">Partner</mat-option>
+                </mat-select>
+            </mat-form-field> -->
+
+
+            <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-features">
+                    {{'user-account.features' | translate}}
+                  </span></mat-label>
+               <mat-select formControlName="features" multiple formArrayName="featuresdata">
+                   <mat-option *ngFor="let featuresIndicator of FeaturesList" [value]="featuresIndicator.featuresId">{{featuresIndicator.featuresNameEn}}</mat-option>
+                   <!-- <mat-option *ngFor="let featuresIndicator of FeaturesList" [value]="featuresIndicator.featuresNameEn">{{featuresIndicator.featuresNameEn}}</mat-option>  -->
+                </mat-select>
+                <!-- <mat-error *ngIf="hasError('provinces', 'required')"></mat-error> -->
+              </mat-form-field>
+
+
+
+        </div>
+    </div>
+</form>
+    </div>
+    <ng-container *ngIf="EditUserAcct!=='EditUserAcct' && ViewMoreUserAccount!=='ViewMoreUserAccount'">
+        <div class="row">
+            <div class="col-lg-12 mt-3 mb-2">
+                <div class="example-button">
+
+                    <button class="btn btn-success mr-2" (click)="(userAccountForm.invalid || checkEmail1_flag==true) ?  openMandatoryAlert():opensweetalert()"
+                       >{{'common.submit' | translate}}</button>
+                    <button class="btn btn-primary mr-2" (click)="opensweetalert2()" [disabled]="userAccountForm.invalid || checkEmail1_flag==true">
+                        {{'common.save-as-draft' | translate}}</button>
+                    <button class="btn btn-reset mr-2" (click)="clearForm(userAccountForm)">{{'common.reset' | translate}}</button>
+                 </div>
+             </div>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="EditUserAcct=='EditUserAcct'">
+    <div class="row">
+                <div class="col-lg-12 mt-3 mb-2">
+                    <div class="example-button">
+                        <button class="btn btn-success mr-2" (click)="(userAccountForm.invalid || checkEmail1_flag==true) ?  openMandatoryAlert():opensweetalert()"
+                        >{{'common.submit' | translate}}</button>
+                            <button class="btn btn-primary mr-2" (click)="opensweetalert2()"
+                            [disabled]="userAccountForm.invalid"> {{'common.save-as-draft' | translate}}</button>
+                        <button class="btn btn-reset mr-2" (click)="clearForm(userAccountForm)">{{'common.reset' | translate}}</button>
+                        <button class="btn btn-danger mr-2" (click)="moveToUserAccountTab()">{{'common.cancel' | translate}}</button>
+                     </div>
+             </div>
+            </div>
+        </ng-container>
+<ng-container *ngIf="ViewMoreUserAccount=='ViewMoreUserAccount'">
+    <div class="row">
+        <div class="col-lg-12 mt-3 mb-2">
+            <div class="example-button">
+                <button class="btn btn-danger mr-2" (click)="moveToUserAccountTab()">{{'common.cancel' | translate}}</button>
+                <button class="btn btn-primary mr-2"  (click)='moveToSelectedTabEdit("EditUserAcct",element)'>{{'common.edit' | translate}}</button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+
+

@@ -1,0 +1,24 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right mb-4" ><i class="fas fa-times"></i></a>
+<div class="modal-dialog modal-xl"></div>
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+           
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr>
+                 <th>{{ 'common.action' | translate }}</th>
+                 <th>e-SNIP ID</th>
+                 <th>e-SNIP Project Title</th>
+               </tr>
+               <tr *ngFor="let row of datas">
+                <td class="add-width-project"><button mat-dialog-close="{{row.eSnipId}}" class="btn btn-success btn-sm" >{{ 'common.add' | translate }}</button></td>
+                <td>{{row.eSnipId}}</td>
+                <td>{{row.eSnipProjTitel}}</td>
+               </tr>
+           </table>
+        </div>
+       </div>
+     </div>
+     
+

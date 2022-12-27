@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="innerbody">
+        <ng-container *ngIf="num===0 || num===undefined">
+
+            <div class="breadcumb">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                            class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item active label-adminstration" aria-current="page">
+                                    {{'publish-administration.Publish Administration' | translate}}</li>
+
+                                <li class="breadcrumb-item active label-exchange-rate" aria-current="page">
+                                    {{'menu.publish-administration' | translate}}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="iconics-div">
+                            <ul class="iconics-buttons">
+                                <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+
+        </ng-container>
+    </div>
+</div>

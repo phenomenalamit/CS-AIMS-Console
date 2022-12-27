@@ -1,0 +1,84 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="closebuttonedit()"><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <!-- <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-organization" aria-current="page">{{'view-organization.organization' | translate}}</li> -->
+                 <li class="breadcrumb-item active label-create-organization" aria-current="page">{{'view-organization.view-organization-list' | translate}}</li>
+               </ol>
+             </nav>
+
+
+        </div>
+    </div>
+ </div>
+
+ <hr>
+
+
+
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="modal-dialog modal-xl">
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr>
+                <ng-container *ngIf="(category=='Donor') || (category=='Doador')">
+                <th>{{'add-project.fundingOrg' | translate}} </th>
+                <th>{{'view-organization.multilateral' | translate}}</th>
+                <th> {{'add-organization.DAC-OECD-Member' | translate}}</th>
+              </ng-container>
+                <th>{{'view-organization.telephoneCode' | translate}}</th>
+               <th>{{'view-organization.telephone' | translate}}</th>
+              <th>{{'view-organization.faxCode' | translate}}</th>
+                <th>{{'view-organization.fax' | translate}}</th>
+                   <th>{{'view-organization.email' | translate}}</th>
+                   <th>{{'view-organization.city' | translate}}</th>
+                   <th>{{'view-organization.address' | translate}}</th>
+                  
+
+                </tr>
+                <ng-container *ngIf="fundingOrgLength ==0">
+                <tr *ngFor="let data of organizationGetDataList">
+                  <ng-container *ngIf="(category=='Donor') || (category=='Doador')">
+                  <td>{{data.names}}</td>
+                  <td>{{data.multilateralBilateral}}</td>
+                  <td>{{data.emergingNonemerging}}</td>
+                </ng-container>
+                  <td>{{data.code1}}</td>
+                  <td>{{data.telephone}}</td>
+                  <td>{{data.code2}}</td>
+                  <td>{{data.fax}}</td>
+                  <td>{{data.email}}</td>
+                  <td>{{data.city}}</td>
+                  <td>{{data.direction}}</td>
+                
+                </tr>
+              </ng-container>
+              <ng-container *ngIf="fundingOrgLength !=0">
+                <tr *ngFor="let data1 of fundingOrgSplit">
+                <ng-container *ngFor="let data of organizationGetDataList">
+                  <ng-container *ngIf="(category=='Donor') || (category=='Doador')">
+                  <td>{{data1}}</td>
+                  <td>{{data.multilateralBilateral}}</td>
+                  <td>{{data.emergingNonemerging}}</td>
+                </ng-container>
+                  <td>{{data.code1}}</td>
+                  <td>{{data.telephone}}</td>
+                  <td>{{data.code2}}</td>
+                  <td>{{data.fax}}</td>
+                  <td>{{data.email}}</td>
+                  <td>{{data.city}}</td>
+                  <td>{{data.direction}}</td>
+                
+                </ng-container>
+              </tr>
+              </ng-container>
+           </table>
+        </div></div>
+       </div>
+     </div>
+

@@ -1,0 +1,53 @@
+/* .finding td,.finding th{
+    width: 20%;
+    border: 1px solid #dee2e6;
+
+} */
+#finding{
+    width: 10px;
+}
+
+/* 
+.finding td[_ngcontent-jwq-c16], .finding th[_ngcontent-jwq-c16] {
+    padding: 2px 5px;
+}
+
+.finding td, .finding th {
+    padding: .75rem !important;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6 !important;
+    
+    width: 1px;
+    min-width: 1px;
+    max-width: 1px;
+} */
+  table {
+    width: 100%;
+  }
+
+
+
+
+
+  
+
+td,
+th {
+  padding: 2px 5px;
+  /* white-space: nowrap; */
+}
+
+.whitesp-nowrap{
+    white-space: nowrap
+}
+.mat-datepicker-input {
+  width: 85%;
+}
+
+mat-icon {
+  position: relative;
+  float: right;
+  top: -3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+}

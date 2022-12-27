@@ -1,0 +1,88 @@
+.add-comments{
+  width: 75px;
+}
+table {
+  width: 100%;
+}
+.info-font{
+  font-size: 18px;
+  color: #48ab48bf;
+}
+td,
+th {
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.sticky-header {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: #146775;
+  color: white;
+  z-index: 3;
+}
+
+.sticky-header:first-child {
+  left: 0;
+  z-index: 4;
+}
+
+.sticky-row {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  top: 23px;
+  /* background: #1C4464; */
+  color: white;
+  z-index: 3;
+}
+
+.sticky-row:nth-child(2) {
+  left: 100px;
+  /* How can I make this dynamic? */
+  z-index: 2;
+}
+
+.sticky-column {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  background: #569CA8;
+  color: white;
+  z-index: 1;
+  width: 100px;
+  /* How can I make this dynamic? */
+}
+
+.mat-datepicker-input {
+  width: 85%;
+}
+
+mat-icon {
+  position: relative;
+  float: right;
+  top: -3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.mat-table {
+  overflow-x: scroll;
+}
+
+.mat-cell,
+.mat-header-cell {
+  word-wrap: initial;
+  display: table-cell;
+  padding: 0 px 10 px;
+  line-break :unset;
+  width: 100% ;
+  white-space: nowrap;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.mat-row,
+.mat-header-row {
+  display: table-row;
+}

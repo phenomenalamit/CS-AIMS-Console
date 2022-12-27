@@ -1,0 +1,52 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" ><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-finance" aria-current="page">{{'view_funding.financialAgreement' | translate}}</li>
+                 <li class="breadcrumb-item active label-view-finance" aria-current="page">{{'view_funding.viewFinancialAgreement' | translate}}</li>
+               </ol>
+             </nav>
+        </div>
+    </div>
+ </div>
+
+ <hr>
+
+
+
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="modal-dialog modal-xl">
+            <div class="col-sm-12">
+           <table  class="table table-bordered " *ngFor="let data of tabaleData">
+               <tr>
+                 <th>{{'add-funding.donor-for-funding-reference' | translate}}</th>
+                 <!-- <th>Funding Donor Title</th> -->
+                 <th>{{'add-funding.donor' | translate}}</th>
+                   <th>{{'add-funding.responsible-organization' | translate}}</th>
+                   <th>{{'add-funding.financing-situation' | translate}}</th>
+                   <th>{{'view_funding.typeOfAid' | translate}}</th>
+                </tr>
+                  <tr>
+                    <td>{{data.reference_for_financing_donor}}</td>
+                    <!-- <td>{{fundingDonorTitle}}</td> -->
+                    <td>{{data.donor}}</td>
+                    <td>{{data.responsibleOrganization}}</td>
+                    <ng-container *ngIf="browserLang=='en'">
+                  <td>{{data.financing_situation}}</td>
+                  <td>{{data.type_of_aid}}</td>
+                </ng-container>
+                <ng-container *ngIf="browserLang=='pt'">
+                  <td>{{data.financing_situationPt}}</td>
+                  <td>{{data.coOperationModalitiesPt}}</td>
+                </ng-container>
+                </tr>
+           </table>
+        </div></div>
+       </div>
+     </div>
+

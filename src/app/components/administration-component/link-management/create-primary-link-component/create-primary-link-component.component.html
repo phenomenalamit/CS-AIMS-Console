@@ -1,0 +1,183 @@
+<!-- HTML Page component For Add/Edit Primary Link -->
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div class="container-fluid">
+        <div class="innerbody">
+    
+            <div class="breadcumb">
+                <div class="row">
+                  
+                </div>
+                <div class="">
+                    <form class="example-form" [formGroup]="primaryLinkForm" autocomplete="off" novalidate>
+                        <input type="hidden" class="form-control"  formControlName="primaryLinkId" >
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <strong class="mandatory">*</strong>
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label>{{ 'primary-Link.Primary LinkName' | translate }}:</mat-label>
+                                    <input matInput class="" placeholder="{{ 'primary-Link.Primary Link' | translate }}"
+                                        formControlName="primaryLinkName">
+                                </mat-form-field>
+                            </div>
+                        <!-- </div>
+    
+                        <div class="row"> -->
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <strong class="mandatory">*</strong>
+                                <mat-form-field appearance="outline" class="mb-form-0" (click)="getValueByLang()">
+                                    <mat-label>{{ 'function-Master.Function Name' | translate }}</mat-label>
+                                    <mat-select (openedChange)="searchFunctionId.patchValue('')" formControlName="functionId">
+                                        <div class="select-container" *ngIf="functionMasterListFilteredOption">
+                                            <mat-optgroup>
+                                               <mat-form-field style="width:100%;">
+                                                    <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchFunctionId">
+                                                    <button [disableRipple]="true" *ngIf="searchFunctionId.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchFunctionId.patchValue('')">
+                                                        <mat-icon >close</mat-icon>
+                                                    </button>
+                                               </mat-form-field>
+                                            </mat-optgroup>
+                                            <mat-optgroup *ngIf="(functionMasterListFilteredOption | async).length == 0">
+                                                <div>{{'common.No results found!' | translate}}</div>
+                                            </mat-optgroup>
+                                            <ng-container *ngIf="browserLang == 'en'">
+                                                <mat-option *ngFor="let fMaster of functionMasterListFilteredOption | async" [value]="fMaster.functionId">
+                                                    {{fMaster.functionName}}
+                                                </mat-option>
+                                            </ng-container>
+                                            <ng-container *ngIf="browserLang == 'pt'">
+                                                <mat-option *ngFor="let fMaster of functionMasterListFilteredOption | async" [value]="fMaster.functionId">
+                                                    {{fMaster.functionNamePt}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </div>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <strong class="mandatory">*</strong>
+                                <mat-form-field appearance="outline" class="mb-form-0" (click)="getValueByLang()">
+                                    <mat-label>{{ 'global-Link.Global Link Name' | translate }}:</mat-label>
+                                    <mat-select (openedChange)="searchGlobalLinkId.patchValue('')" formControlName="globalLinkId">
+                                        <div class="select-container" *ngIf="globalLinkListFilteredOption">
+                                            <mat-optgroup>
+                                                <mat-form-field style="width:100%;">
+                                                     <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchGlobalLinkId">
+                                                     <button [disableRipple]="true" *ngIf="searchGlobalLinkId.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchGlobalLinkId.patchValue('')">
+                                                         <mat-icon >close</mat-icon>
+                                                     </button>
+                                                </mat-form-field>
+                                             </mat-optgroup>
+                                             <mat-optgroup *ngIf="(globalLinkListFilteredOption | async).length == 0">
+                                                 <div>{{'common.No results found!' | translate}}</div>
+                                             </mat-optgroup>
+                                            <ng-container *ngIf="browserLang == 'en'">
+                                                <mat-option *ngFor="let globalLink of globalLinkListFilteredOption | async" [value]="globalLink.globalLinkId">
+                                                    {{globalLink.globalLinkName}}
+                                                </mat-option>
+                                            </ng-container>
+                                            <ng-container *ngIf="browserLang == 'pt'">
+                                                <mat-option *ngFor="let globalLink of globalLinkListFilteredOption | async" [value]="globalLink.globalLinkId">
+                                                    {{globalLink.globalLinkNamePt}}
+                                                </mat-option>
+                                            </ng-container>
+                                        </div>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                            <ng-container *ngIf="updatePrimaryLink=='true'">
+                                <div class="col-xl-4 col-lg-4 col-sm-12 mt-4">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>{{ 'primary-Link.Select an option' | translate }}</mat-label>
+                                        <mat-select  formControlName="status">
+                                            <mat-option value="Active">{{ 'primary-Link.Active' | translate }}</mat-option>
+                                            <mat-option value="InActive">{{ 'primary-Link.InActive' | translate }}</mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </ng-container>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <h6><b>{{ 'primary-Link.Choose Permissions' | translate }}</b></h6>
+                                <ng-container *ngIf="editPrimaryLink=='editPrimaryLink' else elseContent">
+                                    <span *ngFor="let name of permissionDetailsList">
+                                        <ng-container *ngIf="browserLang == 'en'">
+                                            <mat-checkbox [checked]="permissionArrString.indexOf(name.permissionMasterId+'')!==-1"
+                                                (change)="onPermissionChange(name.permissionMasterId)" [value]="name.permissionMasterNameEn">
+                                                <ng-container *ngIf="name.difference<=7 || name.updateDifference<=7">
+                                                    <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                                </ng-container>
+                                                {{name.permissionMasterNameEn}}
+                                            </mat-checkbox>
+                                        </ng-container>
+                                        <ng-container *ngIf="browserLang == 'pt'">
+                                            <mat-checkbox [checked]="permissionArrString.indexOf(name.permissionMasterId+'')!==-1" (change)="onPermissionChange(name.permissionMasterId)" [value]="name.permissionMasterNamePt">
+                                                <ng-container *ngIf="name.difference<=7 || name.updateDifference<=7">
+                                                    <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                                </ng-container>
+                                                {{name.permissionMasterNamePt}}</mat-checkbox>
+                                        </ng-container>
+                                    </span>
+                                </ng-container>
+                                <ng-template #elseContent>
+                                    <span *ngFor="let name of permissionDetailsList">
+                                        <ng-container *ngIf="browserLang == 'en'">
+                                            <mat-checkbox (change)="onPermissionChange(name.permissionMasterId)" [value]="name.permissionMasterNameEn">
+                                                <ng-container *ngIf="name.difference<=7 || name.updateDifference<=7">
+                                                    <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                                </ng-container>
+                                                {{name.permissionMasterNameEn}}
+                                            </mat-checkbox>
+                                        </ng-container>
+                                        <ng-container *ngIf="browserLang == 'pt'">
+                                            <mat-checkbox (change)="onPermissionChange(name.permissionMasterId)" [value]="name.permissionMasterNamePt">
+                                                <ng-container *ngIf="name.difference<=7 || name.updateDifference<=7">
+                                                    <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                                </ng-container>
+                                                {{name.permissionMasterNamePt}}
+                                            </mat-checkbox>
+                                        </ng-container>
+                                    </span>
+                                </ng-template>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="updatePrimaryLink!=='true'">
+                            <div class="row">
+                                <div class="col-lg-12 mt-3 mb-2">
+                                    <div class="example-button">
+                                        <button class="btn btn-success mr-2" (click)="(primaryLinkForm.invalid)?openMandatoryAlert():opensweetalert()"
+                                            >{{'common.submit' |
+                                            translate}}</button>
+    
+                                        <button class="btn btn-reset mr-2" (click)="clearForm(primaryLinkForm)">{{'common.reset' |
+                                            translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    <ng-container *ngIf="updatePrimaryLink=='true'">
+                    <div class="row">
+                        <div class="col-lg-12 mt-3 mb-2">
+                            <div class="example-button">
+                                <button class="btn btn-success mr-2" (click)="opensweetalertUpdate()"
+                                    [disabled]="primaryLinkForm.invalid">{{'common.update' |
+                                    translate}}</button>
+    
+                                <button class="btn btn-reset mr-2" (click)="clearForm(primaryLinkForm)">{{'common.reset' |
+                                    translate}}</button>
+                                <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                    </ng-container>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

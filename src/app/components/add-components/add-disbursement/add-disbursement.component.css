@@ -1,0 +1,25 @@
+.info-font{
+    font-size: 13px;
+    color: #48ab48bf;
+}
+.additional-selection {
+    opacity: 0.75;
+    font-size: 0.75em;
+  }
+  .select-container{
+    margin-top:10px;
+  }
+.rows{
+  float: right;
+}
+.mat-datepicker-input {
+  width: 85%;
+}
+
+mat-icon {
+  position: relative;
+  float: right;
+  top: -3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+}

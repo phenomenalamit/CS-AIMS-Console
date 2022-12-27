@@ -1,0 +1,354 @@
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">  
+  <div class="container-fluid">
+    <div class="innerbody">
+      <div class="breadcumb">
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item label-view-project" aria-current="page">{{'view-project.project' | translate}}</li>
+                <li class="breadcrumb-item active label-view-project" aria-current="page">{{'menu.View Project List' | translate}}</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+              <ul class="iconics-buttons">
+                <!-- <li><div class="example-button">
+                  <button class="btn btn-upload mr-2" (click)='openDocumentDialog()' >{{'common.viewDocument' | translate}}</button>
+                  </div></li> -->
+                  <!-- <li>
+                    <a class="iconsBG" title="{{'common.viewDocument' | translate}}" (click)='openDocumentDialog()' ><i class="fas fa-file-download"></i></a>
+                    </li> -->
+          
+                <li><a onclick="document.title='Project_'+new Date().toISOString();window.print()" class="iconsBG" title="{{'common.Print' | translate}}"><i class="fas fa-print"></i></a></li>
+                <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                <!-- <li><a class="iconsBG" title="Excel" href='./assets/AIMS-Project-2021-05-17T10_41_22.378Z.xlsx' download="AIMS-Project-2021-05-17T10_41_22.378Z.xlsx"><i class="far fa-file-excel"></i></a></li> -->
+                <li><a class="iconsBG" title="{{'common.Back' | translate}}" (click)='moveToSelectedTab1("Create Project")'>
+                    <i class="fas fa-arrow-left"></i></a></li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <h1 class="label-envelope">View Project List</h1>
+        <hr>
+
+  <!-- <mat-form-field class="input-filter">
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'view-monitoring.filter' | translate}}">
+    </mat-form-field> -->
+    <div class="customROW printremove">
+      <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline" class="mb-form-0 width25">
+
+        <mat-label>{{ 'common.Filter' | translate }} {{filter.name}}</mat-label>
+        <ng-container *ngIf="filter.name === ''"></ng-container>
+        <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+        (selectionChange)="filterChange(filter,$event)" multiple (openedChange)="openOptionSearch(filter)">
+        <mat-optgroup>
+          <mat-form-field style="width:100%;">
+            <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+              [formControl]="searchFilter" (keyup)="chkValue(filter)">
+          </mat-form-field>
+        </mat-optgroup>
+        <mat-optgroup *ngIf="(filter.options).length == 0">
+          <div>{{ 'common.No results found!' | translate }}</div>
+        </mat-optgroup>
+        <ng-container *ngIf="filter.columnProp == 'district'">
+          <ng-container *ngIf="(filter.options).length != 0">
+            <mat-optgroup *ngFor="let provinceName of proviceFinal" [label]="provinceName">
+              <ng-container *ngFor="let items of filter.options">
+                <ng-container *ngIf="provinceName === provinceNm(items)">
+                  <mat-option [value]="items">{{items}}</mat-option>
+                </ng-container>
+              </ng-container>
+            </mat-optgroup>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="filter.columnProp != 'district'" >
+        <mat-option [value]="item" *ngFor="let item of filter.options"
+        matTooltip="{{item}}" [matTooltipPosition]="'right'"
+        matTooltipClass="custom-tooltip">{{item}}</mat-option>
+      </ng-container>
+      </mat-select>
+      </mat-form-field>
+      <ngx-slider  [(value)]="minExchangeRate" [(highValue)]="maxExchangeRate" [options]="optionsMT" (mouseup)="getRangeExchangeRate()"></ngx-slider>
+      <ngx-slider  [(value)]="minAlloAmtMzn" [(highValue)]="maxAlloAmtMzn" [options]="optionsAMZ" (mouseup)="getAlloAMtMzn()"></ngx-slider>
+      <ngx-slider  [(value)]="minAlloAmtUsd" [(highValue)]="maxAlloAmtUsd" [options]="optionsAUSD" (mouseup)="getAlloAMtUsd()"></ngx-slider>
+      <ngx-slider  [(value)]="minFinanceAmt" [(highValue)]="maxFinanceAmt" [options]="optionsFinAmt" (mouseup)="getFinanceAmt()"></ngx-slider>
+      <button mat-flat-button color="warn" (click)="resetFilters()" class="mt-2">{{ 'common.reset' | translate }}</button>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        <p>
+          {{'common.totalrows' | translate}} : {{ totalRows }} &nbsp;&nbsp; 
+          <!-- <select id="limitDropDown" (change)="getProjectViewDetails()">
+            <option value="0" selected></option>
+          </select> -->
+          <a popover-trigger="'mouseenter'" uib-popover="Delete" href="javascript: void(0);"
+        (click)="loadAllData();"> Show All Records
+      </a>
+        </p>
+    <div class="mat-elevation-z8 table-responsive customizeTable" #epltable>
+    <table id="ExampleMaterialTable" mat-table  [dataSource]="projectDataSource" class="table table-bordered" matSort>
+
+      <ng-container matColumnDef="select">
+        <th *matHeaderCellDef style="width: 70px;">S/N</th>
+        <td *matCellDef="let row;let i = index;">
+          <ng-container *ngIf="usergroup == 'Development Partner Administrator' || usergroup == 'DNGDP Team'">
+            <ng-container *ngIf="row.emailChk == true">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                    [checked]="selection.isSelected(row)">
+                    {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                </mat-checkbox>
+            </ng-container>
+            <ng-container *ngIf="row.emailChk == false">
+                <b>{{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}</b>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="usergroup != 'Development Partner Administrator' && usergroup != 'DNGDP Team'">
+            <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                    [checked]="selection.isSelected(row)">
+                    {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                </mat-checkbox>
+            </ng-container>
+            <ng-container *ngIf="userPermission.indexOf(3)==-1">
+              <b>{{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}</b>
+            </ng-container>
+          </ng-container>
+        </td>
+        <td mat-footer-cell *matFooterCellDef> - </td>
+    </ng-container>
+
+      <ng-container matColumnDef="edit" sticky>
+        <th *matHeaderCellDef class="label-action" >{{'common.action' | translate}}</th>
+        <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+        <td *matCellDef="let element;let i = index;"class="printremove">
+          <ng-container *ngIf="usergroup == 'Development Partner Administrator' || usergroup == 'DNGDP Team'">
+            <ng-container *ngIf="element.emailChk == true">
+              <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'common.edit' | translate }}" tabindex="-1" (click)='moveToSelectedTab(element.projectId)'>
+                <i class="far fa-edit"></i>
+              </button>&nbsp;
+              <button class="btn btn-warning btn-sm" placement="top" ngbTooltip="{{ 'common.uploadDocument' | translate }}" tabindex="-1" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2(element.projectTitle)' ><i class="fas fa-file-upload"></i></button>&nbsp;
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="usergroup != 'Development Partner Administrator' && usergroup != 'DNGDP Team'">
+            <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+              <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'common.edit' | translate }}" tabindex="-1" (click)='moveToSelectedTab(element.projectId)'>
+                <i class="far fa-edit"></i>
+              </button>&nbsp;
+              <button class="btn btn-warning btn-sm" placement="top" ngbTooltip="{{ 'common.uploadDocument' | translate }}" tabindex="-1" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2(element.projectTitle)' ><i class="fas fa-file-upload"></i></button>&nbsp;
+            </ng-container>
+          </ng-container>
+          <!-- <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+            <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{'common.delete' | translate}}" tabindex="-1" (click)='opensweetalertDelete(element.projectId)'>
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </ng-container> -->
+          <ng-container *ngIf="userPermission.indexOf(2)!=-1">
+            <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{'common.view' | translate}}" tabindex="-1" (click)='viewMoreProject(element.projectId)'>
+              <i class="fas fa-eye"></i>
+            </button>&nbsp;
+          <button class="btn btn-info btn-sm" placement="top" ngbTooltip="{{'common.viewDocument' | translate}}" tabindex="-1" title="{{'common.viewDocument' | translate}}" (click)='openDocumentDialog(element.projectTitle)' ><i class="fas fa-file-download"></i></button>
+          </ng-container>&nbsp;
+          <!-- <button class="btn btn-info btn-sm" placement="top" ngbTooltip="{{ 'common.view' | translate }}"
+          tabindex="-1" (click)='openDialog(element.projectTitle)'>
+          <i class="fas fa-eye"></i>
+        </button> -->
+      </td>
+      <td mat-footer-cell *matFooterCellDef style="font-weight: bold;" class="printremove"> Total </td>
+    </ng-container>
+      <!-- <ng-container matColumnDef="edit">
+        <th *matHeaderCellDef class="label-action text-center"  [attr.colspan]="3"> Action </th>
+        <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='moveToSelectedTab("Edit Project",element)'>
+            <i class="far fa-edit"></i>
+        </button> </td>
+    </ng-container>
+    <ng-container matColumnDef="delete">
+      <th [ngStyle]="{'display': 'none'}" *matHeaderCellDef class="label-action" [attr.colspan]="3"> Action </th>
+      <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'>
+      <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1"  (click)='opensweetalertDelete()'>
+        <i class="fas fa-trash-alt"></i>
+      </button> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="viewMore">
+      <th [ngStyle]="{'display': 'none'}" *matHeaderCellDef class="label-action" [attr.colspan]="3"> Action </th>
+    <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'>
+      <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='viewMoreProject(element)'>
+        <i class="fas fa-eye"></i>
+      </button> </td>
+    </ng-container> -->
+        <!-- <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef class="label-serial-number"> Sl# </th>
+            <td mat-cell *matCellDef="let element"> {{element.position}}</td>
+        </ng-container> -->
+
+
+        <ng-container matColumnDef="projectTitle">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectTitel"  >{{'view-project.projectTitel' | translate}} </th>
+          <td mat-cell *matCellDef="let element"> {{element.projectTitle}}</td>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+
+        <ng-container matColumnDef="projectSituation">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectSituation"  >{{'view-project.projectSituation' | translate}} </th>
+            <ng-container *ngIf="browserLang=='en'">
+            <td mat-cell *matCellDef="let element"> {{element.projectSituation}}</td>
+            </ng-container>
+            <ng-container *ngIf="browserLang=='pt'">
+              <td mat-cell *matCellDef="let element"> {{element.projectSituationPt}}</td>
+              </ng-container>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="implementingOrganizartion">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-implementingOrganizartion"> {{'add-project.implementing-organization' | translate}} </th>
+          <td mat-cell *matCellDef="let element"> {{element.fetchProjectSituation.projectSituationNameEn}}</td>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="ResponsibleOrganization">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-ResponsibleOrganization"> {{'view-project.responsibleOrganization' | translate}} </th>
+          <td mat-cell *matCellDef="let element"> {{element.responsibleOrganization}}</td>
+          <td mat-footer-cell *matFooterCellDef> - </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="projectLink">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectLink"> Project Link </th>
+          <td mat-cell *matCellDef="let element"> {{element.projectLink}}</td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="allocatedAmount">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-allocatedAmount"> {{'view-project.allocatedAmount' | translate}}</th>
+        <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.totalAmountMzn | number : '1.2-2'}}</td>
+        <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalAmntMZN | number : '1.2-2'}} </td>
+
+    </ng-container>
+
+    <ng-container matColumnDef="allocatedAmountUSD">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-allocatedAmount"> {{'view-project.allocatedAmountUSD' | translate}} </th>
+    <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.totOdaAmtAlloUSD | number : '1.2-2'}}</td>
+    <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalAmntUsd | number : '1.2-2'}}  </td>
+
+  </ng-container>
+  <ng-container matColumnDef="financialExeAmt">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-financialExeAmt"> {{'view-project.financialExeAmt' | translate}} </th>
+  <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.financialExecutionAmount | number : '1.2-2'}}</td>
+  <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalFinaceAmt | number : '1.2-2'}}  </td>
+
+  </ng-container>
+  <!-- <ng-container matColumnDef="province">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-province"  >{{ 'add-project.province' | translate }} </th>
+    <td mat-cell *matCellDef="let element"> {{element.fetchProjectSituation.projectSituationNameEn}}</td>
+    <td mat-footer-cell *matFooterCellDef> - </td>
+  </ng-container>
+  <ng-container matColumnDef="district">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-district"  >{{ 'add-project.districts' | translate }} </th>
+    <td mat-cell *matCellDef="let element"> {{element.fetchProjectSituation.projectSituationNameEn}}</td>
+    <td mat-footer-cell *matFooterCellDef> - </td>
+  </ng-container> -->
+  <ng-container matColumnDef="financialExeRate">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-financialExeRate"  >{{ 'add-project.financial-execution-rate' | translate }} </th>
+    <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.financialExecutionRate | number : '1.2-2'}}</td>
+    <!-- <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalFinancialExeRate | number : '1.2-2'}}  </td> -->
+    <td mat-footer-cell *matFooterCellDef> - </td>
+  </ng-container>
+
+    <!--<ng-container matColumnDef="Comments">
+          <th mat-header-cell *matHeaderCellDef class="label-Comments">Comments </th>
+        <td mat-cell *matCellDef="let element"> {{element.Comments}}</td>
+    </ng-container>-->
+
+
+
+
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns" style="background-color: #d9d9d9;"></tr>
+
+      </table>
+
+
+
+    </div>
+    </div>
+    </div>
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    <div class="row">
+      <div class="col-lg-12 mt-3 mb-2">
+        <div class="example-button">
+          <button mat-flat-button color="warn" class="btn btn-danger btn-reset mr-2" (click)="opensweetalertDelete()">
+            {{"common.delete" | translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="
+  usergroup==='dnma' || usergroup==='dncp' || usergroup==='cedsif' || usergroup==='bankomoz' || usergroup==='dnpo'">
+
+  <mat-form-field class="input-filter">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'view-monitoring.filter' | translate}}">
+  </mat-form-field>
+  <div class="row">
+    <div class="col-sm-12">
+  <div class="mat-elevation-z8" #epltable>
+  <table mat-table  [dataSource]="dataSource" class="table table-bordered" matSort>
+
+      <!-- <ng-container matColumnDef="position">
+          <th mat-header-cell *matHeaderCellDef class="label-serial-number"> Sl# </th>
+          <td mat-cell *matCellDef="let element"> {{element.position}}</td>
+      </ng-container> -->
+
+
+      <ng-container matColumnDef="projectTitel">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectTitel"  > Project Title </th>
+        <td mat-cell *matCellDef="let element"> {{element.projectTitel}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="projectSituation">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectSituation" >Project Situation </th>
+        <td mat-cell *matCellDef="let element"> {{element.projectSituation}}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ResponsibleOrganization">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-ResponsibleOrganization"> Responsible Organization </th>
+        <td mat-cell *matCellDef="let element"> {{element.ResponsibleOrganization}}</td>
+      </ng-container>
+
+      <!-- <ng-container matColumnDef="projectLink">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectLink"> Project Link </th>
+        <td mat-cell *matCellDef="let element"> {{element.projectLink}}</td>
+      </ng-container> -->
+
+      <ng-container matColumnDef="projectOverview">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="label-projectOverview">Project Overview</th>
+      <td mat-cell *matCellDef="let element"> {{element.projectOverview}}</td>
+  </ng-container>
+
+  <!-- <ng-container matColumnDef="Comments">
+        <th mat-header-cell *matHeaderCellDef class="label-Comments">Comments </th>
+      <td mat-cell *matCellDef="let element"> {{element.Comments}}</td>
+  </ng-container> -->
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsReadOnly"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnsReadOnly;"></tr>
+
+    </table>
+
+  </div>
+  </div>
+  </div>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </ng-container>
+  </div>
+  </div>
+  </div>
+</ng-container>

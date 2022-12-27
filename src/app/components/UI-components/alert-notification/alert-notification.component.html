@@ -1,0 +1,85 @@
+<div class="container-fluid">
+    <div class="innerbody">
+        <div class="breadcumb">
+         <div class="row">
+             <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/alert-notification'">{{'allNotification.notification' | translate}}</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{'allNotification.allNotification' | translate}}</li>
+                    </ol>
+                  </nav>
+             </div>
+             <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                    <ul class="iconics-buttons">
+                        <li><a onclick="window.print()" class="iconsBG"  title="Print"><i class="fas fa-print"></i></a></li>
+                        <!-- <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+                        <!-- <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li> -->
+                        <!-- <li><button class="iconsBG" title="Excel" ><i class="far fa-file-excel"></i></button></li> -->
+                        <li><a  [routerLink]="'/admin/dashboard'" class="iconsBG" title="Back" ><i class="fas fa-arrow-left"></i></a></li>
+
+                    </ul>
+                    </div>
+             </div>
+         </div>
+
+        <!-- <h1 class="label-envelope">Envelope</h1> -->
+        </div>
+
+        <div class="usersection">
+   <!-- <div class="row">
+       <div class="col-sm-12">
+           <h6 class="user-title">Notification Details</h6>
+       </div>
+   </div>   -->
+   <div *ngFor="let mesg of notificationMsgList ; let j = index">
+   <div class="notificationSec">
+       <div class="NotiBG"><img class="rounded-circle thumb64" src="./assets/images/user.jpg" alt="Profile"></div>
+       <div class="NotiText">
+        <h5>{{mesg.notificationMsg.slice(0,40).concat('.....')}} <a href="" target="_blank" class="badge badge-danger float-right"
+            data-toggle="tooltip" data-placement="top" title="Download"></a></h5>
+        <p>
+            {{mesg.notificationMsg}} </p>
+            <!-- <ng-container *ngIf="link!==''">
+                <a (click)="getLink(j);" [routerLink]="[link]">
+                  To View Click Here
+                </a>
+            </ng-container> -->
+            <a (click)="getLink(j);" [routerLink]>
+                To View Click Here
+              </a>
+        <h6 class="small text-gray-500"><i>{{mesg.updatedOn}} </i>  </h6>
+       </div>
+   </div>
+   </div>
+   <!-- <div class="notificationSec">
+    <div class="NotiBG"><img class="rounded-circle thumb64" src="./assets/images/user.jpg" alt="Profile"></div>
+    <div class="NotiText">
+     <h5>{{'allNotification.100_MM_MZNcurrency' | translate}} <a href="" target="_blank" class="badge badge-danger float-right"
+         data-toggle="tooltip" data-placement="top" title="Download"></a></h5>
+     <p>
+        {{'allNotification.100_MM_MZNcurrencyDescription' | translate}}
+     </p>
+     <h6 class="small text-gray-500"><i>{{'allNotification.March 12,2021' | translate}}</i>  </h6>
+    </div>
+</div>
+
+<div class="notificationSec">
+    <div class="NotiBG"><img class="rounded-circle thumb64" src="./assets/images/user.jpg" alt="Profile"></div>
+    <div class="NotiText">
+     <h5> {{'allNotification.project-002Off-Budget' | translate}}<a href="" target="_blank" class="badge badge-danger float-right"
+         data-toggle="tooltip" data-placement="top" title="Download"></a></h5>
+     <p>
+        {{'allNotification.project-002Description' | translate}}
+     </p>
+     <h6 class="small text-gray-500"><i>{{'allNotification.March 12,2021' | translate}}</i>  </h6>
+    </div>
+</div> -->
+
+
+</div>
+
+</div>
+</div>

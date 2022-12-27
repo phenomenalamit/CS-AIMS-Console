@@ -1,0 +1,211 @@
+
+<div class="breadcumb">
+    <h1 class="label-envelope pt-2">Dashboard</h1>
+</div>
+
+<div class="contaiersec dashh2">
+<div class="container-fluid">
+<div class="row">
+    <!-- order-card start -->
+    <div class="col-md-6 col-xl-3 col-sm-12 pr-2">
+        <div class="card bg-c-blue order-card">
+            <div class="card-body">
+                <h6 class="text-white">{{'dashboard.fundsReceived' | translate}}</h6>
+                <h2 class="text-right text-white"><i class="feather fas fa-piggy-bank float-left"></i><span class="font_size">{{'dashboard.mzn486Million'| translate}}</span></h2>
+                <p class="mb-0">{{'dashboard.month' | translate}}<span class="font_size float-right">{{'dashboard.mzn251Million'| translate}}</span></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3 col-sm-12 pr-2">
+        <div class="card bg-c-green order-card">
+            <div class="card-body">
+                <h6 class="text-white">{{'dashboard.totalProjectsFunded' | translate}}</h6>
+                <h2 class="text-right text-white"><i class="feather fas fa-chart-area float-left"></i><span class="font_size">1641</span></h2>
+                <p class="mb-0">{{'dashboard.month' | translate}}<span class="font_size float-right">213</span></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3 col-sm-12 pr-2">
+        <div class="card bg-c-yellow order-card">
+            <div class="card-body">
+                <h6 class="text-white">{{'dashboard.disbursment'|translate}}</h6>
+                <h2 class="text-right text-white"><i class="feather far fa-credit-card float-left"></i><span class="font_size">{{'dashboard.mzn425.35Million' | translate}}</span></h2>
+                <p class="mb-0">{{'dashboard.month' | translate}}<span class="font_size float-right">{{'dashboard.mzn152.75Million' | translate}}</span></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-xl-3 col-sm-12 pr-m-5">
+        <div class="card bg-c-red order-card">
+            <div class="card-body">
+                <h6 class="text-white">{{'dashboard.payment' | translate}}</h6>
+                <h2 class="text-right text-white"><i class="feather fas fa-piggy-bank float-left"></i><span class="font_size">{{'dashboard.mzn395.48Million' | translate}}</span></h2>
+                <p class="mb-0">{{'dashboard.month' | translate}}<span class="font_size float-right">{{'dashboard.mzn242.60Million' | translate}}</span></p>
+            </div>
+        </div>
+    </div>
+    <!-- order-card end -->
+</div>
+<div class="row">
+  <div class="col-md-6 col-xl-6 col-sm-12 pr-m-5 col-print-12">
+      <div class="chartBOX">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="print-none">{{'dashboard.developmentPartnerwiseAmount' | translate}}</h5>
+
+                <div class="filterBG">
+                   <a href="javascriptvoid:(0);" id="graphone" class="filterbg-ico font-dash"><i class="fas fa-filter"></i></a>
+                </div>
+
+                <div id="graph1" class="graphbox-bg">
+                  <div class="row">
+                      <!-- <div class="col-lg-2">From date</div> -->
+                      <div class="col-lg-6">
+                          <label class="fromBG">{{'dashboard.fromDate' | translate}}</label>
+                        <mat-form-field appearance="fill" >
+                            <mat-label><span class="label-dac-crs-purpose">{{'dashboard.selectDate' | translate}}</span></mat-label>
+                            <input matInput [matDatepicker]="picker" style="cursor: pointer"
+                            (focus)="picker?.open()"
+                            readonly>
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <!-- <div class="col-lg-2">To date</div> -->
+                      <div class="col-lg-6">
+                        <label class="fromBG">{{'dashboard.toDate' | translate}}</label>
+                        <mat-form-field appearance="fill" >
+                            <mat-label><span class="label-dac-crs-purpose">{{'dashboard.selectDate' | translate}}</span></mat-label>
+                            <input matInput [matDatepicker]="picker1" style="cursor: pointer"
+                            (focus)="picker1?.open()"
+                            readonly>
+                            <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                            <mat-datepicker #picker1  disabled="false"></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                  </div>
+                </div>
+
+
+            </div>
+            <div class="card-body pl-0 pb-0 pr-0">
+                <app-dashchart> </app-dashchart>
+            </div>
+        </div>
+
+     </div>
+  </div>
+
+
+
+
+  <div class="col-md-6 col-xl-6 col-sm-12 pr-m-5 col-print-12">
+    <div class="chartBOX">
+        <div class="card">
+            <div class="card-header">
+                 <h5 class="print-none">{{'dashboard.aidAllocationBySector' | translate}}</h5>
+
+                <div class="filterBG">
+                    <a href="javascriptvoid:(0);" id="graphtwo" class="filterbg-ico font-dash"><i class="fas fa-filter"></i></a>
+                 </div>
+
+                 <div id="graph2" class="graphbox-bg">
+                   <div class="row">
+                       <!-- <div class="col-lg-2">From date</div> -->
+                       <div class="col-lg-6">
+                           <label class="fromBG">{{'dashboard.fromDate' | translate}}</label>
+                         <mat-form-field appearance="fill" >
+                             <mat-label><span class="label-dac-crs-purpose">{{'dashboard.selectDate' | translate}}</span></mat-label>
+                             <input matInput [matDatepicker]="picker2" style="cursor: pointer"
+                             (focus)="picker2?.open()"
+                             readonly>
+                             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                             <mat-datepicker #picker2  disabled="false"></mat-datepicker>
+                         </mat-form-field>
+                       </div>
+                       <!-- <div class="col-lg-2">To date</div> -->
+                       <div class="col-lg-6">
+                         <label class="fromBG">{{'dashboard.toDate' | translate}}</label>
+                         <mat-form-field appearance="fill" >
+                             <mat-label><span class="label-dac-crs-purpose">{{'dashboard.selectDate' | translate}}</span></mat-label>
+                             <input matInput [matDatepicker]="picker3" style="cursor: pointer"
+                             (focus)="picker3?.open()"
+                             readonly>
+                             <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                             <mat-datepicker #picker3  disabled="false"></mat-datepicker>
+                         </mat-form-field>
+                       </div>
+                   </div>
+                 </div>
+
+
+            </div>
+            <div class="card-body pl-0 pb-0 pr-0">
+                <app-piechartdash></app-piechartdash>
+            </div>
+        </div>
+
+     </div>
+
+  </div>
+</div>
+
+
+
+
+
+<div class="row">
+    <div class="col-md-12 col-xl-12 col-sm-12 mb-4 pr-m-5">
+    <div class="chartBOX">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="print-none">{{'dashboard.projectsFundedByProvince' | translate}}</h5>
+                <div class="filterBG">
+                    <a href="javascriptvoid:(0);" id="graphthree" class="filterbg-ico font-dash"><i class="fas fa-filter"></i></a>
+                 </div>
+
+                 <div id="graph3" class="graph3Box graphbox-bg ">
+                   <div class="row">
+                       <!-- <div class="col-lg-2">From date</div> -->
+                       <div class="col-lg-6">
+                           <label class="fromBG">{{'dashboard.fromDate' | translate}}</label>
+                         <mat-form-field appearance="fill" >
+                             <mat-label><span class="label-dac-crs-purpose">{{'dashboard.selectDate' | translate}}</span></mat-label>
+                             <input matInput [matDatepicker]="picker5" style="cursor: pointer"
+                             (focus)="picker5?.open()"
+                             readonly>
+                             <mat-datepicker-toggle matSuffix [for]="picker5"></mat-datepicker-toggle>
+                             <mat-datepicker #picker5  disabled="false"></mat-datepicker>
+                         </mat-form-field>
+                       </div>
+                       <!-- <div class="col-lg-2">To date</div> -->
+                       <div class="col-lg-6">
+                         <label class="fromBG">{{'dashboard.toDate' | translate}}</label>
+                         <mat-form-field appearance="fill" >
+                             <mat-label><span class="label-dac-crs-purpose">{{'dashboard.selectDate' | translate}}</span></mat-label>
+                             <input matInput [matDatepicker]="picker4" style="cursor: pointer"
+                             (focus)="picker4?.open()"
+                             readonly>
+                             <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+                             <mat-datepicker #picker4  disabled="false"></mat-datepicker>
+                         </mat-form-field>
+                       </div>
+                   </div>
+                 </div>
+            </div>
+            <div class="card-body pl-0 pb-0 pr-0">
+                <app-linechartdash></app-linechartdash>
+            </div>
+        </div>
+
+     </div>
+     </div>
+
+</div>
+
+
+
+</div>
+</div>
+
+
+

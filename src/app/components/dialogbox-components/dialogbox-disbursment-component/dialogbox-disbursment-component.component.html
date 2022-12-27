@@ -1,0 +1,202 @@
+<h4>Edit Disbursement  <a mat-dialog-close (click)="closebuttonedit()" class="btn btn-danger btn-sm float-right"><i class="fas fa-times"></i></a> </h4>
+    <hr>
+    <mat-dialog-actions class="" >
+
+     <div class="mat-dialog-container1">
+        <form class="example-form" [formGroup]="disbursementForm" autocomplete="off" novalidate (ngSubmit)="createDisbursement(disbursementForm.value)">
+        <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="fill">
+                <mat-label><span class="label-year">Disbursement Reference</span> </mat-label>
+                <input matInput type="text" placeholder="Disbursement Reference " formControlName="reference" value={{parsedJson.reference}}>
+                <!-- <mat-error *ngIf="hasError('reference', 'required')">Disbursement Reference is required</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="fill"  >
+                <mat-label><span class="label-project">Project Title</span></mat-label>
+                <mat-select  formControlName="project"   (selectionChange)="projectChangeAction(project)" [ngModel]="projectSelected"  >
+                    <mat-option *ngFor="let project of projectList" [value]="project.projectName" >{{ project.projectName }}</mat-option>
+                  </mat-select>
+                  <!-- <mat-error *ngIf="hasError('project', 'required')">Project is required</mat-error> -->
+                </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-envelope-currency">Funding Title</span></mat-label>
+                <mat-select placeholder="Select Funding title" formControlName="fundingTitle" [ngModel]="fundingTitleSelected">
+                    <mat-option *ngFor="let fundingTitle of fundingTitleList" [value]="fundingTitle">{{ fundingTitle }}</mat-option>
+                  </mat-select>
+                  <!-- <mat-error *ngIf="hasError('fundingTitle', 'required')">Funding Title is required</mat-error> -->
+            </mat-form-field>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="fill"   >
+                <mat-label><span class="label-envelope-currency">Funding Organization</span></mat-label>
+                <input type="text"
+                placeholder="Pick one"
+                matInput
+                formControlName="fundingOrganization"
+                [formControl]="names"
+                [matAutocomplete]="auto">
+         <mat-autocomplete #auto="matAutocomplete">
+           <mat-option *ngFor="let organizationOptions of filteredOptions | async" [value]="organizationOptions">
+             {{organizationOptions}}
+           </mat-option>
+         </mat-autocomplete>
+                <!-- <mat-error *ngIf="hasError('fundingOrganization', 'required')">Funding Organization is required</mat-error> -->
+            </mat-form-field>
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-dac-crs-purpose">Disbursement Date</span></mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" style="cursor: pointer"
+                (focus)="picker?.open()"
+                readonly [formControl] ="dateSelected">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker disabled="false"></mat-datepicker>
+                <!-- <mat-error *ngIf="hasError('date', 'required')">Disbursement Date is required</mat-error> -->
+            </mat-form-field>
+
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-envelope-currency">SWIFT Code Of The Issuing Bank</span></mat-label>
+                <input matInput type="text" class="" placeholder="SWIFT Code" formControlName="swiftcode" value="{{parsedJson.swiftcode}}">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-dac-crs-purpose">Receiving Bank SWIFT Code</span></mat-label>
+                <input matInput type="text" class="" placeholder="Received bank SWIFT Code" formControlName="receivedswiftcode" value="{{parsedJson.receivedswiftcode}}">
+            </mat-form-field>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-envelope-currency">Receiving Bank NIB</span></mat-label>
+                <input matInput type="text" class="" placeholder="Received bank NIB" formControlName="receivedBankNIB" value="{{parsedJson.receivedBankNIB}}">
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="row">
+
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="fill"  >
+                <mat-label><span class="label-dac-crs-purpose">Amount Of Disbursement</span></mat-label>
+                <!-- <input  matInput type="number" placeholder="Amount of Disbursement " formControlName="amountOfdisbursementCurrency1" value="{{parsedJson.amount}}"> -->
+                <input matInput readonly matInput class="" placeholder="Amount of Disbursement " formControlName="amount" value="{{parsedJson.amount}}">
+                <!-- <mat-error *ngIf="hasError('amount', 'required')">Amount of Disbursement in Disbursement Currency Reference is required</mat-error> -->
+            </mat-form-field>
+        </div>
+
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+
+          <mat-form-field appearance="fill">
+              <mat-label>Disbursement Currency</mat-label>
+              <input type="text"
+             placeholder="Pick one"
+            aria-label="Number"
+            matInput
+            formControlName="currency"
+            [formControl] = "currency"
+            [matAutocomplete]="auto2">
+            <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="getCurrency($event)">
+            <mat-option *ngFor="let option of filteredOptionsC | async" [value]="option">
+            {{option}}
+            </mat-option>
+            </mat-autocomplete>
+              <!-- <mat-error *ngIf="hasError2('currency_of_the_financing_agreement', 'required')">Currency of the financing agreement is Required</mat-error> -->
+            </mat-form-field>
+            </div>
+
+    </div>
+
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-envelope-currency">Exchange Rates(USD)</span></mat-label>
+                <input matInput readonly matInput class=""  formControlName="exchangeRates"  [(ngModel)]="exchangeRateUSD" value="{{parsedJson.exchangeRates}}">
+            </mat-form-field>
+
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-dac-crs-purpose">Exchange Rates(MZN)</span></mat-label>
+                <input matInput readonly matInput class=""   formControlName="exchangeRatesMzn"  [(ngModel)]="exchangeRateMZN" value="{{parsedJson.exchangeRates}}">
+            </mat-form-field>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-envelope-currency">Exchange Rates(Currency Of Agreement)</span></mat-label>
+                <input matInput readonly matInput class="" placeholder="Exchange Rates" formControlName="exchangeRatesAgreementCurrency"  [(ngModel)]="exchangeRatesAgreementCurrency" value="{{parsedJson.exchangeRates}}">
+            </mat-form-field>
+
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-dac-crs-purpose">Amount Of Disbursement(MZN)</span></mat-label>
+                <input matInput readonly matInput class="" placeholder="Amount of disbursement in Meticais"  formControlName="amountOfdisbursementMeticais"  [(ngModel)] = "disbursementAmountMZN" value="{{parsedJson.amountOfdisbursementMeticais}}">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-envelope-currency">Amount Of Disbursement(USD)</span></mat-label>
+                <input matInput readonly matInput class="" placeholder="Amount of disbursement in USD"  formControlName="amountOfdisbursementUSD"  [(ngModel)] = "disbursementAmountUSD" value="{{parsedJson.amountOfdisbursementUSD}}">
+            </mat-form-field>
+        </div>
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+            <mat-form-field appearance="fill" >
+                <mat-label><span class="label-dac-crs-purpose">Amount Of Disbursement(Currency Of The Agreement)</span></mat-label>
+                <input matInput readonly matInput class="" placeholder="Amount of disbursement in Currency of the Agreement" formControlName="amountOfdisbursementAgreement"  [(ngModel)] = "disburmentAmountAgreementCurrency" value="{{parsedJson.amountOfdisbursementAgreement}}">
+            </mat-form-field>
+        </div>
+    </div>
+
+
+
+    </form>
+    <!-- </div> -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="example-button">
+                <button class="btn btn-success mr-2" (click)="opensweetalert()"  >Submit</button>
+                <button class="btn btn-success mr-2" (click)="opensweetalert2()">Save As Draft</button>
+                <button class="btn btn-warning mr-2" (click)="clearForm(disbursementForm)">Reset</button>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+
+    </mat-dialog-actions>

@@ -1,0 +1,482 @@
+<ul id="accordion" class="mainmenu accordion MenuHeight-fixed">
+  <!-- <li><a mat-button  [routerLink]="'/admin/dashboard'" routerLinkActive="active" class="label-envelope"><i class="fas fa-tachometer-alt"></i> <span class="linktext-menu">Dashboard</span></a></li> -->
+  <!-- <li *ngFor="let menu of menuList; let i = index" [class.active]="menu.active" class="topmenu"> -->
+    <li *ngFor="let menu of menuList; let i = index" [class.active]="menu.active" class="topmenu">
+    <!-- [class.active]="menu.active" -->
+    <div *ngIf="isLoggedIn1; then display else nonDisplay"></div>
+    <ng-template #display>
+      <div *ngIf="menu.name === 'Monitoring'; then display1 else nonDisplay1"></div>
+      <ng-template #display1>
+        <div hidden class="menu" (click)="toggle(i)">
+          <ng-container *ngIf="menu.name==='Dashboard'">
+            <i [class]="menu.iconClass"></i>
+            <a [routerLink]="menu.routerLink">
+              <ng-container *ngIf="menu.name=='Dashboard'">
+                {{ 'menu.Dashboard' | translate }}
+              </ng-container>
+            </a>
+
+          </ng-container>
+          <ng-container *ngIf="menu.name!=='Dashboard'">
+            <i [class]="menu.iconClass"></i>
+            <ng-container *ngIf="menu.name=='Envelope'">
+              {{ 'menu.Envelope' | translate }}
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Financial Agreement'">
+              {{ 'menu.Financial Agreement' | translate }}
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Project'">
+              {{ 'menu.Project' | translate }}
+            </ng-container>
+
+
+            <ng-container *ngIf="menu.name=='Disbursement'">
+              {{ 'menu.Disbursement' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Payment'">
+              {{ 'menu.Payment' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Organization'">
+              {{ 'menu.Organization' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Individual'">
+              <i [class]="menu.iconClass"></i>
+              <!-- {{ menu.name }} -->{{ 'menu.Individual' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Monitoring'">
+
+              {{ 'menu.Monitoring' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='User Account'">
+
+              {{ 'menu.User Account' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='User Management'">
+
+              {{ 'menu.User Management' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Link Management'">
+              <!-- <i [class]="menu.iconClass"></i> -->
+              <!-- Link Management -->
+             {{ 'menu.Link Management' | translate }}
+              <!-- <i class="icon-angle-down"></i> -->
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Administration'">
+
+              {{ 'menu.Adminstration' | translate }}
+
+            </ng-container>
+            <!-- {{ menu.name }} -->
+            <i class="fa fa-chevron-down"></i>
+          </ng-container>
+        </div>
+      </ng-template>
+      <ng-template #nonDisplay1>
+        <div class="menu" (click)="toggle(i)">
+
+          <ng-container *ngIf="menu.name==='Dashboard'">
+            <i [class]="menu.iconClass"></i>
+            <a [routerLink]="menu.routerLink">
+              <ng-container *ngIf="menu.name=='Dashboard'">
+                {{ 'menu.Dashboard' | translate }}
+              </ng-container>
+            </a>
+
+          </ng-container>
+          <ng-container *ngIf="menu.name!=='Dashboard'">
+            <i [class]="menu.iconClass"></i>
+            <ng-container *ngIf="menu.name=='Envelope'">
+              {{ 'menu.Envelope' | translate }}
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Financial Agreement'">
+              {{ 'menu.Financial Agreement' | translate }}
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Project'">
+              {{ 'menu.Project' | translate }}
+            </ng-container>
+
+
+            <ng-container *ngIf="menu.name=='Disbursement'">
+              {{ 'menu.Disbursement' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Payment'">
+              {{ 'menu.Payment' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Organization'">
+              {{ 'menu.Organization' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Individual'">
+              <i [class]="menu.iconClass"></i>
+              <!-- {{ menu.name }} -->{{ 'menu.Individual' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Monitoring'">
+
+              {{ 'menu.Monitoring' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='User Account'">
+
+              {{ 'menu.User Account' | translate }}
+
+            </ng-container>
+            <ng-container *ngIf="menu.name=='User Management'">
+
+              {{ 'menu.User Management' | translate }}
+
+            </ng-container>
+             <ng-container *ngIf="menu.name=='Link Management'">
+              <i [class]="menu.iconClass"></i>
+              <!-- Link Management -->
+              {{ 'menu.Link Management' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Administration'">
+
+              {{ 'menu.Adminstration' | translate }}
+
+            </ng-container>
+
+            <!-- {{ menu.name}} -->
+            <i class="fa fa-chevron-down"></i>
+          </ng-container>
+        </div>
+      </ng-template>
+    </ng-template>
+
+    <ng-template #nonDisplay>
+      <div class="menu" (click)="toggle(i)">
+        <ng-container *ngIf="menu.name==='Dashboard'">
+          <i [class]="menu.iconClass"></i>
+          <a [routerLink]="menu.routerLink"><span [class]="menu.mainLink">
+              <ng-container *ngIf="menu.name=='Dashboard'">
+                {{ 'menu.Dashboard' | translate }}
+              </ng-container>
+            </span></a>
+
+        </ng-container>
+        <ng-container *ngIf="menu.name!=='Dashboard'">
+          <i [class]="menu.iconClass"></i>
+          <span [class]="menu.mainLink">
+
+            <ng-container *ngIf="menu.name=='Envelope'">
+              {{ 'menu.Envelope' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Financial Agreement'">
+              {{ 'menu.Financial Agreement' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Project'">
+              {{ 'menu.Project' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+
+
+            <ng-container *ngIf="menu.name=='Disbursement'">
+              {{ 'menu.Disbursement' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Payment'">
+              {{ 'menu.Payment' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Organization'">
+              {{ 'menu.Organization' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Individual'">
+              <i [class]="menu.iconClass"></i>
+              <!-- {{ menu.name }} -->{{ 'menu.Individual' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Monitoring'">
+
+              {{ 'menu.Monitoring' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='User Account'">
+
+              {{ 'menu.User Account' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='User Management'">
+
+              {{ 'menu.User Management' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+             <ng-container *ngIf="menu.name=='Link Management'">
+              <i [class]="menu.iconClass"></i>
+              <!-- Link Management -->
+              {{ 'menu.Link Management' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+            <ng-container *ngIf="menu.name=='Administration'">
+
+              {{ 'menu.Adminstration' | translate }}
+              <i class="icon-angle-down"></i>
+            </ng-container>
+
+            <!-- {{ menu.name }} -->
+          </span>
+        </ng-container>
+
+      </div>
+
+    </ng-template>
+
+
+    <ul class="submenu" #submenu [style.height.px]="menu.active ? submenu.scrollHeight : 0">
+      <li *ngFor="let submenu of menu.submenu">
+
+          <div *ngIf="submenu.name === 'Create Envelope' ; then thenBlock1 else elseBlock"></div>
+          <ng-template #thenBlock1><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Envelope' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Envelope List'; then thenBlock2 else elseBlock"></div>
+          <ng-template #thenBlock2><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{ 
+            'menu.View Envelope List' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Project'; then thenBlock3 else elseBlock"></div>
+          <ng-template #thenBlock3><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Project' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Project List'; then thenBlock4 else elseBlock"></div>
+          <ng-template #thenBlock4><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{ 'menu.View Project List' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Delete Mozgis Project'; then thenBlock4Del else elseBlock"></div>
+          <ng-template #thenBlock4Del><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{ 'menu.Delete Mozgis Project' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Financial Agreement'; then thenBlock5 else elseBlock"></div>
+          <ng-template #thenBlock5><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Financial Agreement' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'View Financial Agreement'; then thenBlock6 else elseBlock"></div>
+          <ng-template #thenBlock6><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{ 
+            'menu.View Financial Agreement' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'Create Disbursement'; then thenBlock7 else elseBlock"></div>
+          <ng-template #thenBlock7><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Disbursement' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Disbursement List'; then thenBlock8 else elseBlock"></div>
+          <ng-template #thenBlock8><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{ 
+            'menu.View Disbursement List' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Payment'; then thenBlock9 else elseBlock"></div>
+          <ng-template #thenBlock9><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Payment' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Payment List'; then thenBlock10 else elseBlock"></div>
+          <ng-template #thenBlock10><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Payment List' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Organization'; then thenBlock11 else elseBlock"></div>
+          <ng-template #thenBlock11><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Organization' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'View Organization List'; then thenBlock12 else elseBlock"></div>
+          <ng-template #thenBlock12><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Organization List' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Individual'; then thenBlock13 else elseBlock"></div>
+          <ng-template #thenBlock13><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Individual' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Individual List'; then thenBlock14 else elseBlock"></div>
+          <ng-template #thenBlock14><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Individual List' | translate }}</span></a></ng-template>
+
+
+
+
+          <!-- <div *ngIf="submenu.name === 'Create User Account'; then thenBlock15 else elseBlock"></div>
+          <ng-template #thenBlock15><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create User Account' | translate }}</span></a></ng-template> -->
+
+
+
+          <div *ngIf="submenu.name === 'View User Account List'; then thenBlock16 else elseBlock"></div>
+          <ng-template #thenBlock16><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View User Account List' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Monitoring'; then thenBlock17 else elseBlock"></div>
+          <ng-template #thenBlock17><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Monitoring' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'Create Monitoring Revised'; then thenBlock32 else elseBlock"></div>
+          <ng-template #thenBlock32><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create monitoring revised' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Monitoring'; then thenBlock18 else elseBlock"></div>
+          <ng-template #thenBlock18><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Monitoring' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'User Type'; then thenBlock19 else elseBlock"></div>
+          <ng-template #thenBlock19><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.User Type' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'User Access Management'; then thenBlock20 else elseBlock"></div>
+          <ng-template #thenBlock20><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Assign Group' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'User Mapping'; then thenBlock21 else elseBlock"></div>
+          <ng-template #thenBlock21><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.User Mapping' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'User Account'; then thenBlock22 else elseBlock"></div>
+          <ng-template #thenBlock22><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create User Account' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'Create Global Link'; then thenBlock23 else elseBlock"></div>
+          <ng-template #thenBlock23><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Global Link' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Global Link'; then thenBlock24 else elseBlock"></div>
+          <ng-template #thenBlock24><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Global Link' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Primary Link'; then thenBlock25 else elseBlock"></div>
+          <ng-template #thenBlock25><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Primary Link' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Primary Link'; then thenBlock26 else elseBlock"></div>
+          <ng-template #thenBlock26><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Primary Link' | translate }}</span></a></ng-template>
+
+
+          <div *ngIf="submenu.name === 'Create Function Master'; then thenBlock27 else elseBlock"></div>
+          <ng-template #thenBlock27><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Create Function Master' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Function Master'; then thenBlock28 else elseBlock"></div>
+          <ng-template #thenBlock28><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.View Function Master' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'Button'; then thenBlock29 else elseBlock"></div>
+          <ng-template #thenBlock29><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Button' | translate }}</span></a></ng-template>
+
+          <div *ngIf="submenu.name === 'Code List Management'; then thenBlock30 else elseBlock"></div>
+          <ng-template #thenBlock30><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">{{
+                'menu.Field Management' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'Exchange Rate Administration'; then thenBlock31 else elseBlock"></div>
+          <ng-template #thenBlock31><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+                {{ 'menu.Exchange Rate Administration' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'Suggestion Administration'; then thenBlock32 else elseBlock"></div>
+          <ng-template #thenBlock32><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+              {{ 'menu.feedback administration' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'Folder Structure'; then thenBlock33 else elseBlock"></div>
+          <ng-template #thenBlock33><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+              {{ 'menu.folderStr' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'View Folder Structure'; then thenBlock34 else elseBlock"></div>
+          <ng-template #thenBlock34><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+               {{ 'menu.viewfolderStr' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'Report Administration'; then thenBlock35 else elseBlock"></div>
+          <ng-template #thenBlock35><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+                    {{ 'menu.report-administration' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'View Column Access'; then thenBlock36 else elseBlock"></div>
+          <ng-template #thenBlock36><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+                    {{ 'menu.view-column-access' | translate }}</span></a></ng-template>
+          <div *ngIf="submenu.name === 'Publish Administration'; then thenBlock36 else elseBlock"></div>
+          <ng-template #thenBlock36><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+                    {{ 'menu.publish-administration' | translate }}</span></a></ng-template>
+
+                    <div *ngIf="submenu.name === 'Bulk Mail Administration'; then thenBlock37 else elseBlock"></div>
+          <ng-template #thenBlock37><a [routerLink]="submenu.routerLink"><span [class]="submenu.globalLink">
+            {{'menu.Bulk Mail Administration' | translate}} </span></a></ng-template>
+        <!-- </ng-template> -->
+
+
+
+        <!-- <div *ngIf="isLoggedIn1 == true; then block2"></div> -->
+
+        <!-- <ng-template #block2>
+
+         
+          <div *ngIf="submenu.name === 'View Envelope List' && isLoggedIn1 == true; then thenBlock1 else elseBlock1">
+          </div>
+          <ng-template #thenBlock1><a [routerLink]="submenu.routerLink">{{ 'menu.View Envelope List' | translate }}</a>
+          </ng-template>
+          <ng-template #elseBlock1><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+
+        
+
+          <div *ngIf="submenu.name === 'View Project List' && isLoggedIn1 == true; then thenBlock3 else elseBlock3">
+          </div>
+          <ng-template #thenBlock3><a [routerLink]="submenu.routerLink">{{ 'menu.View Project List' | translate }}</a>
+          </ng-template>
+          <ng-template #elseBlock3><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+
+          <div
+            *ngIf="submenu.name === 'View Financial Agreement' && isLoggedIn1 == true; then thenBlock4 else elseBlock4">
+          </div>
+          <ng-template #thenBlock4><a [routerLink]="submenu.routerLink">{{ 'menu.View Financial Agreement' | translate
+              }}</a></ng-template>
+          <ng-template #elseBlock4><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+
+          <div
+            *ngIf="submenu.name === 'View Disbursement List' && isLoggedIn1 == true; then thenBlock5 else elseBlock5">
+          </div>
+          <ng-template #thenBlock5><a [routerLink]="submenu.routerLink">{{ 'menu.View Disbursement List' | translate
+              }}</a></ng-template>
+          <ng-template #elseBlock5><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Payment List' && isLoggedIn1 == true; then thenBlock6 else elseBlock6">
+          </div>
+          <ng-template #thenBlock6><a [routerLink]="submenu.routerLink">{{ 'menu.View Payment List' | translate }}</a>
+          </ng-template>
+          <ng-template #elseBlock6><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+          <div
+            *ngIf="submenu.name === 'View Organization List' && isLoggedIn1 == true; then thenBlock7 else elseBlock7">
+          </div>
+          <ng-template #thenBlock7><a [routerLink]="submenu.routerLink">{{ 'menu.View Organization List' | translate
+              }}</a></ng-template>
+          <ng-template #elseBlock7><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+          <div *ngIf="submenu.name === 'View Individual List' && isLoggedIn1 == true; then thenBlock8 else elseBlock8">
+          </div>
+          <ng-template #thenBlock8><a [routerLink]="submenu.routerLink">{{ 'menu.View Individual List' | translate
+              }}</a></ng-template>
+          <ng-template #elseBlock8><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+          <div
+            *ngIf="submenu.name === 'View User Account List' && isLoggedIn1 == true; then thenBlock9 else elseBlock9">
+          </div>
+          <ng-template #thenBlock9><a [routerLink]="submenu.routerLink">{{ 'menu.View User Account List' | translate
+              }}</a></ng-template>
+          <ng-template #elseBlock9><a hidden [routerLink]="submenu.routerLink">{{ submenu.name }}</a></ng-template>
+
+
+        </ng-template> -->
+
+
+
+      </li>
+    </ul>
+  </li>
+</ul>

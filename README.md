@@ -1,2 +1,2 @@
-# CS-AIMS-Console
-AIMS-Admin-Application
+# AIMS-Admin-Console
+

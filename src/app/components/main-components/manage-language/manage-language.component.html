@@ -1,0 +1,165 @@
+<div class="container-fluid">
+  <div class="innerbody">
+    <div class="breadcumb">
+      <div class="row">
+        <div class="col-lg-6 col-sm-12">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">
+                {{ "Manage-Language.adminstration" | translate }}
+              </li>
+
+              <li class="breadcrumb-item active" aria-current="page">
+                {{ "Manage-Language.manage-language" | translate }}
+              </li>
+            </ol>
+          </nav>
+        </div>
+        <div class="col-lg-6 col-sm-12">
+          <div class="iconics-div">
+            <ul class="iconics-buttons">
+              <li>
+                <span class="indicates">{{
+                  "common.indicates-fields-are-mandatory" | translate
+                  }}</span>
+              </li>
+
+              <!-- <li><a href="#" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                       <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                       <li><a href="#" class="iconsBG" title="Delete"><i class="far fa-trash-alt"></i></a></li>
+                       <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <mat-tab-group mat-align-tabs="start">
+      <mat-tab label="Create User Mapping" class="label-create-userMapping">
+        <div>
+          <form class="example-form" [formGroup]="LanguageForm">
+            <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline" class="mb-form-0">
+                  <mat-label><span class="label-Module">{{
+                      "Manage-Language.module" | translate
+                      }}</span></mat-label>
+                  <mat-select placeholder="Select Module" formControlName="module" (selectionChange)="getSubmodule()">
+                    <mat-option *ngFor="let option of moduleList" [value]="option.globalLinkId">
+                      {{ option.globalLinkName }}</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+              <div class="col-xl-4 col-lg-4 col-sm-12" *ngIf="submoduleList">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline" class="mb-form-0">
+                  <mat-label><span class="label-select-options-Fields">{{
+                      "Manage-Language.submodule" | translate
+                      }}</span>
+                  </mat-label>
+                  <mat-select placeholder="Select Module" formControlName="submodule"
+                    (selectionChange)="getLabelDetails()">
+                    <mat-option *ngFor="let option of submoduleList" [value]="option.primaryLinkId">{{
+                      option.primaryLinkName }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+          </form>
+          <div *ngIf="LanguageForm.controls.submodule.value!=0">
+            <h3>
+              {{primaryLinkName}}
+            </h3>
+          </div>
+          <div class="mat-elevation-z8" *ngIf="labeldetails.length > 0" >
+            <mat-form-field class="input-filter">
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search" autocomplete="off">
+            </mat-form-field>
+            <mat-table [dataSource]="dataSource" class="table table-striped table-bordered" matSort (matSortChange)="sortData($event)">
+
+<!--
+              <ng-container matColumnDef="Sl No">
+                <mat-header-cell *matHeaderCellDef mat-sort-header style="width: 90px;">
+                  Sl No.
+                </mat-header-cell>
+                <mat-cell *matCellDef="let item; let i = index">
+                  {{ paginatorRef.pageIndex * paginatorRef.pageSize + (i + 1) }}
+                </mat-cell>
+              </ng-container> -->
+
+              <ng-container matColumnDef="Label Name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header="name">
+                  Label Name
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">{{ element.name }}</mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="English Value">
+                <mat-header-cell *matHeaderCellDef mat-sort-header="en">
+                  English Value
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <div *ngIf="!element.isEdit">
+                      {{ element.en }}
+                  </div>
+                  <div *ngIf="element.isEdit">
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                      <mat-label><span class="label">Enter English Value</span></mat-label>
+                      <input #enValue matInput maxlength="150" [(ngModel)]="element.en" autocomplete="off">
+                  </mat-form-field>
+                  </div>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Portuguese Value">
+                <mat-header-cell *matHeaderCellDef mat-sort-header="pt">
+                  Portuguese Value
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <div *ngIf="!element.isEdit">
+                    {{ element.pt }}
+                  </div>
+                  <div *ngIf="element.isEdit">
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                      <mat-label><span class="label">Enter Portuguese Value</span></mat-label>
+                      <input #ptValue matInput maxlength="150" [(ngModel)]="element.pt" autocomplete="off">
+                  </mat-form-field>
+                  </div>
+                </mat-cell>
+              </ng-container>
+
+              <ng-container matColumnDef="Action" sticky>
+                <mat-header-cell *matHeaderCellDef class="label-action" > {{'common.action' | translate}} </mat-header-cell>
+                <mat-cell *matCellDef="let element;let i = index;" class="printremove">
+                  <div *ngIf="!element.isEdit">
+                    <button class="btn btn-info" (click)="editLabelValue(element)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </div>
+                  <div *ngIf="element.isEdit">
+                    <button class="btn btn-success" (click)="updateLabelValue(element)" type="submit" style='margin-right:16px'>
+                      Update
+                    </button>
+                    <button class="btn btn-danger" (click)="close(element)" style='margin-right:16px'>
+                      Cancel
+                    </button>
+                  </div>
+                </mat-cell>
+            </ng-container>
+
+              <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+            <mat-paginator #paginatorRef [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+            </mat-paginator>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

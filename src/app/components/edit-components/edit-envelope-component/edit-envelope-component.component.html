@@ -1,0 +1,194 @@
+<div class="container-fluid">
+    <div class="innerbody">
+
+        <!-- <ng-container *ngIf="EditEnv=='EditEnv'"> -->
+            <ng-container *ngIf="id !==null">
+
+    <ng-container *ngIf="num===0 || num===undefined">
+
+    <div class="breadcumb">
+     <div class="row">
+         <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item active label-envelope" aria-current="page">{{ 'create-envelope.envelope' | translate }}</li>
+                  <li class="breadcrumb-item active" aria-current="page">{{ 'create-envelope.edit-envelope' | translate }}</li>
+                </ol>
+              </nav>
+         </div>
+         <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+               
+                <ul class="iconics-buttons">
+                    <!-- <li><div class="example-button">
+                        <button class="btn btn-upload mr-2" (click)='openDocumentDialog()' >{{'common.viewDocument' | translate}}</button>
+                        </div></li> -->
+                        <!-- <li>
+                            <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2()' ><i class="fas fa-file-upload"></i></a>
+                        </li> -->
+                            
+                   <li><span class="indicates">{{ 'create-envelope.indicates-fields-are-mandatory' | translate }}</span></li>
+
+                    <!-- <li><a href="#" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Delete"><i class="far fa-trash-alt"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+                </ul>
+                </div>
+         </div>
+     </div>
+
+    <!-- <h1 class="label-envelope">Envelope</h1> -->
+    </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="num===1">
+
+        <!-- <div class="breadcumb">
+         <div class="row">
+             <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                      <li class="breadcrumb-item"><a href="/admin/envelope">Envelope</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">View Envelope</li>
+                    </ol>
+                  </nav>
+             </div>
+             <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                    <ul class="iconics-buttons">
+
+                        <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                       <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                        <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                        <li><a  class="iconsBG" title="Back" (click)='moveToSelectedTab("Edit Envelope")'><i class="fas fa-arrow-left"></i></a></li>
+
+
+
+
+
+
+                    </ul>
+                    </div>
+             </div>
+         </div>
+
+      <h1 class="label-envelope">Envelope</h1>
+        </div> -->
+        </ng-container>
+
+
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+        <mat-tab label="Edit Envelope" class="label-edit-envelope">
+            <app-add-envelope-component></app-add-envelope-component>
+            <!-- <div class="row">
+                <div class="col-lg-12">
+                    <div class="example-button">
+                        <button class="btn btn-success mr-2" (click)="opensweetalert()"
+                            [disabled]="envelopeForm.invalid">Submit</button>
+                            <button class="btn btn-success mr-2" (click)="opensweetalert2()"
+                            [disabled]="envelopeForm.invalid">Save as Draft</button>
+                        <button class="btn btn-warning mr-2" (click)="clearForm(envelopeForm)">Reset</button>
+                        <button class="btn btn-warning mr-2" (click)="moveToEnvelopeTab()">Cancel</button>
+
+
+
+                    </div>
+                </div> -->
+            <!-- </div> -->
+
+            <!-- </div> -->
+
+        </mat-tab>
+
+        <!-- <mat-tab label="View Envelope" class="label-view-envelope">
+            <app-view-envelope-component></app-view-envelope-component>
+    </mat-tab> -->
+
+    </mat-tab-group>
+
+</ng-container>
+
+<!-- <ng-container *ngIf="viewMoreEnv=='ViewMoreEnv'"> -->
+    <ng-container *ngIf="viewByTableId !==null">
+        
+    <ng-container *ngIf="num===0 || num===undefined">
+
+           <div class="breadcumb">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                   <nav aria-label="breadcrumb">
+                       <ol class="breadcrumb">
+                         <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                         <li class="breadcrumb-item active label-envelope" aria-current="page">{{ 'create-envelope.envelope' | translate }}</li>
+                         <li class="breadcrumb-item active" aria-current="page">{{ 'create-envelope.view-envelope-details' | translate }}</li>
+                       </ol>
+                     </nav>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                   <div class="iconics-div">
+                       <ul class="iconics-buttons">
+
+                           <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li> -->
+                           <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                           <!-- <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li> -->
+                           <li><a  class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToEnvelopeTab()'><i class="fas fa-arrow-left"></i></a></li>
+                       </ul>
+                       </div>
+                </div>
+            </div>
+
+           <!-- <h1 class="label-envelope">Envelope</h1> -->
+           </div>
+           </ng-container>
+       <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+           <mat-tab label="View Envelope Details" class="label-edit-envelope">
+               <app-add-envelope-component></app-add-envelope-component>
+           </mat-tab>
+       </mat-tab-group>
+    </ng-container>
+    </div>
+    </div>
+
+        <!-- <div class="container-fluid">
+        <div class="innerbody">
+            <ng-container *ngIf="viewByTableId != null">
+                <ng-container *ngIf="num===0 || num===undefined">
+
+                       <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                               <nav aria-label="breadcrumb">
+                                   <ol class="breadcrumb">
+                                     <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                                     <li class="breadcrumb-item"><a href="/admin/envelope">{{ 'create-envelope.envelope' | translate }}</a></li>
+                                     <li class="breadcrumb-item active" aria-current="page">{{ 'create-envelope.view-envelope-details' | translate }}</li>
+                                   </ol>
+                                 </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                               <div class="iconics-div">
+                                   <ul class="iconics-buttons">
+                         <li><a  class="iconsBG" title="Back" (click)='moveToEnvelopeTab()'><i class="fas fa-arrow-left"></i></a></li>
+                                   </ul>
+                                   </div>
+                            </div>
+                        </div>
+                       </div>
+                       </ng-container>
+
+
+                   <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                       <mat-tab label="View Envelope Details" class="label-edit-envelope">
+                           <app-add-envelope-component></app-add-envelope-component>
+                       </mat-tab>
+                   </mat-tab-group>
+                </ng-container>
+
+        </div>
+        </div> -->
+
+

@@ -1,0 +1,21 @@
+
+
+ <div class="wrapper">
+    <app-leftsidemenu class="FixedmenuBG"></app-leftsidemenu>
+    <!-- Page Content  -->
+    <div class="content">
+        <router-outlet>
+            <a href="javascript:void(0);" id="sidebarToggle" class="bg-transparent border-0 text-white"><i class="fa fa-bars"></i></a>
+            <span class="toggletext">{{'leftSideMenu.aims-full-form' | translate}}</span>
+        </router-outlet>
+
+         <!-- <div class="thememode theme-seeting">
+            <ul>
+                <li><a href="javascript:void(0);" id="styles" class="theme-link light-theme active"><i class="far fa-sun"></i></a></li>
+                <li><a href="javascript:void(0);" id="Darkstyle" class="theme-link dark-theme"> <i class="far fa-moon"></i></a></li>
+            </ul>
+        </div> -->
+
+    </div>
+</div>
+<app-footersec></app-footersec>

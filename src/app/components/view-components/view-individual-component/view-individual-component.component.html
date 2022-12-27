@@ -1,0 +1,221 @@
+<!-- HTML page componnet for View Individual Lists -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">   
+  <div class="container-fluid">
+    <div class="innerbody">
+      <div class="breadcumb">
+        <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active label-individual" aria-current="page">{{'view-Individual.individual' | translate}}</li>
+                    <li class="breadcrumb-item active label-view-individual" aria-current="page">{{ 'menu.View Individual List' | translate }}</li>
+                  </ol>
+                </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                  <ul class="iconics-buttons">
+                      <li><a onclick="document.title='Individual_'+new Date().toISOString();window.print()" class="iconsBG"  title="{{'common.Print' | translate}}"><i class="fas fa-print"></i></a></li>
+                      <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                      <li><a  class="iconsBG" title="{{'common.Back' | translate}}" (click)='moveToSelectedTab("Create Individual")'><i class="fas fa-arrow-left"></i></a></li>
+
+                  </ul>
+                  </div>
+            </div>
+        </div>
+
+        <h1 class="label-envelope">View Individual List</h1>
+        <hr>
+
+  <!-- <mat-form-field class="input-filter">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'view-monitoring.filter' | translate}}">
+  </mat-form-field> -->
+  <div class="row customROW printremove">
+    <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline"  class="mb-form-0 width25">
+  
+        <mat-label>{{ 'common.Filter' | translate }} {{filter.name}}</mat-label>
+        <ng-container *ngIf="filter.name === ''"></ng-container>
+        <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+        (selectionChange)="filterChange(filter,$event)" multiple (openedChange)="openOptionSearch()">
+        <mat-optgroup>
+          <mat-form-field style="width:100%;">
+            <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+              [formControl]="searchFilter" (keyup)="chkValue(filter,$event)">
+          </mat-form-field>
+        </mat-optgroup>
+        <mat-optgroup *ngIf="(filter.options).length == 0">
+          <div>{{ 'common.No results found!' | translate }}</div>
+        </mat-optgroup>
+        <mat-option [value]="item" *ngFor="let item of filter.options">{{item}}</mat-option>
+      </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="warn" (click)="resetFilters()" class="mt-2" style="margin-left: 17px;">{{ 'common.reset' | translate }}</button>
+      </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <p>
+        {{'common.totalrows' | translate}} : {{ totalRows }} &nbsp;&nbsp;
+        <a popover-trigger="'mouseenter'" uib-popover="Delete" href="javascript: void(0);"
+        (click)="loadAllData();"> Show All Records
+      </a>
+      </p>
+
+  <div class="mat-elevation-z8 table-responsive customizeTable" #epltable>
+    <table  id= "ExampleMaterialTable" mat-table [dataSource]="individualdataSource" class="table table-bordered" matSort>
+
+      <ng-container matColumnDef="select">
+        <th *matHeaderCellDef style="width: 70px;">S/N</th>
+        <td *matCellDef="let row;let i = index;">
+         
+            <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                [checked]="selection.isSelected(row)">
+                {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+            </mat-checkbox>
+        </td>
+        <td mat-footer-cell *matFooterCellDef> - </td>
+      </ng-container>
+
+      <ng-container matColumnDef="names">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'view-Individual.name' | translate }}  </th>
+        <td mat-cell *matCellDef="let element"> {{element.names}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nicknames">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header > {{ 'view-Individual.surname' | translate }}  </th>
+        <td mat-cell *matCellDef="let element" > {{element.nicknames}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="post">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'view-Individual.post' | translate }}   </th>
+        <td mat-cell *matCellDef="let element"> {{element.post}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="organization">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'view-Individual.organization' | translate }}  </th>
+        <td mat-cell *matCellDef="let element"> {{element.organizationName}} </td>
+      </ng-container>
+      
+    
+    
+      <ng-container matColumnDef="edit" sticky>
+        <th *matHeaderCellDef class="label-action" >  {{ 'common.action' | translate }} </th>
+        <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+        <td *matCellDef="let element;let i = index;"  class="printremove">
+          <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+              <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'common.edit' | translate }}" tabindex="-1" (click)='editIndividual(element.id)'>
+                  <i class="far fa-edit"></i>
+              </button>
+          </ng-container>
+          <!-- <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+            <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{ 'common.delete' | translate }}" tabindex="-1" (click)='opensweetalertDelete(element.id)'>
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </ng-container> -->
+          <ng-container *ngIf="userPermission.indexOf(2)!=-1">
+            <button class="btn btn-success btn-sm" placement="top" ngbTooltip="View" tabindex="-1" (click)='viewMoreIndividual(element.id)'>
+              <i class="fas fa-eye"></i>
+            </button>
+            &nbsp;
+            <button class="btn btn-info btn-sm" placement="top" ngbTooltip="View More" tabindex="-1" (click)='openDialog(element.id)'>
+              <i class="fas fa-eye"></i>
+            </button>
+        </ng-container>
+      </td>
+    </ng-container>
+      
+
+  
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+
+  </div>
+  </div>
+  </div>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  <div class="row">
+    <div class="col-lg-12 mt-3 mb-2">
+      <div class="example-button">
+        <button mat-flat-button color="warn" class="btn btn-danger btn-reset mr-2" (click)="opensweetalertDelete()">
+          {{"common.delete" | translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf=" usergroup==='dncp' || usergroup==='cedsif' || usergroup==='bankomoz' ">
+    <mat-form-field class="input-filter">
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+    <div class="row">
+      <div class="col-sm-12">
+
+
+    <div class="mat-elevation-z8 table-responsive" #epltable>
+      <table  id= "ExampleMaterialTable" mat-table [dataSource]="individualGetDataList" class="table table-bordered" matSort>
+
+        
+
+      <ng-container matColumnDef="names">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'view-Individual.name' | translate }}  </th>
+        <td mat-cell *matCellDef="let element"> {{element.names}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nicknames">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header class="printremove"> {{ 'view-Individual.surname' | translate }}  </th>
+        <td mat-cell *matCellDef="let element" class="printremove"> {{element.nicknames}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="post">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'view-Individual.post' | translate }}   </th>
+        <td mat-cell *matCellDef="let element"> {{element.post}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="organization">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'view-Individual.organization' | translate }}  </th>
+        <td mat-cell *matCellDef="let element"> {{element.organizationName}} </td>
+      </ng-container>
+      
+      
+
+    <ng-container matColumnDef="edit">
+      <th *matHeaderCellDef class="label-action"> Action </th>
+      <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+      <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='editIndividual(element.id)'>
+          <i class="far fa-edit"></i>
+      </button> </td>
+  </ng-container>
+  <ng-container matColumnDef="viewmore">
+    <th *matHeaderCellDef class="label-action"> Action </th>
+    <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+    <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='viewMoreIndividual(element.id)'>
+      <i class="fas fa-eye"></i>
+    </button>
+    &nbsp;
+  <button class="btn btn-info btn-sm" placement="top" ngbTooltip="View More" tabindex="-1" (click)='openDialog(element.id)'>
+  <i class="fas fa-eye"></i>
+  </button>
+  </td>
+  </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsReadOnly"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsReadOnly;"></tr>
+      </table>
+
+
+    </div>
+    </div>
+    </div>
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </ng-container>
+    </div>
+    </div>
+    </div>
+</ng-container>
+    

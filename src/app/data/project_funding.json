@@ -1,0 +1,78 @@
+{
+    "donor_funding_reference": "Donor-336",
+    "funding_donor_title": "World Bank",
+    "donor": "World Bank",
+    "snip_marker": "SNIP001",
+    "funding_organization": "ADB",
+    "responsible_organization": "ADB",
+    "come_in_like":"option1",
+    "date_of_signature": "2021-02-01T18:30:00.000Z",
+    "start_date": "2021-02-01T18:30:00.000Z",
+    "end_date": "2021-03-18T18:30:00.000Z",
+    "financing_situatuion": "Suspended",
+    "type_of_aid": "Common Funds",
+    "type_of_implementation": "",
+    "state_budget": "option1",
+    "treasury_single_account": "option1",
+    "iati_accuracy": "option1",
+    "latitude": "35.5296° E",
+    "longitude": "18.6657° S",
+    "geolocation_comments": "This is a geolocation comment.",
+    "comments": "Donated funds to the Govt.",
+    "iati_location": "option1",
+    "provinces": "Gaza",
+    "districts": ["Magude ", "Manhiça ", "Namaacha "],
+    "amount_allocated_in_financing_agreement": "243,535.00",
+    "currency_of_the_financing_agreement": "Afghanistan Afghani(AFN)",
+    "type_of_finance": "Common equity",
+    "year": "2020",
+    "amounts_of_annual_commitments_in_agreement_currency": "5,424.006",
+    "amounts_of_annual_commitments_in_meticais": "",
+    "amounts_of_annual_commitments_in_usd": "",
+    "meo_resource_source": "",
+    "total_amount_disbursed_in_currency_of_the_agreement": "1,971,232.12",
+    "total_amount_disbursed_in_meticais": "3,140,951,300.44",
+    "total_amount_disbursed_in_usd": "52,945,021.13",
+    "disbursement_fee": 0.0006275907952548835,
+    "amount_paid_in_currency_of_the_agreement": "1,129,687.97",
+    "amount_paid_in_meticais": "4,140,951,300.44",
+    "amount_paid_in_usd": "62,945,021.13",
+    "financial_execution_rate": "1.318374882112918",
+    "tableData":[
+                    {
+                        "amounts_of_annual_commitments_agreement_currency": "12,345.00",
+                        "year": "2018"
+                    },
+                    {
+                        "amounts_of_annual_commitments_agreement_currency": "76,465.00",
+                        "year": "2019"
+                    },
+                    {
+                        "amounts_of_annual_commitments_agreement_currency": "29,957.00",
+                        "year": "2020"
+                    }
+                ],
+    "pillar_pqg_meo":
+                [
+                  "preserving_national_unity",
+                  "reinforce_the_democracy",
+                  "ensure_proper_functioning",
+                  "ensuring_public_order_and_tranquility",
+                  "promote_develop_defend",
+                  "consolidate_deepen_expand_bilateral",
+                  "stimulate_the_contribution_of_mozambicans"
+                ],
+    "strategic_objective_pqg_meo":
+                  [
+                    "promote_educational_inclusive_efficient_effective_system",
+                    "expand_access_improve_quality","promote_balanced_macroeconomic_environment",
+                    "promote_extraction_of_minerals_hydrocarbons",
+                    "strengthen_capacity_for_assessing_monitoring_environmental_quality",
+                    "ensure_transparency_sustainability_of_mineral","strengthen_monitoring_and_inspection capacity"
+                  ]
+}
+
+
+
+
+

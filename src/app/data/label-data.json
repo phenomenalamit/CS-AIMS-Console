@@ -1,0 +1,230 @@
+{
+	"1": [
+		{
+			"translatedFieldName": "Create Envelope",
+			"fieldName": "create-envelope",
+			"labelId": 1,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "View Envelope List",
+			"fieldName": "view-envelope-list",
+			"labelId": 4,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Financing Organization",
+			"fieldName": "financing-organization",
+			"labelId": 5,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Purpose DAC-CRS",
+			"fieldName": "purpose-dac-crs",
+			"labelId": 7,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Add",
+			"fieldName": "add",
+			"labelId": 10,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Year",
+			"fieldName": "enter-year",
+			"labelId": 11,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "In Partner Currency",
+			"fieldName": "in-partner-currency",
+			"labelId": 13,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Currency",
+			"fieldName": "currency",
+			"labelId": 16,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Amount (MZN)",
+			"fieldName": "enter-amount-mzn",
+			"labelId": 17,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Amount (USD)",
+			"fieldName": "enter-amount-usd",
+			"labelId": 20,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Comments",
+			"fieldName": "comments",
+			"labelId": 21,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Submit",
+			"fieldName": "submit",
+			"labelId": 24,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Save as Draft",
+			"fieldName": "save-as-draft",
+			"labelId": 25,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Reset",
+			"fieldName": "reset",
+			"labelId": 28,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Cancel",
+			"fieldName": "cancel",
+			"labelId": 29,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		},
+		{
+			"translatedFieldName": "Donar",
+			"fieldName": "donar",
+			"labelId": 32,
+			"transalatedLangName": "ENGLISH",
+			"transalatedLanguageId": "1"
+		}
+	],
+	"2": [
+		{
+			"translatedFieldName": "Criar Envelope",
+			"fieldName": "create-envelope",
+			"labelId": 2,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Ver Envelope Lista",
+			"fieldName": "view-envelope-list",
+			"labelId": 3,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Organização financiadora",
+			"fieldName": "financing-organization",
+			"labelId": 6,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Objetivo DAC-CRS",
+			"fieldName": "purpose-dac-crs",
+			"labelId": 8,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Adicionar",
+			"fieldName": "add",
+			"labelId": 9,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Insira o ano",
+			"fieldName": "enter-year",
+			"labelId": 12,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Na moeda do parceiro",
+			"fieldName": "in-partner-currency",
+			"labelId": 14,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Moeda",
+			"fieldName": "currency",
+			"labelId": 15,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Insira a quantia (MZN)",
+			"fieldName": "enter-amount-mzn",
+			"labelId": 18,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Insira a quantia (USD)",
+			"fieldName": "enter-amount-usd",
+			"labelId": 19,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Comentários",
+			"fieldName": "comments",
+			"labelId": 22,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Enviar",
+			"fieldName": "submit",
+			"labelId": 23,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Salvar como rascunho",
+			"fieldName": "save-as-draft",
+			"labelId": 26,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Redefinir",
+			"fieldName": "reset",
+			"labelId": 27,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Cancelar",
+			"fieldName": "cancel",
+			"labelId": 30,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		},
+		{
+			"translatedFieldName": "Doador",
+			"fieldName": "donar",
+			"labelId": 31,
+			"transalatedLangName": "PORTUGUESE",
+			"transalatedLanguageId": "2"
+		}
+	]
+}

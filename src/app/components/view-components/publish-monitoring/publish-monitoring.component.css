@@ -1,0 +1,121 @@
+.example-headers-align .mat-expansion-panel-header-title,
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.example-headers-align .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+table {
+    width: 100%;
+  }
+  mat-header-cell{
+    color: rgb(17, 1, 1);
+    font-weight: bolder;
+    font-size: medium;
+  }
+
+  .mat-row:nth-child(2n+1){
+    background-color:#e4f0ec;
+  }
+  /* .mat-row:not(:nth-child(4n+1)){
+    background-color:#ffffff;
+  } */
+
+  
+  /* .mat-form-field + .mat-form-field {
+    margin-left: 75px;
+    
+  } */
+
+  .example-full-width {
+    width: auto;
+  }
+  .example-container{
+    margin-left:auto ;
+    margin-right: auto;
+  }
+  .width-50{width: 29%;}
+  .mandatory{
+    color: red;
+  }
+  table {
+    width: 100%;
+  }
+
+
+
+
+
+  
+
+td,
+th {
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.sticky-header {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  background: #146775;
+  color: white;
+  z-index: 3;
+}
+
+.sticky-header:first-child {
+  left: 0;
+  z-index: 4;
+}
+
+.darkblue {
+  background: #1C4464;
+  width: 100%;
+}
+
+.sticky-row {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  top: 23px;
+  /* background: #1C4464; */
+  color: white;
+  z-index: 3;
+}
+.sticky-row:nth-child(2) {
+  left: 100px; /* How can I make this dynamic? */
+  z-index: 2;
+}
+span {
+  position: absolute;
+  top: 2px;
+  left: 113px;
+}
+
+.sticky-column {
+  position: sticky;
+  position: -webkit-sticky;
+  left: 0;
+  background: #569CA8;
+  color: white;
+  z-index: 1;
+  width: 100px; /* How can I make this dynamic? */
+}
+
+.customROW{ 
+  margin-bottom: 15px;
+}
+.mat-form-field[_ngcontent-vrb-c14] + .mat-form-field[_ngcontent-vrb-c14] {
+  margin-left: 2px;
+}
+.width25 {
+  width: 20%;
+    float: left;
+    padding-right: 17px;
+}

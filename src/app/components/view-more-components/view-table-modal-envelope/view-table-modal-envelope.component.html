@@ -1,0 +1,41 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="closebuttonedit()"><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-organization" aria-current="page">Envelope</li>
+                 <li class="breadcrumb-item active label-create-organization" aria-current="page">View Envelope List</li>
+               </ol>
+             </nav>
+        </div>
+    </div>
+ </div>
+
+ <hr>
+ 
+
+        
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="modal-dialog modal-xl">
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr>
+                   <th>Year</th>
+                   <th>Currency</th>
+                   <th>Purpose DAC-CRS </th>
+               
+                </tr>
+                  <tr><td>{{year}}</td>
+                  <td>{{currency}}</td>
+                  <td>{{purposeDacCrs}}</td>
+                </tr>
+           </table>
+        </div></div>
+       </div>
+     </div>
+    
+     

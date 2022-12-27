@@ -1,0 +1,150 @@
+<div class="container-fluid">
+  <div class="innerbody">
+    <div class="breadcumb">
+      <div class="row">
+          <div class="col-lg-6 col-sm-12">
+             <nav aria-label="breadcrumb">
+                 <ol class="breadcrumb">
+                   <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                   <li class="breadcrumb-item active label-user-account"  aria-current="page">{{ 'view-user-account.user-account' | translate }}</li>
+                   <li class="breadcrumb-item active label-view-user-account" aria-current="page">{{ 'view-user-account.view-user-account' | translate }}</li>
+                 </ol>
+               </nav>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+             <div class="iconics-div">
+                 <ul class="iconics-buttons">
+                 <li><a onclick="document.title='User Account_'+new Date().toISOString();window.print()" class="iconsBG" title="{{'common.Print' | translate}}"><i class="fas fa-print"></i></a></li>
+                     <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                     <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                     <li><a  class="iconsBG" title="Back" (click)='moveToSelectedTab("Create User Account")'><i class="fas fa-arrow-left"></i></a></li>
+
+
+                 </ul>
+                 </div>
+          </div>
+      </div>
+
+      <h1 class="label-envelope">View User Account List</h1>
+      <hr>
+
+<mat-form-field class="input-filter">
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'view-monitoring.filter' | translate}}">
+</mat-form-field>
+<div class="row">
+  <div class="col-sm-12">
+    <p>
+      {{'common.totalrows' | translate}} : {{ totalRows }} <br>
+    </p>
+<div class="mat-elevation-z8 table-responsive customizeTable" #epltable>
+ <table mat-table id="ExampleMaterialTable" [dataSource]="dataSource" class="table table-bordered" matSort>
+
+    <!-- <ng-container matColumnDef="position">
+         <th mat-header-cell *matHeaderCellDef class="label-serial-number"> Sl# </th>
+        <td mat-cell *matCellDef="let element"> {{element.position}}</td>
+    </ng-container> -->
+
+
+    <ng-container matColumnDef="firstName">
+         <th mat-header-cell *matHeaderCellDef class="label-firstName" mat-sort-header>{{ 'view-user-account.firstName' | translate }} </th>
+       <td mat-cell *matCellDef="let element"> {{element.firstName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef class="label-lastName" mat-sort-header>{{ 'view-user-account.lastName' | translate }}</th>
+       <td mat-cell *matCellDef="let element"> {{element.lastName}}</td>
+    </ng-container>
+
+
+    <ng-container matColumnDef="userName">
+         <th mat-header-cell *matHeaderCellDef class="label-userName" mat-sort-header>{{ 'view-user-account.userName' | translate }}</th>
+       <td mat-cell *matCellDef="let element"> {{element.userName}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+         <th mat-header-cell *matHeaderCellDef class="width150" mat-sort-header>{{ 'view-user-account.email' | translate }}</th>
+       <td mat-cell *matCellDef="let element"> {{element.email}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="typeOfUser">
+         <th mat-header-cell *matHeaderCellDef class="width100" mat-sort-header>{{ 'view-user-account.typeOfUser' | translate }}</th>
+       <td mat-cell *matCellDef="let element"> {{element.typeOfUser}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="userGroup">
+         <th mat-header-cell *matHeaderCellDef class="label-userGroup" mat-sort-header> {{ 'view-user-account.userGroup' | translate }}</th>
+       <td mat-cell *matCellDef="let element"> {{element.userGroup}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="permissions">
+         <th mat-header-cell *matHeaderCellDef class="width100" mat-sort-header>  {{ 'view-user-account.permissions' | translate }} </th>
+       <td mat-cell *matCellDef="let element"> {{element.permissions}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="operations">
+         <th mat-header-cell *matHeaderCellDef class="width100" mat-sort-header>{{ 'view-user-account.operations' | translate }}</th>
+       <td mat-cell *matCellDef="let element"> {{element.operations}}</td>
+    </ng-container>
+
+
+
+
+<!--
+
+    <ng-container matColumnDef="features">
+         <th mat-header-cell *matHeaderCellDef class="printremove label-fetaures" mat-sort-header> {{ 'view-user-account.features' | translate }} </th>
+       <td mat-cell class="printremove" *matCellDef="let element"> {{element.features}}</td>
+    </ng-container> -->
+
+    <ng-container matColumnDef="edit" sticky>
+      <th *matHeaderCellDef class="label-action" > {{ 'common.action' | translate }}</th>
+      <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+      <td *matCellDef="let element;let i = index;"class="printremove">
+         <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'common.edit' | translate }}" tabindex="-1" (click)='editUserAcct(element)'>
+          <i class="far fa-edit"></i>
+      </button>
+      <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{'common.delete' | translate}}" tabindex="-1" (click)='opensweetalertDelete()'>
+        <i class="fas fa-trash-alt"></i></button>
+        <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{'common.view' | translate}}" tabindex="-1" (click)='viewMoreUserAccount(element)'>
+          <i class="fas fa-eye"></i>
+        </button>
+
+    </td>
+  </ng-container>
+<!--
+    <ng-container matColumnDef="edit">
+      <th *matHeaderCellDef class="label-action"> Action </th>
+      <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='editUserAcct(element)'>
+          <i class="far fa-edit"></i>
+      </button> </td>
+  </ng-container>
+
+  <ng-container matColumnDef="delete">
+    <th *matHeaderCellDef class="label-action"> Action </th>
+    <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='opensweetalertDelete()'>
+        <i class="fas fa-trash-alt"></i>
+    </button> </td>
+</ng-container>
+
+
+<ng-container matColumnDef="viewmore">
+  <th *matHeaderCellDef class="label-action"> Action </th>
+  <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" tabindex="-1" (click)='viewMoreUserAccount(element)'>
+    <i class="fas fa-eye"></i>
+  </button> </td>
+</ng-container> -->
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+
+</div>
+</div>
+</div>
+
+<mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
+</div>
+</div>

@@ -1,0 +1,57 @@
+{
+    "globalLink":[
+        {
+        "Global_Link" : "Dashboard",
+        "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Envelope",
+            "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Funding",
+            "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Project",
+            "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Disbursement",
+            "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Payment",
+            "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Organization",
+            "Link_Status":"Active"
+        },
+        {
+            "Global_Link" : "Individual",
+            "Link_Status":"Active"
+        }
+        ,
+        {
+            "Global_Link" : "Monitoring",
+            "Link_Status":"Active"
+        }
+        ,
+        {
+            "Global_Link" : "User Account",
+            "Link_Status":"Active"
+        }
+        ,
+        {
+            "Global_Link" : "User Management",
+            "Link_Status":"Active"
+        }
+        ,
+        {
+            "Global_Link" : "Link Management",
+            "Link_Status":"Active"
+        }
+    ]
+
+}

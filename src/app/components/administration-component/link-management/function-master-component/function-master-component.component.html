@@ -1,0 +1,126 @@
+<!-- HTML Page Component for Function Master -->
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div class="container-fluid">
+        <div class="innerbody">
+    
+            <div class="breadcumb">
+                <div class="row">
+                   
+    
+                </div>
+                <div class="">
+                    <form class="example-form" [formGroup]="functionMasterForm" autocomplete="off" novalidate>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <strong class="mandatory">*</strong>
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-functionName">{{ 'function-Master.Function Name' | translate }}:</span></mat-label>
+                                    <input matInput class="" placeholder="{{ 'function-Master.Function Name' | translate }}"
+                                        formControlName="functionName">
+                                </mat-form-field>
+                            </div>
+                        <!-- </div>
+                        <div class="row"> -->
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <strong class="mandatory">*</strong>
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-fileName">{{ 'function-Master.File Name' | translate }}:</span></mat-label>
+                                    <input matInput class="" placeholder="{{ 'function-Master.File Name' | translate }}" formControlName="fileName">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+    
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-Description">{{ 'function-Master.Description' | translate }} :</span></mat-label>
+                                    <input matInput class="" placeholder="{{ 'function-Master.Description' | translate }}" formControlName="description">
+                                </mat-form-field>
+                            </div>
+                            <ng-container *ngIf="updateFunctionMaster =='true'">
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>{{ 'function-Master.Select an option' | translate }}</mat-label>
+                                    <mat-select  formControlName="status" >
+                                       
+                                        <mat-option value="Active">{{ 'function-Master.Active' | translate }}</mat-option>
+                                        <mat-option value="InActive">{{ 'function-Master.InActive' | translate }}</mat-option>
+        
+                                    </mat-select>
+                                </mat-form-field>
+                                
+                            </div>
+                            </ng-container>
+                        <!-- </div>
+                        <div class="row"> -->
+                            <!-- <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                 <mat-label>Permission</mat-label>
+                               <div class="custom-control custom-radio">
+                                
+                                <mat-radio-group aria-label="Select an option"  formControlName="action">
+                                    <mat-radio-button value="CRUD" class="radio">CRUD</mat-radio-button>
+                                    <mat-radio-button value="CRU" class="radio mr-2">CRU</mat-radio-button>
+                                    <mat-radio-button value="RU" class="radio mr-2">RU</mat-radio-button>
+                                    <mat-radio-button value="R" class="radio mr-2">R</mat-radio-button>
+                                </mat-radio-group>
+                                </div>
+                            </div> -->
+                        </div>
+                        <!-- <ng-container *ngIf="updateFunctionMaster =='true'">
+                        <div class="row">
+                           
+                            <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Select an option</mat-label>
+                                    <mat-select  formControlName="status" [(ngModel)]="functionMasterObject.status">
+                                       
+                                        <mat-option value="Active">Active</mat-option>
+                                        <mat-option value="InActive">InActive</mat-option>
+        
+                                    </mat-select>
+                                </mat-form-field>
+                                
+                            </div>
+                        </div>
+                        </ng-container> -->
+                        
+                        <ng-container *ngIf="updateFunctionMaster!=='true'">
+                        <div class="row">
+                            <div class="col-lg-12 mt-3 mb-2">
+                                <div class="example-button">
+                                    <button class="btn btn-success mr-2" (click)="(functionMasterForm.invalid)?openMandatoryAlert():opensweetalert()"
+                                        >{{'common.submit' |
+                                        translate}}</button>
+    
+                                    <button class="btn btn-reset mr-2"
+                                        (click)="clearForm(functionMasterForm)">{{'common.reset' |
+                                        translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                        </ng-container>
+                        <ng-container *ngIf="updateFunctionMaster =='true'">
+                            <div class="row">
+                                <div class="col-lg-12 mt-3 mb-2">
+                                    <div class="example-button">
+                                        <button class="btn btn-success mr-2" (click)="opensweetalertUpdate()"
+                                            [disabled]="functionMasterForm.invalid">{{'common.update' |
+                                            translate}}</button>
+        
+                                        <button class="btn btn-reset mr-2"
+                                            (click)="clearForm(functionMasterForm)">{{'common.reset' |
+                                            translate}}</button>
+                                            <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </ng-container>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>

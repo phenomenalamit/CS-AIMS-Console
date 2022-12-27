@@ -1,0 +1,50 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="closebuttonedit()"><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <li class="breadcrumb-item active label-create-organization" aria-current="page">{{'view-monitoring.view-monitoring-list' | translate}}</li>
+               </ol>
+             </nav>
+        </div>
+    </div>
+ </div>
+
+ <hr>
+
+
+
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="modal-dialog modal-xl">
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr>
+
+                <th>{{ 'view-monitoring.strategic-priority-pqg' | translate }}</th>
+                <th>{{ 'view-monitoring.strategic-objective-pqg' | translate }}</th>
+                <th>{{ 'view-monitoring.disbursement-condition' | translate }}</th>
+                <th> {{'monitoring-component.implementing-organization' | translate}}</th>
+                <th> {{'view-monitoring.start-date' | translate}}   </th>
+                <th>{{'view-monitoring.end-date' | translate}}</th>
+                <th>{{ 'view-monitoring.level-of-action' | translate }}</th>
+
+                </tr>
+                <tr>
+
+
+                  <td>{{prioritypqg}}</td>
+                  <td>{{objpqg}}</td>
+                  <td>{{conddisburse}}</td>
+                  <td>{{implementingorganization}}</td>
+                  <td>{{startDate}}</td>
+                  <td>{{endDate}}</td>
+                  <td>{{levelOfAction}}</td>
+                </tr>
+           </table>
+        </div></div>
+       </div>
+     </div>
+

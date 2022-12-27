@@ -1,0 +1,86 @@
+<!-- Main componnet HTML page for  Disbursement-->
+<div class="container-fluid">
+    <div class="innerbody">
+
+        <ng-container *ngIf="num===0 || num===undefined">
+            <div class="breadcumb">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                            class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item active label-disbursement" aria-current="page">
+                                    {{'add-disbursement-component.disbursement' | translate}}</li>
+                                <li class="breadcrumb-item active label-create-disbursement" aria-current="page">
+                                    {{'add-disbursement-component.createDisbursement' | translate}}</li>
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="iconics-div">
+                            <ul class="iconics-buttons">
+                                <!-- <li><div class="example-button">
+                            <button class="btn btn-upload mr-2" (click)='openDialog()' >{{'common.uploadDocument'| translate}}</button>
+                            </div></li> -->
+
+                                <!-- <li>
+                                <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog()' ><i class="fas fa-file-upload"></i></a>
+                                </li> -->
+                                <li><span class="indicates">{{'common.indicates-fields-are-mandatory'|
+                                        translate}}</span></li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="num===1">
+            <div class="breadcumb">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                            class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item label-disbursement"><a
+                                        href="/admin/disbursement">{{'add-disbursement-component.disbursement' |
+                                        translate}}</a></li>
+                                <li class="breadcrumb-item active label-view-disbursement" aria-current="page">
+                                    {{'add-disbursement-component.viewDisbursment' | translate}}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="iconics-div">
+                            <ul class="iconics-buttons">
+                                <li><a onclick="window.print()" class="iconsBG" title="Print"><i
+                                            class="fas fa-print"></i></a></li>
+                                <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i
+                                            class="far fa-file-excel"></i></a></li>
+                                <li><a class="iconsBG" title="Back"
+                                        (click)='moveToSelectedTab("Create Donor Disbursement")'><i
+                                            class="fas fa-arrow-left"></i></a></li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </ng-container>
+
+
+        <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+            <mat-tab label="Create Disbursement" class="label-create-Disbursement">
+                <app-add-disbursement></app-add-disbursement>
+            </mat-tab>
+        </mat-tab-group>
+
+    </div>
+</div>

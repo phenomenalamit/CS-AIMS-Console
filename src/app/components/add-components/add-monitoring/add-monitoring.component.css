@@ -1,0 +1,20 @@
+
+  table {
+    width: 100%;
+  }
+
+
+
+
+
+  
+
+td,
+th {
+  padding: 2px 5px;
+  /* white-space: nowrap; */
+}
+
+.whitesp-nowrap{
+    white-space: nowrap
+}

@@ -1,0 +1,108 @@
+.info-font{
+  font-size: 18px;
+  color: #48ab48bf;
+}
+
+.text-align-right{
+  text-align: right;
+}
+
+.my-tooltip{
+  min-width: 300px;
+}
+
+.custom-tooltip-class .tooltip-inner{
+  width: 100%;
+  background-color: #914444;
+}
+.additional-selection {
+  opacity: 0.75;
+  font-size: 0.75em;
+}
+.select-container{
+  margin-top:10px;
+}
+
+.whitesp-nowrap{
+  white-space: nowrap
+}
+
+.widthcarte{
+height: 310px;
+}
+
+.bg{
+background-color:rgb(130, 134, 134);
+}
+/* .mat-select-panel{
+margin-left: -15px;
+margin-top: 30px;
+} */
+
+#Stakeholder{
+width: 10px;
+}
+
+
+.Stakeholder td[_ngcontent-jwq-c16], .Stakeholder th[_ngcontent-jwq-c16] {
+padding: 2px 5px;
+}
+
+.Stakeholder td, .Stakeholder th {
+padding: .75rem !important;
+vertical-align: top;
+border-top: 1px solid #dee2e6 !important;
+
+width: 1px;
+min-width: 1px;
+max-width: 1px;
+}
+
+#assofun{
+width: 10px;
+}
+
+.assofun td[_ngcontent-jwq-c16], .assofun th[_ngcontent-jwq-c16] {
+padding: 2px 5px;
+}
+
+.assofun td, .assofun th {
+padding: .75rem !important;
+vertical-align: top;
+border-top: 1px solid #dee2e6 !important;
+
+width: 1px;
+min-width: 1px;
+max-width: 1px;
+}
+
+.search-btn {
+  height: 97%;
+  transform: translate(8%, 27%);
+}
+
+.add-comments{
+  width: 75px;
+}
+
+.matTooltip {
+  overflow: visible !important;
+  /* min-width: 100% !important; */
+  width: 100% !important;
+}
+
+.mat-datepicker-input {
+  width: 85%;
+}
+
+mat-icon {
+  position: relative;
+  float: right;
+  top: -3px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.add_impl_org {
+  cursor: pointer;
+}

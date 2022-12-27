@@ -1,0 +1,273 @@
+<div class="container-fluid">
+    <div class="innerbody">
+        <div class="breadcumb">
+            <div class="row">
+                <div class="col-lg-12 col-sm-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="#">{{'user-profile.userProfile' | translate}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{'user-profile.myAccount' | translate}}</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <div class="usersection">
+            <form class="example-form" [formGroup]="userProfileForm" >
+                <div class="row ">
+                    <div class="col-lg-4 col-sm-12">
+                        <h6 class="user-title">{{'user-profile.userInformation' | translate}}  </h6>
+                    </div>
+                    <ng-container *ngIf="isReadOnly">
+                        <div class="col-lg-2 col-sm-12 mb-4">
+                            <button class="btn btn-primary mr-2 float-right " (click)="editProfile()">
+                            <i class="far fa-edit"></i> &nbsp;{{'user-profile.edit' | translate}}</button>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="!isReadOnly">
+                        <div class="col-lg-2 col-sm-12 mb-4">
+                            <button class="btn btn-danger mr-2 float-right" (click)="cancelProfile()">
+                                <i class="far fa-edit"></i> &nbsp;{{'common.cancel' | translate}}
+                            </button>
+                        </div>
+                        <div class="col-lg-4 col-sm-12 mb-4">
+                            <button class="btn btn-success mr-2" (click)="updateUserDetails()">
+                                <i class="far fa-edit"></i> &nbsp;{{'user-profile.save' | translate}}
+                            </button>
+                        </div>
+                    </ng-container>
+                </div>
+  
+                <div class="row">
+                    <div class="col-lg-8 col-sm-12">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <!-- <label>User name</label> -->
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{'user-profile.userName' | translate}}</mat-label>
+                                    <input matInput [readonly]="isReadOnly"  formControlName="userName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6 col-sm-12 pr-0">
+                                <!-- <label>Email Address</label> -->
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{'user-profile.email' | translate}}</mat-label>
+                                    <!-- <mat-label>chris.gardner@example.com</mat-label> -->
+                                    <input matInput [readonly]="isReadOnly"  formControlName="email" (keyup)="validateEmail()">
+                                </mat-form-field>
+                                <ng-container *ngIf="check_email_flag==false">
+                                    <mat-error > {{'user-account.invalid' | translate}} </mat-error>
+                                </ng-container>
+                                <ng-container *ngIf="check_email1_flag==false">
+                                        <p style="color: green;"> {{'user-account.valid' | translate}} </p>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <!-- <label>First name</label> -->
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{'user-profile.firstName' | translate}}</mat-label>
+                                    <input matInput [readonly]="isReadOnly" formControlName="firstName">
+                                </mat-form-field>
+                            </div>
+                            <div class="col-lg-6 col-sm-12 pr-0" >
+                                <!-- <label>Last name</label> -->
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{'user-profile.lastName' | translate}}</mat-label>
+                                    <input matInput [readonly]="isReadOnly"  formControlName="lastName">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <h6 class="user-title">{{'user-profile.contactInformation' | translate}}</h6>
+
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-4 col-sm-12">
+                                <mat-form-field appearance="outline" class="mb-form-0 code-width">
+                                    <mat-label>{{'user-account.Code' | translate}}</mat-label>
+                                    <input type="text" [readonly]="isReadOnly" placeholder="Pick one" aria-label="Number" matInput formControlName="countryCode"
+                                        [matAutocomplete]="countryCode">
+                                    <mat-autocomplete #countryCode="matAutocomplete"  panelWidth="270px">
+                                        <mat-option *ngFor="let option of countryDialingCodeFilteredOption | async" [value]="option.dialingCode" [id]="option.countryName">
+                                            {{option.dialingCode}}&nbsp;({{option.countryName}})
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                
+                                <mat-form-field appearance="outline" class="mb-form-0 phone-number-width">
+                                    <mat-label>{{ 'add-organization.telephone' | translate }}</mat-label>
+                                    <input type="text" [readonly]="isReadOnly" matInput  formControlName="telephone" placeholder="{{ 'add-organization.telephone' | translate }}" (keyup)="validatePhone()">
+                                </mat-form-field>
+                
+                                <ng-container *ngIf="check_phone_flag==false">
+                                    <mat-error > {{'add-organization.invalidPhone' | translate}}</mat-error>
+                                </ng-container>
+                                <ng-container *ngIf="check_phone1_flag==false">
+                                    <p style="color: green;">{{'add-organization.validPhone' | translate}} </p>
+                                </ng-container>
+                                <ng-container *ngIf="check_phone1_flag==false && phoneMessage==' '">
+                                </ng-container>
+                            </div>
+                            <div class="col-lg-6 col-sm-12 pr-0">
+                                <!-- <label>City</label> -->
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{'user-profile.city' | translate}}</mat-label>
+                                    <input matInput [readonly]="isReadOnly"  formControlName="city">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 pr-0">
+                                <!-- <label>Address</label> -->
+                                <mat-form-field appearance="outline">
+                                    <mat-label>{{'user-profile.address' | translate}}</mat-label>
+                                    <textarea matInput [readonly]="isReadOnly"  formControlName="address"></textarea>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12 pr-0">
+                        <div class="userbox">
+                            <div class="card shadow">
+                                <ng-container *ngIf="isReadOnly===true">
+                                    <img class="rounded-circle" [src]="avatarURL" alt="Profile">
+                                    <div class="text-center userdtls">
+                                        <h3>
+                                            {{fullName}}
+                                        </h3>
+                                        <h5> <i class="ni location_pin mr-2"></i>{{usergroup}}</h5>
+                                        <hr>
+                                    </div>
+                                </ng-container>
+
+                                <ng-container *ngIf="isReadOnly===false">
+                                    <img class="rounded-circle" [src]="avatarURL" alt="Profile">
+
+                                    <div class="text-center userdtls">
+                                        <h3>
+                                            {{fullName}}
+                                        </h3>
+
+                                        <h5> <i class="ni location_pin mr-2"></i>{{usergroup}}</h5>
+                                        <input #file type="file" accept='image/*' [hidden]="true" (change)="changeAvatar(file.files)"/>
+                                        <i class="btn btn-default" (mousedown)="file.click();">{{'user-profile.choose-image' | translate}}</i>
+                                        <hr>
+                                        <!-- <h6 class="Solution">
+                                            Solution Manager
+
+                                            <span> University of Computer Science</span>
+                                        </h6> -->
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- <form> -->
+
+                <!-- <div class="row">
+                    <div class="col-lg-8 col-sm-12">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12 pr-0">
+                            <label>User Name</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-username">User Name</span></mat-label>
+                                <input matInput  placeholder="Enter Username">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 pr-0">
+                            <label>Email address</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-email">Email Address</span></mat-label>
+                                <input matInput  placeholder="Enter Email Address">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <label>First name</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-firstname">First Name</span></mat-label>
+                                <input matInput  placeholder="Enter First Name">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 pr-0" >
+                        <label>Last name</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-lastname">Last Name</span></mat-label>
+                                <input matInput  placeholder="Enter Last Name">
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <h6 class="user-title">Contact Information</h6>
+
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                        <label>Mobile number</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-mobileNumber">Mobile Number</span></mat-label>
+                                <input matInput  placeholder="Enter Mobile Number">
+                            </mat-form-field>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 pr-0">
+                        <label>City</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-city">City</span></mat-label>
+                                <input matInput  placeholder="Enter City">
+                            </mat-form-field>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 pr-0">
+                            <label>Address</label>
+                            <mat-form-field  appearance="fill" >
+                                <mat-label><span class="label-address">Address</span></mat-label>
+                                <textarea matInput placeholder="Enter Address"></textarea>
+                            </mat-form-field>
+
+                        </div>
+
+                    </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-12 pr-0">
+                    <div class="userbox">
+                        <div class="card shadow">
+                            <img class="rounded-circle" src="../assets/images/user.jpg" alt="Profile">
+
+                            <div class="text-center userdtls">
+                            <h3>
+                                chris Gardner
+                            </h3>
+                            <h5> <i class="ni location_pin mr-2"></i>Bld Mihail Kogalniceanu</h5>
+                            <hr> -->
+                            <!-- <h6 class="Solution">
+                                Solution Manager
+
+                                <span> University of Computer Science</span>
+                            </h6> -->
+
+                        <!-- </div>
+                        </div>
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="example-button">
+                                <button class="btn btn-success mr-2">Submit</button>
+                                <button class="btn btn-warning mr-2" >Reset</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+            <!-- </form>
+            -->
+        </div>
+    </div>
+</div>

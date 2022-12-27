@@ -1,0 +1,55 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="closebuttonedit()"><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <!-- <li class="breadcrumb-item" ><a [routerLink]="'/admin/dashboard'" ><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-organization" aria-current="page">{{'view-disbursement.disbursement' | translate}} </li> -->
+                 <li class="breadcrumb-item active label-create-organization" aria-current="page">{{'view-disbursement.view-disbursement-list' | translate}}</li>
+               </ol>
+             </nav>
+        </div>
+    </div>
+ </div>
+
+ <hr>
+
+
+
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="modal-dialog modal-xl">
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr>
+
+                   <th>{{'view-disbursement.funding-title' | translate}}</th>
+                   <!-- <th>Disbursement Currency</th> -->
+                   <th>{{'view-disbursement.funding-organization' | translate}}</th>
+                   <th>{{'view-disbursement.swift-code-ib' | translate}}</th>
+                   <th>{{'view-disbursement.swift-code-rb' | translate}}</th>
+                   <th>{{'view-disbursement.disbursement-date' | translate}}</th>
+                   <th>{{'view-disbursement.receiving-bank-nib' | translate}}</th>
+                   <th>{{'add-disbursement-component.exchange-rate-mzn' | translate}}</th>
+                   <th>{{'add-disbursement-component.exchange-rate-usd' | translate}}</th>
+
+                </tr>
+                  <tr *ngFor="let data of disbursementDataList">
+
+                  <td>{{data.fundingDonorTitle}}</td>
+                  <td>{{data.names}}</td>
+                  <td>{{data.swiftcode}}</td>
+                  <td>{{data.receivedswiftcode}}</td>
+                  <td>{{data.date| date:'dd/MM/yyyy'}}</td>
+                  <td>{{data.receivedBankNIB}}</td>
+                  <td>{{data.exchangeRateMZN}}</td>
+                  <td>{{data.exchangeRateUSD}}</td>
+
+                </tr>
+           </table>
+        </div></div>
+       </div>
+     </div>
+

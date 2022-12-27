@@ -1,0 +1,172 @@
+
+  body, html {
+    font-family: "Helvetica Neue", "Lucida Grande", "Segoe UI", Arial, Helvetica, Verdana, sans-serif;
+      margin: 0;
+    }
+
+/* .login-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    position: relative;
+background-image: url("../../assets/images/bg.jpg"); 
+    background-size: cover;
+} */
+
+.loginscreen{ /*background-image: url("/assets/images/group.png");width: 714px;height: 845px;*/position: relative;} 
+.img-log-screen img{ height: 845px;}
+
+.login-page .container {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 3rem;
+}
+.login-page .container .app-name {
+    margin-top: 8px;
+    padding-bottom: 10px;
+    font-size: 20px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #25393c;
+}
+.login-page .container .login-form {
+    padding: 18px 65px;
+    background: #fff;
+    width: 430px;
+    box-shadow: 0 0 6px #7b7b7b;
+    border-radius: 4px;
+    border-radius: 50%;
+    height: 430px;
+    position: absolute;
+    top: 14rem;
+    right: 0;
+}
+.login-page .container .login-form input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px white inset;
+}
+/* .login-page:after {
+    content: '';
+    background: #fff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 50%;
+    right: 0;
+}
+.login-page:before {
+    content: '';
+    background: #3f51b5;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+} */
+.text-center {
+    text-align: center;
+}
+.w-100 {
+    width: 100%;
+}
+
+.remember{ margin: 15px 0px 15px;}
+.btn-custom{font-size: 18px;  width: 85px; height: 85px;  border-radius: 50%; display: table-cell; vertical-align: middle; background: #ed1a23; color: #fff;box-shadow: 0 0 6px #7b7b7b;} 
+.btn-custom:hover{ text-decoration: none; background: #d1000a;}
+.loging-button{ position: absolute;     right: 5rem;
+    bottom: -1rem;}
+.forgot{ text-align: center;}
+.forgot a{ color: #565656; }
+.login-page .content h2.app-name{ font-size: 24px;color: #313131; font-weight: 500;}
+.sign{ text-align: center;}
+.signup{ color:#8d4dfd;}
+.mat-form-field-appearance-legacy .mat-form-field-label {
+    color: rgba(0, 0, 0, 0.54);
+}
+.mat-input-element {
+    caret-color: #292929;
+}
+
+i.i-sm{ font-size: 16px; color: #b3b3b3;}
+.ul-login{ margin: 0; padding: 0;margin-top: 8rem;
+    margin-left: 9rem;
+    width: 100%;}
+.ul-login li{ list-style-type: none;}
+.ul-login li a{ color:#ed1a23;}
+.labeluser {
+    color: rgba(86, 86, 86, 0.54) !important;
+}
+.mat-form-field-appearance-legacy .mat-form-field-underline {
+    background-color: rgba(115, 111, 111, 0.42);
+    
+}
+
+.showPassword-i i{ font-size: 1rem;}
+img.loginBG{ height: 70px;}
+
+.capImg{ margin-top: .6rem; border-bottom: 1px solid #dadada; background: #f1f1f1;padding: 5px; border-radius: 6px;}
+.capImg img{ max-width: 100%;}
+
+@media screen and (max-width:1600px){
+    .img-log-screen img{ height: 730px;}
+    .login-page .container .login-form {top: 10rem;}
+    .login-page .container .login-form { width: 400px; height: 400px; }
+    .btn-custom{ width: 85px; height: 85px;} 
+    .loging-button{bottom: -2rem;}
+}
+
+@media screen and (max-width:1440px){
+    .img-log-screen img{ height: 645px;}
+    .login-page .container .login-form { width: 430px; height: 430px;top: 7rem; }
+    .btn-custom{ width: 85px; height: 85px;} 
+    .loging-button{bottom: -2rem;}
+    .ul-login { margin-left: 10rem; }
+
+    
+}
+
+
+
+@media screen and (max-width:1366px){
+    .img-log-screen img{ height: 640px;}
+    .login-page .container .login-form {top: 7rem;}
+    .ul-login { margin-top: 7rem; margin-left: 10rem;}
+    .login-page .container {  padding-top: 1rem;}
+}
+
+@media screen and (max-width:640px){
+.login-page{ overflow: hidden;}
+.img-log-screen img {  height: 470px;}
+
+}
+
+@media screen and (max-width:500px){
+    .login-page{ overflow: hidden;}
+    .img-log-screen img {  height: 470px;}
+    .login-page .container .login-form { width: 300px; height: auto;  top: 7rem; border-radius: 0; margin: 0 auto; position: absolute; top: 0; left: 0;
+     padding: 25px 25px; }
+     .ul-login {
+        margin-top: 3rem;
+        margin-left: 0rem;
+    }
+    .loging-button {right: 2rem;    bottom: 16px;}
+    .btn-custom {
+        width: 40px;
+        height: 40px;
+        border-radius: 0;
+    }
+
+
+    }
+
+    .carte_button{
+        transform: translate(50%,85%);
+        cursor: pointer;
+    }
+
+    .info-font{
+      /* font-size: 13px; */
+      color: #48ab48bf;
+  }

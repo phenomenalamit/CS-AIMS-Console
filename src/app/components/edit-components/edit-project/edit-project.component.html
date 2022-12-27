@@ -1,0 +1,193 @@
+<div class="container-fluid">
+      <div class="innerbody">
+        <ng-container *ngIf="projectId!==null">
+        <ng-container *ngIf="num===0 || num===undefined">
+          <div class="breadcumb">
+            <div class="row">
+              <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item label-project" aria-current="page">{{'menu.Project' | translate}}</li>
+                    <li class="breadcrumb-item active label-create-project" aria-current="page">{{'view-project.editProject' | translate}}</li>
+                  </ol>
+                </nav>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                  <ul class="iconics-buttons">
+                    <!-- <li>
+                      <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2()' ><i class="fas fa-file-upload"></i></a>
+                    </li> -->
+                    <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </ng-container>
+
+        <ng-container *ngIf="num===1">
+          <!-- <div class="breadcumb">
+            <div class="row">
+              <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item label-project"><a href="/admin/project">Project</a></li>
+                    <li class="breadcrumb-item active label-view-project" aria-current="page">View Project Details</li>
+                  </ol>
+                </nav>
+              </div>
+              <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                  <ul class="iconics-buttons">
+
+                    <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                    <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                    <li><a class="iconsBG" title="Back" (click)='moveToSelectedTab("Edit Project")'><i
+                          class="fas fa-arrow-left"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
+        </ng-container>
+
+        <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+          <mat-tab label=" {{'view-project.editProject' | translate}}" class="label-create-project">
+            <app-add-project-component></app-add-project-component>
+            <!-- <div class="row">
+              <div class="col-lg-12">
+                <div class="example-button">
+
+                  <button class="btn btn-success mr-2 label-save-as-draft" (click)="opensweetalert2()">Save as Draft</button>
+                  <button class="btn btn-warning mr-2 label-reset" (click)="clearForm(organizationForm)">Reset</button>
+
+                </div>
+              </div>
+            </div> -->
+
+          </mat-tab>
+
+          <!-- <mat-tab label="View Project Details" class="label-view-project">
+            <app-view-project-component></app-view-project-component>
+          </mat-tab> -->
+        </mat-tab-group>
+        </ng-container>
+
+        <!-- <ng-container *ngIf="viewMoreProject=='ViewMoreProject'"> -->
+        <ng-container *ngIf="viewProjectId!==null">
+            <ng-container *ngIf="num===0 || num===undefined">
+
+                <div class="breadcumb">
+                  <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                      <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                          <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                          <li class="breadcrumb-item label-project"><a href="/admin/project">Project</a></li>
+                          <li class="breadcrumb-item active label-view-project" aria-current="page">{{'view-project.viewProjectDetails'| translate}}</li>
+                        </ol>
+                      </nav>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                      <div class="iconics-div">
+                        <ul class="iconics-buttons">
+
+                          <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                          <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                          <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToProjectTab()'>
+                              <i class="fas fa-arrow-left"></i></a></li>
+
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                <mat-tab label="{{'view-project.viewProjectDetails'| translate}}" class="label-view-project">
+                  <app-add-project-component></app-add-project-component>
+                </mat-tab>
+              </mat-tab-group>
+        </ng-container>
+        <ng-container *ngIf="draftedId!==null">
+          <ng-container *ngIf="num===0 || num===undefined">
+
+              <div class="breadcumb">
+                <div class="row">
+                  <div class="col-lg-6 col-sm-12">
+                    <nav aria-label="breadcrumb">
+                      <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                        <li class="breadcrumb-item label-project"><a href="/admin/project">Project</a></li>
+                        <li class="breadcrumb-item active label-view-project" aria-current="page">{{'view-project.viewProjectDetails'| translate}}</li>
+                      </ol>
+                    </nav>
+                  </div>
+                  <div class="col-lg-6 col-sm-12">
+                    <div class="iconics-div">
+                      <ul class="iconics-buttons">
+
+                        <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                        <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                        <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToProjectTab()'>
+                            <i class="fas fa-arrow-left"></i></a></li>
+
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+              <mat-tab label="{{'view-project.viewProjectDetails'| translate}}" class="label-view-project">
+                <app-add-project-component></app-add-project-component>
+              </mat-tab>
+            </mat-tab-group>
+      </ng-container>
+
+      </div>
+</div>
+<!-- <div class="container-fluid">
+  <div class="innerbody">
+
+    <ng-container *ngIf="num===0 || num===undefined">
+
+      <div class="breadcumb">
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item label-project"><a href="/admin/project">Project</a></li>
+                <li class="breadcrumb-item active label-view-project" aria-current="page">View Project Details</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+              <ul class="iconics-buttons">
+
+                <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                <li><a class="iconsBG" title="Back" (click)='moveToSelectedTab("Create Project")'>
+                    <i class="fas fa-arrow-left"></i></a></li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+      <mat-tab label="View Project Details" class="label-view-project">
+        <app-view-project-component></app-view-project-component>
+      </mat-tab>
+    </mat-tab-group>
+
+  </div>
+</div> -->

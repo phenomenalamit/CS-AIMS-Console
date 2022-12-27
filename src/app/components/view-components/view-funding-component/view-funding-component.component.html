@@ -1,0 +1,405 @@
+<!-- HTML page of View Financial Agreement Lists -->
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">**You Don't have Authorization to View this Page**</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">    
+    <div class="container-fluid">
+        <div class="innerbody">
+            <div class="breadcumb">
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                                <li class="breadcrumb-item label-funding">
+                                    <a href="/admin/funding"></a>{{'view_funding.financialAgreement' | translate}}</li>
+                                <li class="breadcrumb-item active label-view-funding" aria-current="page">{{'menu.View Financial Agreement' | translate}}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <div class="col-lg-6 col-sm-12">
+                        <div class="iconics-div">
+                            <ul class="iconics-buttons">
+                                <!-- <li><div class="example-button">
+                                    <button class="btn btn-upload mr-2" (click)='openDocumentDialog()' >{{'common.viewDocument' | translate}}</button>
+                                    </div></li> -->
+                                    <!-- <li>
+                                        <a class="iconsBG" title="{{'common.viewDocument' | translate}}" (click)='openDocumentDialog()' ><i class="fas fa-file-download"></i></a>
+                                        </li> -->
+                                        
+                                <li><a onclick="document.title='Financial Agreement_'+new Date().toISOString();window.print()" class="iconsBG" title="{{'common.Print' | translate}}"><i class="fas fa-print"></i></a></li>
+                                <li><a class="iconsBG" title="Excel" (click)="generateFundingExcel()"><i class="far fa-file-excel"></i></a></li>
+                                <!-- <li><a  class="iconsBG" title="Back" (click)='moveToSelectedTab("Create Funding")'><i class="fas fa-arrow-left"></i></a></li> -->
+                                <li><a class="iconsBG" title="{{'common.Back'|translate}}" (click)='moveToSelectedTab1("Create Funding")'><i class="fas fa-arrow-left"></i></a></li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="label-envelope">{{'view_funding.viewFunding' | translate}}</h1>
+                <hr>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12">
+                     <div class="customROW printremove">
+                        <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline" class="mb-form-0 width25">
+    
+                            <mat-label>{{ 'common.Filter' | translate }} {{filter.name}}</mat-label>
+                            <ng-container *ngIf="filter.name === ''"></ng-container>
+                            <!-- <ng-container *ngIf="filter.name != 'Province' && filter.name != 'Província' && filter.name != 'District' && filter.name != 'Distrito'"> -->
+                                <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                                (selectionChange)="filterChange(filter,$event)" multiple (openedChange)="openOptionSearch($event)">
+                                <mat-optgroup>
+                                    <mat-form-field >
+                                      <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                                        [formControl]="searchFilter" (keyup)="chkValue(filter)">
+                                    </mat-form-field>
+                                  </mat-optgroup>
+                                  <mat-optgroup *ngIf="(filter.options).length == 0">
+                                    <div>{{ 'common.No results found!' | translate }}</div>
+                                  </mat-optgroup>
+                                  <ng-container *ngIf="filter.columnProp == 'district'">
+                                    <ng-container *ngIf="(filter.options).length != 0">
+                                      <mat-optgroup *ngFor="let provinceName of proviceFinal" [label]="provinceName">
+                                        <ng-container *ngFor="let items of filter.options">
+                                          <ng-container *ngIf="provinceName === provinceNm(items)">
+                                            <mat-option [value]="items"
+                                            matTooltip="{{items=='No Data'?'':item}}"
+                                            [matTooltipPosition]="'right'"
+                                            matTooltipClass="custom-tooltip">{{items}}</mat-option>
+                                          </ng-container>
+                                        </ng-container>
+                                      </mat-optgroup>
+                                    </ng-container>
+                                  </ng-container>
+                                  <ng-container *ngIf="filter.columnProp != 'district'" >
+                                  <mat-option [value]="item" *ngFor="let item of filter.options"
+                                  matTooltip="{{item=='No Data'?'':item}}"
+                                  [matTooltipPosition]="'right'"
+                                  matTooltipClass="custom-tooltip">{{item=='No Data'?'':item}}</mat-option>
+                                </ng-container>
+                                </mat-select>
+                            <!-- </ng-container> -->
+                            <!-- <ng-container *ngIf="filter.name == 'Province' || filter.name == 'Província' || filter.name == 'District' || filter.name == 'Distrito'">
+                                <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                                (selectionChange)="filterChange(filter,$event)"  (openedChange)="openOptionSearch($event)">
+                                <mat-optgroup>
+                                    <mat-form-field >
+                                      <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                                        [formControl]="searchFilter" (keyup)="chkValue(filter)">
+                                    </mat-form-field>
+                                  </mat-optgroup>
+                                  <mat-optgroup *ngIf="(filter.options).length == 0">
+                                    <div>{{ 'common.No results found!' | translate }}</div>
+                                  </mat-optgroup>
+                                  <mat-option [value]="item" *ngFor="let item of filter.options"
+                                  matTooltip="{{item=='No Data'?'':item}}"
+                                  [matTooltipPosition]="'right'"
+                                  matTooltipClass="custom-tooltip">{{item=='No Data'?'':item}}</mat-option>
+                                </mat-select>
+                            </ng-container>
+                             -->
+                          </mat-form-field>
+                            <form [formGroup]="dateFilterForm">
+                                <mat-form-field appearance="outline" class="mb-form-0 width35">
+                                    <input matInput (dateChange)="applyDateFilter('start_date',$event.target.value);" 
+                                      [matDatepicker]="fromDate" style="cursor: pointer"
+                                      (focus)="fromDate?.open()"
+                                      placeholder="{{'common.From Date'|translate}}" id="fromDate"
+                                      formControlName="fromDate" [max]="dateFilterForm.controls.toDate.value">
+                                      <mat-icon matDatepickerToggleIcon (click)="clearFromDate()">clear</mat-icon>
+                                    <mat-datepicker-toggle matSuffix [for]="fromDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #fromDate ></mat-datepicker>
+                                  </mat-form-field>
+                                  <mat-form-field appearance="outline" class="mb-form-0 width35">
+                                    <input matInput (dateChange)="applyDateFilter('end_date',$event.target.value)"
+                                      [matDatepicker]="toDate" style="cursor: pointer"
+                                      (focus)="toDate?.open()"
+                                      placeholder="{{'common.To Date'|translate}}" id="toDate"
+                                      formControlName="toDate" [min]="dateFilterForm.controls.fromDate.value">
+                                      <mat-icon matDatepickerToggleIcon (click)="clearToDate();">clear</mat-icon>
+                                    <mat-datepicker-toggle matSuffix [for]="toDate"></mat-datepicker-toggle>
+                                    <mat-datepicker #toDate ></mat-datepicker>
+                                  </mat-form-field>
+                            </form>
+                        <!-- <div class="row" [formGroup]="range" >
+                            <div class="col-xl-6 col-lg-6 col-sm-12 col-lap-dv-6" >
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-start-date">
+                                            {{ "add-funding.start-date" | translate }}
+                                        </span></mat-label>
+                                    <input matInput [max]="range.controls.end_date.value"
+                                        [matDatepicker]="picker2" formControlName="start_date" (dateChange)="filterByDate();" autocomplete="off" style="cursor: pointer"
+                                        (focus)="picker2?.open()" #start_date readonly />
+                                    
+                                        <mat-icon matDatepickerToggleIcon
+                                            (click)="clearStartDate($event);">clear</mat-icon>
+                                    
+                                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker2></mat-datepicker>
+                                 </mat-form-field>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-sm-12 col-lap-dv-6">
+                                <mat-form-field appearance="outline" class="mb-form-0">
+                                    <mat-label><span class="label-end-date">
+                                            {{ "add-funding.end-date" | translate }}
+                                        </span></mat-label>
+                                    <input matInput [min]="range.controls.start_date.value" [matDatepicker]="picker3"
+                                        formControlName="end_date" (dateChange)="filterByDate();" autocomplete="off" style="cursor: pointer"
+                                        (focus)="picker3?.open()" #end_date readonly />
+                                    
+                                        <mat-icon matDatepickerToggleIcon
+                                            (click)="clearEndDate($event);">clear</mat-icon>
+                                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker3 ></mat-datepicker>
+                                      </mat-form-field>
+                            </div>
+                        </div> -->
+                        <ngx-slider [(value)]="minValueMZN" [(highValue)]="maxValueMZN" [options]="optionsMT" (mouseup)="getRangeForMZN()">
+                        </ngx-slider>
+                        <ngx-slider [(value)]="minValue" [(highValue)]="maxValue" [options]="options1" (mouseup)="getRange()"></ngx-slider>
+
+                        <button mat-flat-button color="warn" (click)="resetFilters()" class="mt-3">{{ 'common.reset' | translate }}</button>
+                        </div>  
+                        </div>
+                        </div>
+                    <!-- <mat-form-field class="input-filter">
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="{{'view-monitoring.filter' | translate}}">
+                    </mat-form-field> -->
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p class="printremove">
+                                {{'common.totalrows' | translate}} : {{ totalRows }} &nbsp;&nbsp; 
+                                <!-- <select id="limitDropDown" (change)="getFinancialAgreementList()">
+                                  <option value="0" selected></option>
+                                </select> -->
+                                <a popover-trigger="'mouseenter'" uib-popover="Delete" href="javascript: void(0);" (click)="loadAllData();"> Show All
+                                    Records
+                                </a>
+                            </p>
+
+                            <div class="mat-elevation-z8 table-responsive customizeTable" #epltable>
+                                <table id="ExampleMaterialTable" mat-table [dataSource]="dataSource2" class="table table-bordered" matSort (matSortChange)="sortData($event)">
+                                    <ng-container matColumnDef="select">
+                                        <th *matHeaderCellDef style="width: 70px;" class="printremove">S/N</th>
+                                        <td *matCellDef="let row;let i = index;" class="printremove">
+                                            <ng-container *ngIf="usergroup == 'Development Partner Administrator' || usergroup == 'DNGDP Team'">
+                                                <ng-container *ngIf="row.emailChk == true">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                                                        [checked]="selection.isSelected(row)"> 
+                                                        {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                                                    </mat-checkbox>
+                                                </ng-container>
+                                                <ng-container *ngIf="row.emailChk == false">
+                                                    {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                                                </ng-container>
+                                            </ng-container>
+                                            <ng-container *ngIf="usergroup != 'Development Partner Administrator' && usergroup != 'DNGDP Team'">
+                                                <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                                                    <mat-checkbox (click)="$event.stopPropagation()" (change)="selectHandler(row)"
+                                                        [checked]="selection.isSelected(row)">
+                                                        {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                                                    </mat-checkbox>
+                                                </ng-container>
+                                                <ng-container *ngIf="userPermission.indexOf(3)==-1">
+                                                    {{ (paginator.pageIndex * paginator.pageSize) + (i + 1) }}
+                                                </ng-container>
+                                            </ng-container>
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef class="printremove"> - </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="edit" sticky>
+                                        <th *matHeaderCellDef class="label-action"> {{'common.action' | translate}} </th>
+                                        <!-- <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" (click)='editEnv(element)'> -->
+                                        <td *matCellDef="let element;let i = index;" class="printremove">
+                                            <ng-container *ngIf="usergroup == 'Development Partner Administrator' || usergroup == 'DNGDP Team'">
+                                                <ng-container *ngIf="element.emailChk == true">
+                                                    <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{'common.edit' | translate}}" tabindex="-1"
+                                                        (click)='moveToSelectedTab(element.funding_id)'>
+                                                        <i class="far fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-warning btn-sm" placement="top" ngbTooltip="{{ 'common.uploadDocument' | translate }}" tabindex="-1" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2(element.reference_for_financing_donor)' ><i class="fas fa-file-upload"></i></button>&nbsp;
+                                                </ng-container>
+                                            </ng-container>
+                                            <ng-container *ngIf="usergroup != 'Development Partner Administrator' && usergroup != 'DNGDP Team'">
+                                                <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                                                    <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{'common.edit' | translate}}" tabindex="-1"
+                                                        (click)='moveToSelectedTab(element.funding_id)'>
+                                                        <i class="far fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn btn-warning btn-sm" placement="top" ngbTooltip="{{ 'common.uploadDocument' | translate }}" tabindex="-1" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2(element.reference_for_financing_donor)' ><i class="fas fa-file-upload"></i></button>&nbsp;
+                                                </ng-container>
+                                            </ng-container>
+                                            <!-- <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{'common.delete' | translate}}" tabindex="-1"
+                                                (click)='opensweetalertDelete(element.funding_id)'>
+                                                <i class="fas fa-trash-alt"></i></button> -->
+                                            <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{'common.view' | translate}}" tabindex="-1"
+                                                (click)='viewMoreFunding(element.funding_id)'>
+                                                <i class="fas fa-eye"></i>
+                                            </button>&nbsp;
+                                            <button class="btn btn-info btn-sm" placement="top" ngbTooltip="{{ 'create-envelope.viewmore' | translate }}" tabindex="-1" (click)='openDialog(element.funding_id)'>
+                                                <i class="fas fa-eye"></i>
+                                            </button>&nbsp;
+                                            <button class="btn btn-info btn-sm" placement="top" ngbTooltip="{{'common.viewDocument' | translate}}" tabindex="-1" title="{{'common.viewDocument' | translate}}" (click)='openDocumentDialog(element.reference_for_financing_donor)' ><i class="fas fa-file-download"></i></button>                                  
+                                        </td>
+                                        <td mat-footer-cell *matFooterCellDef style="font-weight: bold;" class="printremove"> Total </td>
+    
+                                    </ng-container>
+    
+                                    <ng-container matColumnDef="donorref">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'view_funding.donorFundingReference' | translate}}</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.reference_for_financing_donor}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+    
+                                    <ng-container matColumnDef="donortit">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header="title"> {{'view_funding.fundingDonorTitle' | translate}}</th>
+                                        <td mat-cell *matCellDef="let element" > {{element.donor_funding_title}} </td>
+                                        <td mat-footer-cell *matFooterCellDef > - </td>
+                                    </ng-container>
+    
+                                    <ng-container matColumnDef="donor">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'view_funding.donor' | translate}} </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.donor}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+    
+                                    <ng-container matColumnDef="fundingorg">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header="fundingOrg"> {{'view_funding.funding-organization' | translate}} </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.fundingOrganization}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+    
+                                    <ng-container matColumnDef="resporg">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'view_funding.responsible-organization' | translate}} </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.responsibleOrganization}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+                                    <!-- <ng-container matColumnDef="dateofsign">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'view_funding.date-of-signature' | translate}} </th>
+            <td mat-cell *matCellDef="let element"> {{element.dateofsign}} </td>
+          </ng-container> -->
+                                    <ng-container matColumnDef="startDate">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header="startDate"> {{'add-funding.start-date' | translate}} </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.start_date}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="endDate">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header="endDate"> {{'add-funding.end-date' | translate}} </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.end_date}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="financingsit">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'view_funding.financing-situation' | translate}}</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.financing_situation}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="typeofaid">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'view_funding.typeOfAid' | translate}}</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.type_of_aid}} </td>
+                                        <td mat-footer-cell *matFooterCellDef> - </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="amountmzn">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header="amtMzn"> {{'view_funding.amtmzn' | translate}}</th>
+                                        <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.amt_mzn  | number : '1.2-2'}} </td>
+                                        <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalAmntMZN | number : '1.2-2'}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="amountusd">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header="amtUsd"> {{'view_funding.amtusd' | translate}}</th>
+                                        <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.amt_usd  | number : '1.2-2'}} </td>
+                                        <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalAmntUsd | number : '1.2-2'}}  </td>
+                                    </ng-container>
+    
+    
+    
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                    <tr mat-footer-row *matFooterRowDef="displayedColumns" style="background-color: #d9d9d9;"></tr>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                    <div class="row">
+                        <div class="col-lg-12 mt-3 mb-2">
+                          <div class="example-button printremove">
+                            <button mat-flat-button color="warn" class="btn btn-reset mr-2" (click)="opensweetalertDelete()">
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                <ng-container *ngIf="usergroup==='dnpo' || usergroup==='dnped'
+    || usergroup==='dnma' || usergroup==='dncp' || usergroup==='cedsif' || usergroup==='bankomoz' ">
+                    <mat-form-field class="input-filter">
+                        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                    </mat-form-field>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="mat-elevation-z8 table-responsive" #epltable>
+                                <table mat-table [dataSource]="dataSource2" class="table table-bordered" matSort>
+
+                                    <ng-container matColumnDef="donorref">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Donor Funding Reference </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.reference_for_financing_donor}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="donortit">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Funding Donor Title </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.donor_funding_title}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="donor">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Donor </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.donor}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="fundingorg">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Funding Organization </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.fundingOrganization}} </td>
+                                    </ng-container>
+
+                                    <ng-container matColumnDef="resporg">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Responsible Organization </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.responsibleOrganization}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="dateofsign">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date of Signature </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.signature_date}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="financingsit">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Financing Situation </th>
+                                        <td mat-cell *matCellDef="let element"> {{element.financing_situation}} </td>
+                                    </ng-container>
+                                    <ng-container matColumnDef="typeofaid">
+                                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type Of aid</th>
+                                        <td mat-cell *matCellDef="let element"> {{element.type_of_aid}} </td>
+                                    </ng-container>
+
+
+                                    <!-- <ng-container matColumnDef="edit">
+    <th *matHeaderCellDef class="label-action"> Action </th>
+    <td *matCellDef="let element;let i=index;">
+        <button class="btn btn-primary btn-sm" (click)='editFunding(element)'>
+        <i class="far fa-edit"></i>
+    </button>
+    </td>
+    </ng-container> -->
+
+                                    <tr mat-header-row *matHeaderRowDef="displayedColumnsReadOnly"></tr>
+                                    <tr mat-row *matRowDef="let row; columns: displayedColumnsReadOnly;"></tr>
+                                </table>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-container>

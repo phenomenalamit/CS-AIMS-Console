@@ -1,0 +1,50 @@
+.mat-grid-list {
+    display: block;
+    position: relative;
+}
+
+.font-dash{
+    font-size: 9px;
+}
+
+.iconics-div{ display: none;}
+
+.breadcumb {
+    padding: 15px 25px 15px 25px;display: none;
+}
+.iconics-div{display: none;}
+.contaiersec { padding: 0px; margin-right: -14px;}
+.contaiersec.dashh2{ margin-bottom: -32px; margin-top: 0px;    margin-right: 8px;
+}
+
+#piechartdash{ height: auto !important; width: 100% !important;}
+#Barchart{height: auto !important; width: 100% !important;}
+#Linechart{height: auto !important; width: 100% !important;}
+
+@media screen and (max-width: 1024px) {
+.contaiersec{ margin-right: 0px;}
+
+}
+.font_size{ font-size: 75%;}
+
+@media screen and (max-width: 1366px) {
+    .font_size{margin-top: 4px;}
+    .custom-accordion .card .card-block, .card .card-body { padding: 15px 15px; }
+    .order-card h2 span.font_size{ font-size: 68%;}
+
+
+    }
+
+    @media screen and (max-width: 640px) {
+
+    .contaiersec.dashh2{ margin-top: 80px;}
+    
+    }
+   
+@media print{
+     #Barchart{ width: 100% !important; height: 100% !important;}
+    .col-md-6.col-xl-6{flex: 0 0 50% !important;  max-width: 50% !important;}
+    .col-print-12{ width: 100% !important;}
+    #piechartdash{ height: auto !important; width: 100% !important;}
+    #Barchart{height: auto !important; width: 100% !important;}
+}

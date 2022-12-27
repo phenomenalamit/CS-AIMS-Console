@@ -1,0 +1,67 @@
+<!-- HTML page component for Individual -->
+<div class="container-fluid">
+    <div class="innerbody">
+
+        <ng-container *ngIf="num===0 || num===undefined">
+    <div class="breadcumb">
+     <div class="row">
+         <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item active label-individual" aria-current="page">{{'view-Individual.individual' | translate}}</li>
+                  <li class="breadcrumb-item active label-create-individual" aria-current="page">{{ 'add-individual.create-individual' | translate }}</li>
+                </ol>
+              </nav>
+         </div>
+         <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+                <ul class="iconics-buttons">
+                   <li><span class="indicates">{{ 'common.indicates-fields-are-mandatory' | translate }}</span></li>
+
+                </ul>
+                </div>
+         </div>
+     </div>
+
+    </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="num===1">
+        <div class="breadcumb">
+         <div class="row">
+             <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                      <li class="breadcrumb-item label-individual"><a href="/admin/individual">Individual</a></li>
+                      <li class="breadcrumb-item active label-view-individual" aria-current="page">{{'view-Individual.viewIndividualList' | translate}}</li>
+                    </ol>
+                  </nav>
+             </div>
+             <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                    <ul class="iconics-buttons">
+                        <li><a onclick="window.print()" class="iconsBG"  title="Print"><i class="fas fa-print"></i></a></li>
+                        <!-- <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li> -->
+                        <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                        <!-- <li><button class="iconsBG" title="Excel" ><i class="far fa-file-excel"></i></button></li> -->
+                        <li><a  class="iconsBG" title="{{'common.Back' | translate}}" (click)='moveToSelectedTab("Create Individual")'><i class="fas fa-arrow-left"></i></a></li>
+
+                    </ul>
+                    </div>
+             </div>
+         </div>
+
+        </div>
+
+        </ng-container>
+
+<mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+    <mat-tab label="{{ 'add-individual.create-individual' | translate }}" class="label-Individual">
+        <app-add-individual-component></app-add-individual-component>
+    </mat-tab>
+</mat-tab-group>
+</div>
+</div>

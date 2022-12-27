@@ -1,0 +1,28 @@
+<div class="modal-header">
+    <h4 class="modal-title">Feedback</h4>
+</div>
+<div class="modal-body">
+    <form class="example-form" [formGroup]="feedBackPopUpForm">
+    <p>
+        {{'common.Find out more about how we can help.'|translate}}
+    </p>
+    <div class="form-group">
+        <mat-form-field appearance="outline" class="mb-form-0">
+            <mat-label><span class="label-to">{{'common.To'|translate}}</span></mat-label>
+            <input matInput type="email" placeholder="{{ 'add-organization.email' | translate }}" formControlName="to">
+        </mat-form-field>
+    </div>
+    <div class="form-group">
+        <mat-form-field appearance="outline" class="mb-form-0">
+            <mat-label><span class="label-subject">{{'common.Subject'|translate}}</span></mat-label>
+            <input matInput type="text" placeholder="{{'common.Subject'|translate}}" formControlName="subject">
+        </mat-form-field>
+    </div>
+    <div class="form-group">
+        <mat-label><span class="label-subject">{{'common.Message'|translate}}</span></mat-label>
+        <textarea formControlName="textMsg" class="form-control" type="textarea" placeholder="{{'common.Your Message Here'|translate}}" maxlength="6000" rows="7"></textarea>
+    </div>
+    <button class="btn btn-success" mat-dialog-close="sent" (click)="opensweetalertSent();">{{'common.Send'|translate}}</button>&nbsp;&nbsp;
+    <button class="btn btn-primary" mat-dialog-close="cancel">{{'common.Cancel'|translate}}</button>
+    </form>
+</div>

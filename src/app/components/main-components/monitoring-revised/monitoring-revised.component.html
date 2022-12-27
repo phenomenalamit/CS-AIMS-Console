@@ -1,0 +1,82 @@
+<div class="container-fluid">
+    <div class="innerbody">
+      <ng-container *ngIf="num === 0 || num === undefined">
+        <div class="breadcumb">
+          <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a>
+                  </li>
+                  <li class="breadcrumb-item active label-monitoring" aria-current="page">
+                    {{'monitoring-component.monitoring' | translate}}
+                  </li>
+                  <li class="breadcrumb-item active label-create-monitoring" aria-current="page">
+                    {{'monitoring-component.create-monitoring' | translate}}
+                  </li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                <ul class="iconics-buttons">
+                  <!-- <li><div class="example-button">
+                    <button class="btn btn-upload mr-2" (click)='openDialog2()' >{{ 'common.uploadDocument' | translate }}</button>
+                    </div></li> -->
+                    <!-- <li>
+                      <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2()' ><i class="fas fa-file-upload"></i></a>
+                      </li> -->
+                  <li>
+                    <span class="indicates">{{'monitoring-component.indicates' | translate}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="num === 1">
+        <div class="breadcumb">
+          <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a>
+                  </li>
+                  <li class="breadcrumb-item label-monitoring">
+                    <a href="/admin/monitoring">{{'monitoring-component.monitoring' | translate}}</a>
+                  </li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                <ul class="iconics-buttons">
+                  <li>
+                    <a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a>
+                  </li>
+                  <li>
+                    <a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a>
+                  </li>
+                  <li>
+                    <a href="#" class="iconsBG" title="{{'common.Back' | translate}}"><i class="fas fa-arrow-left"></i></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+        <mat-tab label=" {{'monitoring-component.create-monitoring' | translate}}">
+          <app-add-monitoring-revised></app-add-monitoring-revised>
+        </mat-tab>
+        <!--
+        <mat-tab label="View Monitoring List" class="label-view-individual">
+          <app-view-monitoring-component></app-view-monitoring-component>
+        </mat-tab> -->
+      </mat-tab-group>
+    </div>
+  </div>

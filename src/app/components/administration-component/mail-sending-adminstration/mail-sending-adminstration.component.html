@@ -1,0 +1,124 @@
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div class="container-fluid">
+        <div class="innerbody">
+            <ng-container *ngIf="editId == null && viewId ==null">
+                <ng-container *ngIf="num===0 || num===undefined">
+
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-adminstration" aria-current="page">
+                                            {{'field-management.Adminstration' | translate}}</li>
+
+                                        <li class="breadcrumb-item active label-exchange-rate" aria-current="page">
+                                            {{'menu.Bulk Mail Administration' | translate}}
+                                        </li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><span class="indicates">{{'common.indicates-fields-are-mandatory' |
+                                                translate}}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </ng-container>
+            <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                <mat-tab label="Mail Send" class="label-create-fldrstr">
+                    <form class="example-form" [formGroup]="bulkMailAdminstrationForm" autocomplete="off">
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field class="mb-form-0" appearance="outline">
+                                    <mat-label><span class="label-folderName">{{'mail.From' | translate}} </span>
+                                    </mat-label>
+                                    <input matInput type="text" placeholder="{{'mail.From' | translate}}" autocomplete="off"
+                                        formControlName="from"/>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field class="mb-form-0" appearance="outline">
+                                    <mat-label><span class="label-folderName"> {{'mail.To' | translate}} </span>
+                                    </mat-label>
+                                    <mat-chip-list #chipList aria-label="Fish selection">
+                                        <mat-chip *ngFor="let email of selectedEmailList" 
+                                        [selectable]="selectable" 
+                                        [removable]="removable"
+                                         (removed)="remove(email)">{{email}}
+                                         <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                        </mat-chip>
+                                    
+                                      
+                                    <input matInput type="text" placeholder="{{'mail.To' | translate}}" (keyup)="checkEmail()" autocomplete="off"
+                                        formControlName="to" [matAutocomplete]="auto" #emailInput
+                                        [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur"  (matChipInputTokenEnd)="add($event)"
+                                        ></mat-chip-list>
+                                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                       
+                                        <mat-option *ngFor="let emailList of email" [value]="emailList">
+                                            <!-- {{emailList}} -->
+                                            <!-- <mat-checkbox [checked]="emailList.selected"> -->
+                                                {{emailList}}
+                                            <!-- </mat-checkbox> -->
+                                        </mat-option>
+                                        <mat-option *ngFor="let userTypeList of userType" [value]="userTypeList">
+                                            {{userTypeList}}
+                                        </mat-option>
+                                        <mat-option *ngFor="let fundingOrganizationList of fundingOrg" [value]="fundingOrganizationList">
+                                            {{fundingOrganizationList}}
+                                        </mat-option>
+                                    </mat-autocomplete>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-4 col-lg-4 col-sm-12">
+                                <mat-form-field class="mb-form-0" appearance="outline">
+                                    <mat-label><span class="label-folderName">{{'mail.subject' | translate}} </span>
+                                    </mat-label>
+                                    <input matInput type="text" placeholder="{{'mail.subject' | translate}}" autocomplete="off"
+                                        formControlName="subject"/>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-sm-12 mt-3">
+                                <mat-form-field appearance="outline" class="comments">
+                                    <mat-label><span class="label-comments">{{'mail.Message' | translate}}</span>
+                                    </mat-label>
+                                    <textarea formControlName="message" rows="8" matInput placeholder="{{'mail.Message' | translate}}" class=""></textarea>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="editId ==null && viewId == null">
+                            <div class="row">
+                                <div class="col-lg-12 mt-3 mb-2">
+                                    <div class="example-button">
+                                        <button class="btn btn-success mr-2"
+                                            (click)="(bulkMailAdminstrationForm.invalid || selectedEmailList.length==0) ?  openMandatoryAlert():openSavealert()">{{'mail.Send' | translate}}</button>
+                                        <button class="btn btn-reset mr-2" (click)="clearForm(bulkMailAdminstrationForm)">{{ 'create-envelope.reset' |
+                                            translate }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </form>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </div>
+</ng-container>

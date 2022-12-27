@@ -1,0 +1,29 @@
+.customROW{ margin-bottom: 15px;}
+
+.width25[_ngcontent-tkb-c7] {
+    width: 31%;
+    float: left;
+    margin-right: 18px;
+    padding-left: 21px;
+    margin-bottom: -34px;
+    margin-top: 13px;
+}
+.mat-form-field-appearance-outline .mat-form-field-flex {
+    padding: 0 0.75em 0 0.75em;
+    margin-top: 7px;
+    position: relative;
+}
+.mat-form-field {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.chkwidth{
+    width: 77%;
+}
+
+.heightadjust{
+    height:300px
+}

@@ -1,0 +1,52 @@
+{
+    "tableDatainancialPerformance":[
+        {
+            
+            "finExecutionRate":70,
+            "finExecution":"2,233,444.50",
+            "province":"Maputo",
+            "dateOfFieldVisitFinancialExecution":"13/01/2021"
+            
+        },
+        {
+            
+            "finExecutionRate":80,
+            "finExecution":"11,122.60",
+            "province":"Maputo",
+            "dateOfFieldVisitFinancialExecution":"16/01/2021"
+            
+        }
+    ],
+
+   "tableDataphysicalExecution": [
+         {
+            "dateOfFieldVisitPhysicalExecution":"16/01/2021",
+            "province":"Maputo",
+            "physicalRate":70
+        }
+    ],
+
+    "projectName":"Mozambique Infrastructure Project",
+    "conditions":"conditions",
+    "dateOfPhysicalExecution":"2021-05-25T18:30:00.000Z",
+    "province":9,
+    "lastvisitor":"Charlie Adams",
+    "levelOfAction":"option1",
+    "funds":"50",
+    "dovisit":"2021-05-25T18:30:00.000Z",
+    "company":"Mozambique",
+    "contractValue":"2,233,444.50",
+    "organization":"Austria",
+    "contractAb":"Yes",
+    "findings":"2",
+    "recommendation":"Review the Project",
+    "contraints":"check",
+    
+    "physicalExecutionData":[
+        {
+            "dateOfPhysicalExecution":"2021-05-25T18:30:00.000Z",
+            "funds":"50"
+           
+        }
+    ]
+}

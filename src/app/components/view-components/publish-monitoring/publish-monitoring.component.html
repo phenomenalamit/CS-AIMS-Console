@@ -1,0 +1,179 @@
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+  </ng-container>
+  <ng-container *ngIf="authorised_flag==true">  
+    <div class="container-fluid">
+      <div class="innerbody">
+        <div class="breadcumb">
+          <div class="row">
+            <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a>
+                  </li>
+                  <li class="breadcrumb-item active label-monitoring" aria-current="page">
+                    {{'view-monitoring.monitoring' | translate}}
+                  </li>
+                  <li class="breadcrumb-item active label-create-monitoring" aria-current="page">
+                    {{'menu.View Monitoring' | translate}}
+                  </li>
+                </ol>
+              </nav>
+            </div>
+            <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                <ul class="iconics-buttons">
+                 <!-- <li> <button class="btn btn-upload mr-2" (click)='openDocumentDialog()' >{{'common.viewDocument' | translate}}</button></li>
+                  <li><a onclick="document.title='Monitoring_'+new Date().toISOString();window.print()" class="iconsBG"
+                      title="Print"><i class="fas fa-print"></i></a></li>
+                  <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li>
+                  <li><a class="iconsBG" title="Back" (click)='moveToSelectedTab("Create Monitoring")'><i
+                        class="fas fa-arrow-left"></i></a></li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+  
+  
+          <h1 class="label-envelope">{{'view-monitoring.view-monitoring-list' | translate }}</h1>
+          <hr>
+          <div class="customROW printremove">
+            <mat-form-field *ngFor="let filter of filterSelectObj" appearance="outline" class="mb-form-0 width25">
+  
+              <mat-label>Filter {{filter.name}}</mat-label>
+              <ng-container *ngIf="filter.name === ''"></ng-container>
+              <mat-select matNativeControl name="{{filter.columnProp}}" [(ngModel)]="filter.modelValue"
+                (selectionChange)="filterChange(filter,$event)" multiple (openedChange)="openOptionSearch()">
+                <mat-optgroup>
+                  <mat-form-field style="width:100%;">
+                    <input #searchFS autocomplete="off" placeholder="Search" aria-label="Search" matInput
+                      [formControl]="searchFilter" (keyup)="chkValue(filter)">
+                  </mat-form-field>
+                </mat-optgroup>
+                <mat-optgroup *ngIf="(filter.options).length == 0">
+                  <div>{{'common.No results found!' | translate}}</div>
+                </mat-optgroup>
+                <ng-container *ngIf="filter.columnProp == 'districts'">
+                  <ng-container *ngIf="(filter.options).length != 0">
+                    <mat-optgroup *ngFor="let provinceName of proviceFinal" [label]="provinceName">
+                      <ng-container *ngFor="let items of filter.options">
+                        <ng-container *ngIf="provinceName === provinceNm(items)">
+                          <mat-option [value]="items">{{items}}</mat-option>
+                        </ng-container>
+                      </ng-container>
+                    </mat-optgroup>
+                  </ng-container>
+                </ng-container>
+                
+                <ng-container *ngIf="filter.columnProp != 'districts'" >
+                  <mat-option [value]="item" *ngFor="let item of filter.options">{{item}}</mat-option>
+                </ng-container>
+  
+              </mat-select>
+            </mat-form-field>
+            <ngx-slider [(value)]="minFinanceRate" [(highValue)]="maxFinanceRate" [options]="optionsFr"
+              (mouseup)="getRangeFinanceRate()"></ngx-slider>
+            <ngx-slider [(value)]="minPhysicalRate" [(highValue)]="maxPhysicalRate" [options]="optionsPr"
+              (mouseup)="getRangePhysicalRate()"></ngx-slider>
+            <ngx-slider [(value)]="minBudgetMzn" [(highValue)]="maxBudgetMzn" [options]="optionsBudMz"
+              (mouseup)="getTotalBudget()"></ngx-slider>
+            <button mat-flat-button color="warn" (click)="resetFilters()" class="mt-2">{{ 'common.reset' | translate
+              }}</button>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <p>
+                {{'common.totalrows' | translate}} : {{ totalRows }} <br>
+              </p>
+              <div class="mat-elevation-z8">
+                <table id="ExampleMaterialTable" mat-table [dataSource]="monitoringdataSource" class="table table-bordered"
+                  matSort>
+  
+                  <ng-container matColumnDef="projname">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">{{'view-monitoring.project-name'
+                      | translate}} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.projectNm}} </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="provience">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">{{'monitoring-component.province'
+                      | translate}}</th>
+                    <td mat-cell *matCellDef="let element">{{element.province}} </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="district">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">{{ 'add-project.districts' |
+                      translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.districts}} </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                  </ng-container>
+                  <ng-container matColumnDef="implementing organization">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">
+                      {{'monitoring-component.implementing-organization' | translate}}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.organization}} </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="totbudget">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width100">{{ 'view-monitoring.Financial Execution Amount(MZN)'
+                      | translate }} </th>
+                    <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.totalBudgetMzn | number :
+                      '1.2-2'}} </td>
+                    <td mat-footer-cell *matFooterCellDef style="text-align: right;"> {{totalAmnt | number : '1.2-2'}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="financialExeRate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width150">
+                      {{'monitoring-component.financial-execution-ratee' | translate}}</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.financialExeRateContract}}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                  </ng-container>
+                  <ng-container matColumnDef="physicalExeRate">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="width150">
+                      {{'monitoring-component.physical-execution-rate' | translate}}</th>
+                    <td mat-cell *matCellDef="let element" style="text-align: right;"> {{element.physicalExeRateContract}}
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef> - </td>
+                  </ng-container>
+  
+                  <ng-container matColumnDef="edit" sticky>
+                    <th *matHeaderCellDef class="printremove" class="label-action"> {{ 'common.action' | translate }} </th>
+                    <td *matCellDef="let element;let i = index;" class="printremove">
+                      <button class="btn btn-primary btn-sm mr-1" placement="top"
+                        ngbTooltip="Publish" tabindex="-1"
+                        (click)='publishMonitoring("Edit Monitoring",element.monitoringId)'>
+                        Publish
+                      </button>
+                      <button class="btn btn-danger btn-sm mr-1" placement="top"
+                        ngbTooltip="Discard" tabindex="-1" (click)='discardMonitoring(element.monitoringContractId)'>
+                        Discard
+                      </button>
+                      <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{ 'common.view' | translate }}"
+                        tabindex="-1" (click)='viewMoreMonitoring(element.monitoringContractId)'>
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      &nbsp;
+                      <button class="btn btn-info btn-sm" placement="top"
+                        ngbTooltip="{{ 'create-envelope.viewmore' | translate }}" tabindex="-1" (click)='openDialog(i)'>
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </td>
+                    <td mat-footer-cell *matFooterCellDef class="printremove" style="font-weight: bold;"> Total </td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                  <tr mat-footer-row *matFooterRowDef="displayedColumns" style="background-color: #d9d9d9;"></tr>
+  
+                </table>
+  
+              </div>
+            </div>
+          </div>
+          <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+    </div>
+  </ng-container>

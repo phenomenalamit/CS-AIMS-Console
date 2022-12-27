@@ -1,0 +1,213 @@
+<!-- HTML page component for ADD/EDIT User Mapping  -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">  
+  <div class="">
+    <form class="example-form" [formGroup]="userMappingForm" autocomplete="off" novalidate
+      (ngSubmit)="createUserform(userMappingForm.value)">
+      <input type="hidden" class="form-control"  formControlName="userMappingId">
+      <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="custom-expansion-panel">
+
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h6>{{'add-user-mapping.add-user-mapping' | translate}}</h6>
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline">
+              <mat-label><span class="label-project-situation">{{'add-user-mapping.select-user' | translate}}</span></mat-label>
+              <mat-select (openedChange)="searchuserAccessId.patchValue('')" class="" formControlName="userAccessId">
+                <div class="select-container" *ngIf="UserAccessListFilteredOption">
+                  <mat-optgroup>
+                    <mat-form-field style="width:100%;">
+                        <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchuserAccessId">
+                        <button [disableRipple]="true" *ngIf="searchuserAccessId.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchuserAccessId.patchValue('')">
+                            <mat-icon >close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                  </mat-optgroup>
+                  <mat-optgroup *ngIf="(UserAccessListFilteredOption | async).length == 0">
+                      <div>{{'common.No results found!' | translate}}</div>
+                  </mat-optgroup>
+                  <mat-option *ngFor="let UserName of UserAccessListFilteredOption | async" [value]="UserName.userAccessId">
+                    {{UserName.firstName}}&nbsp;{{UserName.lastName}}&nbsp;({{UserName.userName}})
+                  </mat-option>
+                </div>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-xl-4 col-lg-4 col-sm-12  mt-3">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline">
+              <mat-label><span class="label-project-situation">{{'add-user-mapping.select-user-type' | translate}}</span></mat-label>
+              <mat-select (openedChange)="searchUserTypeId.patchValue('')" class="" formControlName="userTypeId" (selectionChange)="setFundingVisibility()">
+                <div class="select-container" *ngIf="UserTypeListFilteredOption">
+                  <mat-optgroup>
+                    <mat-form-field style="width:100%;">
+                        <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchUserTypeId">
+                        <button [disableRipple]="true" *ngIf="searchUserTypeId.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchUserTypeId.patchValue('')">
+                            <mat-icon >close</mat-icon>
+                        </button>
+                    </mat-form-field>
+                  </mat-optgroup>
+                  <mat-optgroup *ngIf="(UserTypeListFilteredOption | async).length == 0">
+                      <div>{{'common.No results found!' | translate}}</div>
+                  </mat-optgroup>
+                  <mat-option *ngFor="let userType of UserTypeListFilteredOption | async" [value]="userType.userTypeId">
+                    {{userType.userType}}
+                  </mat-option>
+                </div>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <ng-container *ngIf="fundingOrgVisibleFlag==true">
+          <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline" class="mb-form-0">
+                <mat-label><span class="label-implementing-organization">{{ 'create-envelope.funding-organization' | translate }}</span></mat-label>
+                <mat-select (openedChange)="openedChange($event)" placeholder="Select" formControlName="fundingOrganization" multiple>
+                    <mat-select-trigger>
+                        {{userMappingForm.controls.fundingOrganization.value ? selectedFundingOrgName[0] : ''}}
+                        <span *ngIf="userMappingForm.controls.fundingOrganization.value?.length > 1" class="additional-selection">
+                            (+{{userMappingForm.controls.fundingOrganization.value.length - 1}} {{userMappingForm.controls.fundingOrganization.value?.length === 2 ? 'other' : 'others'}})
+                        </span>
+                    </mat-select-trigger>
+                    <div class="select-container" *ngIf="filteredFundingOrg">
+                        <mat-optgroup>
+                            <mat-form-field style="width:100%;">
+                                <input #search autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchTextboxControl">
+                                <button [disableRipple]="true" *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch($event)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </mat-optgroup>
+                        <!-- <mat-optgroup *ngIf="(filteredImplementingOrg | async).length == 0">
+                            <div>{{'common.No results found!' | translate}}</div>
+                        </mat-optgroup> -->
+                        <mat-option (onSelectionChange)="selectionChange($event)" *ngFor="let option of filteredFundingOrg | async" [value]="option.id"
+                            matTooltip="{{option.names}}" [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                            {{option.names}}
+                        </mat-option>
+                    </div>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="editusermapping!=='true'  && viewusermapping!=='true' ">
+          <div class="row">
+            <div class="col-lg-12 mt-3 mb-2">
+              <div class="example-button">
+                <button class="btn btn-success mr-2"
+                  (click)="(userMappingForm.invalid) ?  openMandatoryAlert():opensweetalert()">{{'common.submit' |
+                  translate}}</button>
+
+                <!-- <button class="btn btn-reset mr-2" (click)="clearForm(userMappingForm)">{{'common.reset' |
+                  translate}}</button> -->
+                  <button class="btn btn-reset mr-2" (click)="swal()">{{'common.reset' |
+                    translate}}</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="editusermapping=='true' && viewusermapping!=='true'">
+          <div class="row">
+            <div class="col-lg-12 mt-3 mb-2">
+              <div class="example-button">
+                <button class="btn btn-success mr-2"
+                  (click)="(userMappingForm.invalid) ?  openMandatoryAlert():opensweetalert3()">{{'common.update' |
+                  translate}}</button>
+
+              
+                <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="viewusermapping =='true' && editusermapping =='false'  ">
+          <div class="row">
+            <div class="col-lg-12 mt-3 mb-2">
+              <div class="example-button">
+                <button class="btn btn-success mr-2"
+                  (click)='editUserMapping(userMappingIdvalue)'>{{'common.edit' | translate}}</button>
+
+
+                <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </mat-expansion-panel>
+    </form>
+    <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle class="custom-expansion-panel">
+
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <h6>{{'add-user-mapping.user-mapping-list' | translate}}</h6>
+        </mat-panel-title>
+
+      </mat-expansion-panel-header>
+      <div class="row">
+        <div class="col-sm-8">
+          <p>
+            {{'common.totalrows' | translate}} : {{ totalRows }} <br>
+          </p>
+
+          <div class="mat-elevation-z8 table-responsive print-size-font">
+            <table id="ExampleMaterialTable" mat-table [dataSource]="userAccessdataSource" class="table table-bordered " matSort>
+              <ng-container matColumnDef="user">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'add-user-mapping.user' | translate}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+              </ng-container>
+              <ng-container matColumnDef="userType">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'add-user-mapping.user-type' | translate}} </th>
+                <td mat-cell *matCellDef="let element"> {{element.userType}} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="edit" sticky>
+                <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+              
+                <td *matCellDef="let element;let i = index;" class="printremove">
+                  <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                    <button class="btn btn-primary btn-sm mr-1" placement="top"
+                      ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1"
+                      (click)='editUserMapping(element.userMappingId)'>
+                      <i class="far fa-edit"></i>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+                    <button class="btn btn-danger btn-sm mr-1" placement="top"
+                      ngbTooltip="{{ 'create-envelope.delete' | translate }}" tabindex="-1"
+                      (click)='opensweetalertDelete(element.userMappingId)'>
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </ng-container>
+                  <ng-container *ngIf="userPermission.indexOf(2)!=-1">
+                    <button class="btn btn-success btn-sm" placement="top"
+                      ngbTooltip="{{ 'create-envelope.view' | translate }}" tabindex="-1"
+                      (click)='viewUserMapping(element.userMappingId)'>
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </ng-container>
+
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+
+
+          </div>
+        </div>
+      </div>
+      <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-expansion-panel>
+  </div>
+</ng-container>

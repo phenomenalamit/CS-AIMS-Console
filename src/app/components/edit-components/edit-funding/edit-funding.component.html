@@ -1,0 +1,191 @@
+<div class="container-fluid">
+      <div class="innerbody">
+
+    <ng-container *ngIf="EditId!=null">
+        <!-- <ng-container *ngIf="num===0 || num===undefined"> -->
+      <div class="breadcumb">
+       <div class="row">
+           <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{'funding-component.funding' | translate}}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{'funding-component.edit-funding' | translate}}</li>
+                  </ol>
+                </nav>
+           </div>
+           <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                  <ul class="iconics-buttons">
+                      <!-- <li>
+                        <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2()' ><i class="fas fa-file-upload"></i></a>
+                      </li> -->
+                     <li><span class="indicates">(*) Indicates fields are mandatory</span></li>
+                  </ul>
+                  </div>
+           </div>
+       </div>
+      </div>
+    <!-- </ng-container> -->
+
+      <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+          <mat-tab label="Edit Funding">
+              <app-add-funding></app-add-funding>
+          </mat-tab>
+          <!-- <mat-tab label="View Funding Details" class="label-view-funding">
+            <app-view-funding-component></app-view-funding-component>
+          </mat-tab> -->
+
+          </mat-tab-group>
+        </ng-container>
+        <ng-container *ngIf="viewMoreId!=null">
+
+        <div class="breadcumb">
+         <div class="row">
+             <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                      <li class="breadcrumb-item"><a href="/admin/funding">{{'funding-component.funding' | translate}}</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{'funding-component.view-funding' | translate}}</li>
+                    </ol>
+                  </nav>
+             </div>
+             <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                    <ul class="iconics-buttons">
+
+                        <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                        <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                        <li><a  class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToFundingTab()'><i class="fas fa-arrow-left"></i></a></li>
+
+
+
+                    </ul>
+                    </div>
+             </div>
+         </div>
+        </div>
+        <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+          <mat-tab label="View Funding Details" class="label-view-funding">
+            <app-add-funding></app-add-funding>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-container>
+
+      <ng-container *ngIf="viewMoreDraftedFaId!=null">
+
+        <div class="breadcumb">
+         <div class="row">
+             <div class="col-lg-6 col-sm-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                      <li class="breadcrumb-item"><a href="/admin/funding">{{'funding-component.funding' | translate}}</a></li>
+                      <li class="breadcrumb-item active" aria-current="page">{{'funding-component.view-funding' | translate}}</li>
+                    </ol>
+                  </nav>
+             </div>
+             <div class="col-lg-6 col-sm-12">
+                <div class="iconics-div">
+                    <ul class="iconics-buttons">
+
+                        <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                        <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                        <li><a  class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToFundingTab()'><i class="fas fa-arrow-left"></i></a></li>
+
+
+
+                    </ul>
+                    </div>
+             </div>
+         </div>
+        </div>
+        <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+          <mat-tab label="View Funding Details" class="label-view-funding">
+            <app-add-funding></app-add-funding>
+          </mat-tab>
+        </mat-tab-group>
+      </ng-container>
+    
+    <!-- <ng-container *ngIf="ViewMoreFundingFromProject=='ViewMoreFundingFromProject'">
+
+    <div class="breadcumb">
+     <div class="row">
+         <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                  <li class="breadcrumb-item"><a href="/admin/funding">{{'funding-component.funding' | translate}}</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">{{'funding-component.view-funding' | translate}}</li>
+                </ol>
+              </nav>
+         </div>
+         <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+                <ul class="iconics-buttons">
+
+                   
+                    <li><a  class="iconsBG" title="Back" (click)='moveToFundingTab()'><i class="fas fa-arrow-left"></i></a></li>
+
+
+
+                </ul>
+                </div>
+         </div>
+     </div>
+    </div>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+      <mat-tab label="View Funding Details" class="label-view-funding">
+        <app-add-funding></app-add-funding>
+      </mat-tab>
+    </mat-tab-group>
+  </ng-container> -->
+        </div>
+      </div>
+
+    <!-- <div class="container-fluid">
+      <div class="innerbody">
+
+        <ng-container *ngIf="viewMoreId!=null">
+
+      <div class="breadcumb">
+       <div class="row">
+           <div class="col-lg-6 col-sm-12">
+              <nav aria-label="breadcrumb">
+                  <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item"><a href="/admin/funding">Funding</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">View Funding Details</li>
+                  </ol>
+                </nav>
+           </div>
+           <div class="col-lg-6 col-sm-12">
+              <div class="iconics-div">
+                  <ul class="iconics-buttons">
+
+                      <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                      <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                      <li><a  class="iconsBG" title="Back" (click)='moveToFundingTab()'><i class="fas fa-arrow-left"></i></a></li>
+
+
+
+                  </ul>
+                  </div>
+           </div>
+       </div>
+      </div>
+
+
+      <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+
+
+
+                          <mat-tab label="View Funding Details" class="label-view-funding">
+                            <app-add-funding></app-add-funding>
+                            </mat-tab>
+
+                          </mat-tab-group>
+                        </ng-container>
+                        </div>
+                      </div> -->

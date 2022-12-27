@@ -1,0 +1,227 @@
+<div class="container-fluid">
+        <div class="innerbody">
+            <!-- <ng-container *ngIf="EditDisbursement=='EditDisbursement'"> -->
+                <ng-container *ngIf="id !==null">
+                <ng-container *ngIf="num===0 || num===undefined">
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.disbursement' | translate}}</li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.edit-disbursement' | translate}}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <!-- <li>
+                                            <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog()' ><i class="fas fa-file-upload"></i></a>
+                                        </li> -->
+                                        <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate }}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+
+                <ng-container *ngIf="num===1">
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item"><a href="/admin/disbursement">{{'view-disbursement.disbursement' | translate}}</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.view-disbursement' | translate}}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><a onclick="window.print()" class="iconsBG" title="Print"><i
+                                                    class="fas fa-print"></i></a></li>
+
+                                        <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i
+                                                    class="far fa-file-excel"></i></a></li>
+                                        <li><a class="iconsBG" title="{{'common.Back'|translate}}"
+                                                (click)='moveToSelectedTab("Edit Disbursement")'><i
+                                                    class="fas fa-arrow-left"></i></a></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </ng-container>
+
+
+                <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                    <mat-tab label="Edit Disbursement" class="label-create-Disbursement">
+                       <app-add-disbursement></app-add-disbursement>
+                    </mat-tab>
+                </mat-tab-group>
+            </ng-container>
+
+
+<!-- <ng-container *ngIf="ViewMoreDisbursement=='ViewMoreDisbursement'"> -->
+    <ng-container *ngIf="viewByTableId !==null">
+    <ng-container *ngIf="num===0 || num===undefined">
+        <div class="breadcumb">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                        class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.disbursement' | translate}}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.view-disbursement' | translate}}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="iconics-div">
+                        <ul class="iconics-buttons">
+                        <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToDisbursementTab()'><i class="fas fa-arrow-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </ng-container>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+            <mat-tab label="View Disbursement Details" class="label-edit-disbursement">
+                <app-add-disbursement></app-add-disbursement>
+    </mat-tab>
+    </mat-tab-group>
+</ng-container>
+<ng-container *ngIf="draftedDisbursementId !==null">
+    <ng-container *ngIf="num===0 || num===undefined">
+        <div class="breadcumb">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                        class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.disbursement' | translate}}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.view-disbursement' | translate}}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="iconics-div">
+                        <ul class="iconics-buttons">
+                        <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToDisbursementTab()'><i class="fas fa-arrow-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </ng-container>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+            <mat-tab label="View Disbursement Details" class="label-edit-disbursement">
+                <app-add-disbursement></app-add-disbursement>
+    </mat-tab>
+    </mat-tab-group>
+</ng-container>
+</div>
+</div>
+
+
+
+<ng-container *ngIf="ViewMoreDisbursementFromProject=='ViewMoreDisbursementFromProject'">
+    <ng-container *ngIf="num===0 || num===undefined">
+        <div class="breadcumb">
+            <div class="row">
+                <div class="col-lg-6 col-sm-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                        class="fas fa-home"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.disbursement' | translate}}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{{'view-disbursement.view-disbursement' | translate}}</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-lg-6 col-sm-12">
+                    <div class="iconics-div">
+                        <ul class="iconics-buttons">
+                        <li><a class="iconsBG" title="{{'common.Back'|translate}}" (click)='moveToEnvelopeTab()'><i class="fas fa-arrow-left"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ng-container>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+            <mat-tab label="View Disbursement Details" class="label-edit-disbursement">
+                <app-add-disbursement></app-add-disbursement>
+    </mat-tab>
+    </mat-tab-group>
+</ng-container>
+
+    <!-- <div class="container-fluid">
+        <div class="innerbody">
+
+            <ng-container *ngIf="num===0 || num===undefined">
+
+                <div class="breadcumb">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                class="fas fa-home"></i></a></li>
+                                    <li class="breadcrumb-item"><a href="/admin/disbursement">Disbursement</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">View Disbursement</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="iconics-div">
+                                <ul class="iconics-buttons">
+                                    <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+
+                                    <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i
+                                                class="far fa-file-excel"></i></a></li>
+                                    <li><a class="iconsBG" title="Back"
+                                            (click)='moveToSelectedTab("Create Disbursement")'><i
+                                                class="fas fa-arrow-left"></i></a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </ng-container>
+
+
+            <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)"> -->
+            <!-- <mat-tab label="View Disbursement" class="label-view-disbursement">
+                    <app-view-disbursement-component></app-view-disbursement-component>
+                </mat-tab> -->
+            <!-- </mat-tab-group>
+
+        </div>
+    </div> -->

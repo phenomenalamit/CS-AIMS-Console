@@ -1,0 +1,289 @@
+<!-- HTML Component for ADD/EDIT payment -->
+<ng-container *ngIf="authorised_flag==false">
+    <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">
+    <div>
+        <form class="example-form" [formGroup]="paymentForm" id="paymentForm" autocomplete="off" >
+
+
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <strong class="mandatory">*</strong>
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label><span class="label-payment-reference">{{'add-payment.payment-reference' | translate}} </span></mat-label>
+                        <input matInput type="text" placeholder="Enter Payment Reference " formControlName="paymentReference" (focusout)="autoSaveAsDraft();" (blur)="enableUploadBtn();checkDuplicatePaymentRef();">
+                    </mat-form-field>
+                </div>
+
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                <mat-form-field appearance="outline" class="mb-form-0">
+                    <mat-label class="label"><span class="label-project-type">{{'view-payment.state-budget' | translate}} </span>
+                    </mat-label>
+                    <input matInput readonly matInput class="" formControlName="stateBudget">
+                </mat-form-field>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-sm-12 justify-content-end d-flex">
+                <ng-container *ngIf="viewByTableId ==null && draftedId == null">
+
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label><span class="label-view-save-as-draft">{{ 'create-envelope.save-as-draft' |
+                            translate }}</span></mat-label>
+                        <mat-select formControlName="saveAsDraftId" (selectionChange)="draftValue()"
+                            (click)="chkDraft();" (openedChange)="searchDraft.patchValue('')">
+                            <div class="select-container" *ngIf="draftfilteredOption">
+                                <mat-optgroup>
+                                    <mat-form-field style="width:100%;">
+                                        <input autocomplete="off" placeholder="Search" aria-label="Search"
+                                            matInput [formControl]="searchDraft">
+                                        <button [disableRipple]="true" *ngIf="searchDraft.value" matSuffix mat-icon-button
+                                            aria-label="Clear" (click)="searchDraft.patchValue('')">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </mat-form-field>
+                                </mat-optgroup>
+                                <mat-optgroup *ngIf="(draftfilteredOption | async).length == 0">
+                                    <div>{{'common.No results found!' | translate}}</div>
+                                </mat-optgroup>
+                            <mat-option *ngFor="let option of draftfilteredOption | async" [value]="option.payment_id">
+                                DraftID-{{option.payment_id}} &nbsp; {{option.timeStamp}}
+                            </mat-option>
+                            </div>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <strong class="mandatory">*</strong>
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label><span class="label-project">{{'add-payment.project' | translate}} </span></mat-label>
+                      
+                        <mat-select (openedChange)="searchProjectTitle.patchValue('')"
+                        (selectionChange)="getFinancialDetailsByPrjId();" placeholder="Select" formControlName="projectTitle">
+                        <div class="select-container" *ngIf="projectTitlefilteredOption">
+                      
+                        <!-- <mat-select formControlName="projectTitle" (selectionChange)="getFinancialDetailsByPrjId()"> -->
+                            
+                            <mat-optgroup>
+                                <mat-form-field style="width:100%;">
+                                    <input autocomplete="off" placeholder="Search" aria-label="Search"
+                                        matInput [formControl]="searchProjectTitle">
+                                    <button [disableRipple]="true" *ngIf="searchProjectTitle.value" matSuffix mat-icon-button
+                                        aria-label="Clear" (click)="searchProjectTitle.patchValue('')">
+                                        <mat-icon>close</mat-icon>
+                                    </button>
+                                </mat-form-field>
+                            </mat-optgroup>
+                            <mat-optgroup *ngIf="(projectTitlefilteredOption | async).length == 0">
+                                <div>{{'common.No results found!' | translate}}</div>
+                            </mat-optgroup>
+                            
+                            <mat-option *ngFor="let option of projectTitlefilteredOption | async" [value]="option.idProject">
+                                {{option.projectTitle}}
+                            </mat-option>
+                            </div>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <ng-container *ngIf="select_options_for_finding_title_hdn_flag==true">
+                </ng-container>
+                <ng-container *ngIf="select_options_for_finding_title_hdn_flag==false">
+                    <div class="col-xl-4 col-lg-4 col-sm-12">
+                        <strong class="mandatory">*</strong>
+                        <mat-form-field appearance="outline" class="mb-form-0">
+                            <mat-label><span class="label-financing-agreement">{{'add-payment.financing-agreement' | translate}}</span>
+                            </mat-label>
+                            <mat-select formControlName="fundingDonorTitle" (selectionChange)="checkDuplicatePaymentRef();">
+                                <mat-option *ngFor="let option of financingAgreementList" [value]="option.financialAgreementId">
+                                    {{option.fundingDonorTitle}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <strong class="mandatory">*</strong>
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label><span class="label-choose-payment-date"> {{'add-payment.payment-date' | translate}} </span></mat-label>
+                        <input matInput [matDatepicker]="picker" [max]="maxDate" style="cursor: pointer" (focus)="picker?.open()" readonly
+                            formControlName="paymentDate" (dateChange)="getAmountFlag();resetAmount();" >
+                        <ng-container *ngIf="viewByTableId == null">
+                            <mat-icon matDatepickerToggleIcon (click)="clearPmtDate($event)">clear</mat-icon>
+                        </ng-container>
+                        <mat-datepicker-toggle matSuffix [for]="picker"  [disabled]="pickerDisable_flag"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+
+                </div>
+            </div>
+            <ng-container *ngIf="select_options_for_finding_hdn_flag==true">
+            </ng-container>
+            <ng-container *ngIf="select_options_for_finding_hdn_flag==false">
+
+        </ng-container>
+        <div class="row">
+        <ng-container *ngIf="date_flag==true">
+        </ng-container>
+        <ng-container *ngIf="date_flag==false">
+
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <strong class="mandatory">*</strong>
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label class="label"><span class="label-payment-amount">{{'add-payment.payment-amount' | translate}} </span></mat-label>
+                        <input matInput type="text"  (keypress)="regex_Currency($event)" placeholder="0.00" (change)="getCurrency();onBlur($event.target.value);" (change)="getCurFlag()"
+                        formControlName="amount" autocomplete="off" (focus)="editAmount($event.target.value)"
+                        (blur)="viewAmount($event.target.value);">
+                    </mat-form-field>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="cur_flag==true">
+            </ng-container>
+            <ng-container *ngIf="cur_flag==false">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <strong class="mandatory">*</strong>
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label><span class="label-payment-currency">{{'add-payment.payment-currency' | translate}} </span></mat-label>
+                        <mat-select (openedChange)="searchCurrency.patchValue('')"  (selectionChange)="getCurrency()" placeholder="Select" formControlName="currency">
+                            <div class="select-container" *ngIf="currencyfilteredOption">
+                                <mat-optgroup>
+                                    <mat-form-field style="width:100%;">
+                                        <input #searchCur autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchCurrency">
+                                        <button [disableRipple]="true" *ngIf="searchCur.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchCurrency.patchValue('')">
+                                            <mat-icon>close</mat-icon>
+                                        </button>
+                                    </mat-form-field>
+                                </mat-optgroup>
+                                <mat-optgroup *ngIf="(currencyfilteredOption  | async).length == 0">
+                                    <div>{{'common.No results found!' | translate}}</div>
+                                </mat-optgroup>
+                                <mat-option *ngFor="let option of currencyfilteredOption | async" [value]="option.currency_id">
+                                    <ng-container *ngIf="option.difference<=7 || option.updateDifference<=7">
+                                        <i class="fas fa-star" style="color: darkgreen;"></i> &nbsp;
+                                    </ng-container>
+                                    {{(option.currency_fullname +" ( "+option.currency_shortname)+" )"}}
+                                </mat-option>
+                            </div>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                </ng-container>
+            </div>
+
+            <ng-container *ngIf="select_options_for_finding_hdn_flag==true">
+            </ng-container>
+            <ng-container *ngIf="select_options_for_finding_hdn_flag==false">
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label class="label"><span class="label-exchange-Rates-usd">{{'add-payment.exchange-rates-usd' | translate}} </span>
+                        </mat-label>
+                        <input matInput readonly matInput class="" placeholder="Exchange Rates"
+                        formControlName="exchangeRateUSD" >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label class="label"><span class="label-exchange-rates-mzn">{{'add-payment.exchange-rates-mzn' | translate}} </span>
+                        </mat-label>
+                        <input matInput readonly matInput class="" placeholder="Exchange Rates"
+                        formControlName="exchangeRateMZN">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label class="label"><span class="label-payment-amount-mzn">{{'add-payment.payment-amount-mzn' | translate}}</span>
+                        </mat-label>
+                        <input matInput readonly class="example-right-align" placeholder="Payment reference "
+                        formControlName="paymentAmountMZN" >
+                    </mat-form-field>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-sm-12">
+                    <mat-form-field appearance="outline" class="mb-form-0">
+                        <mat-label class="label"><span class="label-payment-amount-usd">{{'add-payment.payment-amount-usd' | translate}} </span>
+                        </mat-label>
+                        <input matInput readonly class="example-right-align" placeholder="Payment reference "
+                        formControlName="paymentAmountUSD" >
+                    </mat-form-field>
+                </div>
+            </div>
+        </ng-container>
+            <div class="row">
+            </div>
+
+        <!-- <ng-container *ngIf="EditPayment!=='EditPayment' && ViewMorePayment!=='ViewMorePayment'"> -->
+            <ng-container *ngIf="id ==null && viewByTableId== null && draftedId == null">
+            <div class="row">
+                <div class="col-lg-12 mt-3 mb-2">
+                    <div class="example-button">
+                        <button class="btn btn-success mr-2" (click)="(paymentForm.invalid) ?  openMandatoryAlert():opensweetalert()"
+                            >{{'add-payment.submit' | translate}}</button>
+                        <button class="btn btn-primary mr-2" (click)="opensweetalert2()" >{{'add-payment.save-as-draft' | translate}}</button>
+                        <button class="btn btn-reset mr-2" (click)="clearForm(paymentForm)">{{'add-payment.reset' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <!-- <ng-container *ngIf="EditPayment=='EditPayment'"> -->
+            <ng-container *ngIf="id!==null">
+            <div class="row">
+                        <div class="col-lg-12 mt-3 mb-2">
+                            <div class="example-button">
+                                <button class="btn btn-success mr-2" (click)="(paymentForm.invalid) ?  openMandatoryAlert():openSweetalertUpdate()"
+                                >{{'common.update' | translate}}</button>
+                                <button class="btn btn-primary mr-2" (click)="opensweetalert2()">{{'add-payment.save-as-draft' | translate}}</button>
+                                <button class="btn btn-reset mr-2" (click)="clearForm(paymentForm)">{{'add-payment.reset' | translate}}</button>
+                                <button class="btn btn-danger" (click)="moveToPaymentTab()">{{'add-payment.cancel' | translate}}</button>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            <!-- <ng-container *ngIf="ViewMorePayment=='ViewMorePayment'"> -->
+                <ng-container *ngIf="viewByTableId !==null">
+            <div class="row">
+                <div class="col-lg-12 mt-3 mb-2">
+                    <div class="example-button">
+                        <button class="btn btn-danger mr-2" (click)="moveToPaymentTab()">{{'add-payment.cancel' | translate}}</button>
+                        <button class="btn btn-primary mr-2"  (click)='viewMorePayment()'>{{'common.edit' | translate}}</button>
+                    </div>
+                </div>
+        </div>
+            </ng-container>
+            <!-- <ng-container *ngIf="viewByTableId !==null">
+                <div class="row">
+                    <div class="col-lg-12 mt-3 mb-2">
+                        <div class="example-button">
+                            <button class="btn btn-danger mr-2" (click)="moveToPaymentTab()">{{'add-payment.cancel' | translate}}</button>
+                            <button class="btn btn-primary mr-2"  (click)='viewMorePayment()'>{{'common.edit' | translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container> -->
+            <ng-container *ngIf="draftedId !==null">
+                <div class="row mt-5">
+                    <div class="col-lg-12 mb-6 ">
+                        <div class="example-button">
+                              <button class="btn btn-success mr-2" (click)="publish()">
+                                Publish
+                              </button>
+                              <button class="btn btn-reset mr-2" (click)="discard()">
+                                Discard
+                              </button>
+                            <button class="btn btn-danger mr-2"
+                                (click)="goBack()">{{'add-disbursement-component.cancel' |
+                                translate}}</button>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </form>
+    </div>
+</ng-container>

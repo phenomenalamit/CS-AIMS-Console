@@ -1,0 +1,63 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" (click)="closebuttonedit()"><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <!-- <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-organization" aria-current="page">Individual</li> -->
+                 <li class="breadcrumb-item active label-create-organization" aria-current="page">{{ 'view-Individual.View Individual List' | translate }}</li>
+               </ol>
+             </nav>
+  
+             
+        </div>
+    </div>
+ </div>
+
+ <hr>
+ 
+
+        
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="modal-dialog modal-xl">
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr style=" text-align: center;">
+                <th>{{ 'view-Individual.email1' | translate }}</th>
+                <th>{{ 'view-Individual.email2' | translate }}</th>
+                <th>{{ 'view-Individual.phoneCode1' | translate }}</th>
+                <th>{{ 'add-individual.phone1' | translate }}</th>
+                <th>{{ 'view-Individual.phoneCode2' | translate }}</th>
+                <th>{{ 'add-individual.phone2' | translate }}</th>
+                <th>{{ 'view-Individual.faxCode' | translate }}</th>
+                <th>{{ 'view-Individual.fax' | translate }}</th>
+                <th>{{ 'view-Individual.address' | translate }}</th>
+                <th>{{ 'view-Individual.city' | translate }}</th>
+                <th>{{ 'view-Individual.country' | translate }}</th>
+                <th>{{ 'view-Individual.otherContact' | translate }}</th>
+               
+                </tr>
+                <tr *ngFor="let data of individualGetDataList">
+                  <td>{{data.email1}}</td>
+                  <td>{{data.email2}}</td>
+                  <td>{{data.code1}}</td>
+                  <td>{{data.phone1}}</td>
+                  <td>{{data.code2}}</td>
+                  <td>{{data.phone2}}</td>
+                  <td>{{data.code3}}</td>
+                  <td>{{data.fax}}</td>
+                  <td>{{data.address}}</td>
+                  <td>{{data.city}}</td>
+                  <td>{{data.country}}</td>
+                  <td>{{data.othercontacts}}</td>
+
+                </tr>
+           </table>
+        </div></div>
+       </div>
+     </div>
+    
+     

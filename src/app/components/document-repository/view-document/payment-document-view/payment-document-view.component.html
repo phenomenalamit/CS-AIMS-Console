@@ -1,0 +1,56 @@
+
+<a mat-dialog-close class="btn btn-danger btn-sm float-right" ><i class="fas fa-times"></i></a>
+<div class="breadcumb">
+    <div class="row">
+        <div class="col-lg-12 col-sm-12">
+           <nav aria-label="breadcrumb">
+               <ol class="breadcrumb">
+                 <!-- <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'" (click)="closeDialoge()"><i class="fas fa-home"></i></a></li>
+                 <li class="breadcrumb-item active label-organization" aria-current="page">{{'add-payment.payment' | translate}}
+                </li> -->
+                 <li class="breadcrumb-item active label-create-organization" aria-current="page">{{'add-payment.view' | translate}}</li>
+               </ol>
+             </nav>
+        </div>
+    </div>
+ </div>
+
+ <hr>
+
+
+
+     <div class="mat-dialog-container1">
+        <div class="container-fluid">
+            <div class="col-sm-12">
+           <table  class="table table-bordered ">
+               <tr>
+                <th>{{'add-disbursement-component.module' | translate}}</th>
+                <!-- <th>{{'add-disbursement-component.fileName' | translate}}</th> -->
+                <th>{{'add-funding.payment-reference' | translate}}</th>
+                <th>{{'create-envelope.filePath' | translate}}</th>
+                <th>{{'add-disbursement-component.documents' | translate}}</th>
+                <th>{{'add-disbursement-component.uploadedOn' | translate}}</th>
+
+
+                </tr>
+                <tr *ngIf="noDataHdnFlag==false" style="float: right;">{{'common.noDataFound'|translate}}</tr>
+                <tr *ngFor="let option of paymentDocDetails">
+                  <td>{{option.module}}</td>
+                  <!-- <td>{{option.fileName}}</td>-->
+                  <td>{{option.paymentNm}}</td> 
+                  <td *ngIf="option.docAvailable==true">{{option.filePath}}</td>
+                  <td *ngIf="option.docAvailable==false">{{'common.Path not found' | translate}}</td>
+                  <td>{{option.file_upload}}<a href="javascript:void(0);"  (click)="downloadFile(option.paymentId,option.docAvailable,option.file_upload)"><i class="fa fa-download ml-2" aria-hidden="true"></i></a>
+                    <a href="javascript:void(0);"  (click)="dropFile(option.paymentId,option.docAvailable)">
+                      <i class="fa fa-trash ml-2" aria-hidden="true"></i>
+                    </a>
+                  </td>
+                  <td>{{option.uploadDate}}</td>
+              </tr>
+           </table>
+        </div>
+       </div>
+     </div>
+
+
+

@@ -1,0 +1,71 @@
+<!-- Main component HTML of Financial Agreement -->
+<div class="container-fluid">
+  <div class="innerbody">
+    <ng-container *ngIf="num===0 || num===undefined">
+      <div class="breadcumb">
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item active label-funding" aria-current="page">{{'funding-component.funding' |
+                  translate}}</li>
+                <li class="breadcrumb-item active label-create-funding" aria-current="page">
+                  {{'funding-component.create-funding' | translate}}</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+              <ul class="iconics-buttons">
+                <!-- <li><div class="example-button">
+                  <button class="btn btn-upload mr-2" (click)='openDialog2()' >{{ 'common.uploadDocument' | translate }}</button>
+                  </div></li> -->
+
+                <!-- <li>
+                    <a class="iconsBG" title="{{ 'common.uploadDocument' | translate }}" (click)='openDialog2()' ><i class="fas fa-file-upload"></i></a>
+                    </li> -->
+                <li><span class="indicates">{{'funding-component.indicates' | translate}}</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="num===1">
+      <div class="breadcumb">
+        <div class="row">
+          <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item label-funding"><a href="/admin/funding">{{'funding-component.funding' |
+                    translate}}</a></li>
+                <li class="breadcrumb-item active label-view-funding" aria-current="page">
+                  {{'funding-component.view-funding-list' | translate}}</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+              <ul class="iconics-buttons">
+
+                <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                <li><a class="iconsBG" (click)="generateExcel()" title="Excel"><i class="far fa-file-excel"></i></a>
+                </li>
+                <li><a class="iconsBG" title="{{'common.Back' | translate}}" (click)='moveToSelectedTab("Create Funding")'><i
+                      class="fas fa-arrow-left"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+      <mat-tab label="{{'funding-component.create-funding' | translate}}">
+        <app-add-funding></app-add-funding>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</div>

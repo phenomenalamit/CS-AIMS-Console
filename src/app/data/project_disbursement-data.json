@@ -1,0 +1,45 @@
+
+{
+    "disbursment":[
+        {
+            "reference":"dis-003",
+            "project":"Mozambique Infrastructure Project",
+            "fundingTitle":"Funding For Mozambique Infrastructure Project Feb",
+            "fundingOrganization":"Mozambique Bank",
+            "date":"01/02/2021",
+            "swiftcode":"SWIFT-WB-001",
+            "receivedswiftcode":"RECV-WB-02",
+            "receivedBankNIB":"RECVNIB-WB-003",
+            "amountOfdisbursementCurrency":31451.00,
+            "currency1":"Australia Dollar(AUD)",
+            "exchangeRateUSD":45735.23,
+            "exchangeRateMZN":4512.2,
+            "exchangeRatesAgreementCurrency":6589.5,
+            "disbursementAmountMZN":201065.00,
+            "disbursementAmountUSD":2802846.1,
+            "amountOfdisbursementAgreement":34542.20
+            
+        
+        },
+        {
+            "reference":"dis-004",
+            "project":"Mozambique Infrastructure Project",
+            "fundingTitle":"Funding For Mozambique Infrastructure Project Feb",
+            "fundingOrganization":"Mozambique Bank",
+            "date":"01/03/2021",
+            "swiftcode":"SWIFT-WB-001",
+            "receivedswiftcode":"RECV-WB-02",
+            "receivedBankNIB":"RECVNIB-WB-003",
+            "amountOfdisbursementCurrency":454521.25,
+            "currency1":"Australia Dollar(AUD)",
+            "exchangeRateUSD":45735.23,
+            "exchangeRateMZN":4512.2,
+            "exchangeRatesAgreementCurrency":6589.5,
+            "disbursementAmountMZN":664880.19,
+            "disbursementAmountUSD":9268427.20,
+            "amountOfdisbursementAgreement":54542.20
+            
+        
+        }
+    ]
+}

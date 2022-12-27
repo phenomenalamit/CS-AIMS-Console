@@ -1,0 +1,143 @@
+<div class="login-page" style='background-image:url("./assets/images/bg.jpg");
+align-items: center;justify-content: center;height: 100vh;
+position: relative;background-size: cover;'>
+
+    <div class="container">
+
+      <div class="loginscreen">
+          <div class="img-log-screen">
+            <img src="./assets/images/group.png" />
+          </div>
+        <form class="login-form" fxFlex  [formGroup]="firstTimeloginForm">
+            <!-- <form class="login-form" fxFlex  [formGroup]="firstTimeloginForm"> -->
+            <div class="text-center">
+                <img src="./assets/images/loginlogo.png" class="loginBG" />
+                <h2 class="app-name">Aid Information Management System</h2>
+            </div>
+           
+            <!-- <div fxFlex  fxlayout="row" fxlayout.lt-md="column">
+                <div fxFlexFill>
+                    <mat-form-field appearance="legacy" class="undilineinput">
+                        <mat-label class="labeluser">User Name</mat-label>
+                        <input matInput placeholder="" onmousedown="return true" formControlName="userName" >
+                       
+                   
+                    </mat-form-field>
+                </div>
+            </div> -->
+            <div fxFlex  fxlayout="row" fxlayout.lt-md="column">
+                <div fxFlexFill>
+                    <mat-form-field appearance="legacy" >
+                        <mat-label class="labeluser">Password</mat-label>
+                        <input matInput [type]="showPassword ? 'text' : 'password'"  onmousedown="return true" formControlName="oldPassword" />
+                        <!-- <mat-icon matPrefix><i class="i-sm fas fa-user"></i></mat-icon> -->
+                        <mat-icon matPrefix><i class="i-sm fas fa-key"></i></mat-icon>
+                        <i class="fas fa-info-circle info-font carte_button"></i>
+                        <div class="carte" >
+                            <ul>
+                                <li>Passwords must be at least 8 characters long</li>
+                                <li>Passwords must include a combination of at least 1 upper case letter, 1 lower case letter, 1 number & 1 special character( $, #, @, !, %, ^, &, *, (, ) )</li>
+                                <li>Passwords must not be similar to 5 old passwords.</li>
+                            </ul>
+                        </div>
+                        <mat-icon matSuffix (click)="showPassword = !showPassword" class="showPassword-i">
+                            <i class="fa fa-eye" aria-hidden="true" *ngIf="showPassword"></i>
+                                <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!showPassword"></i>
+                        </mat-icon>
+                        <mat-error *ngIf="firstTimeloginForm.controls['oldPassword'].invalid">
+                            {{'password-component.please-fill-correct-old-password' | translate}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div fxFlex  fxlayout="row" fxlayout.lt-md="column">
+                <div fxFlexFill>
+                    <mat-form-field appearance="legacy">
+                        <mat-label class="labeluser">New Password</mat-label>
+                        <input matInput [type]="showPassword1 ? 'text' : 'password'"  onmousedown="return true" formControlName="password" />
+                        <!-- <mat-icon matPrefix><i class="i-sm fas fa-user"></i></mat-icon> -->
+                        <mat-icon matPrefix><i class="i-sm fas fa-key"></i></mat-icon>
+                        <i class="fas fa-info-circle info-font carte_button"></i>
+                        <div class="carte" >
+                            <ul>
+                                <li>Passwords must be at least 8 characters long</li>
+                                <li>Passwords must include a combination of at least 1 upper case letter, 1 lower case letter, 1 number & 1 special character( $, #, @, !, %, ^, &, *, (, ) )</li>
+                                <li>Passwords must not be similar to 5 old passwords.</li>
+                            </ul>
+                        </div>
+                        <mat-icon matSuffix (click)="showPassword1 = !showPassword1" class="showPassword-i">
+                            <i class="fa fa-eye" aria-hidden="true" *ngIf="showPassword1"></i>
+                                <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!showPassword1"></i>
+                        </mat-icon>
+                        <mat-error *ngIf="firstTimeloginForm.controls['password'].invalid">
+                            {{'password-component.password-criteria-is-not-fulfilled' | translate}}
+                          </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div fxFlex  fxLayout="row" fxLayout.lt-md="column">
+                <div fxFlexFill>
+                    <mat-form-field appearance="legacy">
+                        <mat-label class="labeluser">Confirm Password</mat-label>
+                        <input matInput [type]="showPassword2 ? 'text' : 'password'"  onmousedown="return true" formControlName="confirmPassword" />
+                        <!-- <mat-icon matPrefix><i class="i-sm fas fa-user"></i></mat-icon> -->
+                        <mat-icon matPrefix><i class="i-sm fas fa-key"></i></mat-icon>
+                        <i class="fas fa-info-circle info-font carte_button"></i>
+                        <div class="carte" >
+                            <ul>
+                                <li>Passwords must be at least 8 characters long</li>
+                                <li>Passwords must include a combination of at least 1 upper case letter, 1 lower case letter, 1 number & 1 special character( $, #, @, !, %, ^, &, *, (, ) )</li>
+                                <li>Passwords must not be similar to 5 old passwords.</li>
+                            </ul>
+                        </div>
+                        <mat-icon matSuffix (click)="showPassword2 = !showPassword2" class="showPassword-i">
+                            <i class="fa fa-eye" aria-hidden="true" *ngIf="showPassword2"></i>
+                                <i class="fa fa-eye-slash" aria-hidden="true" *ngIf="!showPassword2"></i>
+                        </mat-icon>
+                        <mat-error
+                        *ngIf="firstTimeloginForm.controls['confirmPassword'].pristine ||firstTimeloginForm.controls['confirmPassword'].errors?.MatchPassword">
+                        {{'password-component.passwords-does-not-match' | translate}}
+                      </mat-error>
+                    </mat-form-field>
+                </div>
+            </div>
+
+<!-- <div class="row">
+    <div class="col-xl-7 col-lg-7 col-md-6">
+        <mat-form-field appearance="legacy" class="undilineinput">
+            <mat-label class="labeluser">Enter captcha</mat-label>
+            <input matInput >
+        </mat-form-field>
+    </div>
+    <div class="col-xl-5 col-lg-5 col-md-6">
+     <div class="capImg">
+        <img src="./assets/images/Captcha.png"  />
+     </div>
+    </div>
+</div> -->
+
+
+            <div fxFlex  fxLayout="row">
+                <div fxFlexFill>
+                    <div class="loging-button">
+                    <a mat-raised-button  class="btn-custom" (click)="saveFirstTimeLoginUserDetails()">Submit</a>
+                    <!-- <a mat-raised-button (click)="loginFormSubmit()" class="btn-custom">Login</a> -->
+                </div>
+
+                </div>
+            </div>
+
+            <!-- <ul class="ul-login">
+                <li> <a [routerLink]="'/forgotpassword'">Forgot Password?</a></li>
+
+            </ul> -->
+
+        </form>
+
+
+
+      </div>
+
+
+    </div>
+</div>

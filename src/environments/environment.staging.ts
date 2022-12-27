@@ -1,0 +1,28 @@
+export const environment = {
+    production: false,
+    projectURL:"http://localhost:8080/aims-masterdata-application/api/getProjectDetails",
+  currencyURL:"http://localhost:8080/aims-masterdata-application/api/getCurrencyDetails",
+  fundingOrganizationURL:"http://localhost:8080/aims-masterdata-application/api/getFundingOrganizationDetails",
+  PurposeDacCrsURL:"http://localhost:8080/aims-masterdata-application/api/getPurposeCodesDetails",
+  districtURL:"http://localhost:8080/aims-masterdata-application/api/getDistrictsDetailsUnderprovincesId",
+  donorURL:"http://localhost:8080/aims-masterdata-application/api/getDonorDetails",
+  stateBudgetURL:"http://localhost:8080/aims-masterdata-application/api/getStateBudgetDetails",
+  iatiLocationURL:"http://localhost:8080/aims-masterdata-application/api/getIatiLocationDetails",
+  implementingOrganizationURL:"http://localhost:8080/aims-masterdata-application/api/getImplementingOrganizationDetails",
+  recommendationURL:"http://localhost:8080/aims-masterdata-application/api/getRecommendationDetails",
+  findingURL:"http://localhost:8080/aims-masterdata-application/api/getFindingDetails",
+  optionFindingURL:"http://localhost:8080/aims-masterdata-application/api/getOptionFindingUnderFindingId",
+  organizationURL:"http://localhost:8080/aims-masterdata-application/api/getOrganizationDetails",
+  provincesURL:"http://localhost:8080/aims-masterdata-application/api/getProvincesDetails",
+  responsibleOrganizationURL:"http://localhost:8080/aims-masterdata-application/api/getResponsibleOrganizationDetails",
+  typeOfUserURL:"http://localhost:8080/aims-masterdata-application/api/getTypeOfUserDetails",
+  userGroupURL:"http://localhost:8080/aims-masterdata-application/api/getUserGroupDetails",
+  permissionsURL:"http://localhost:8080/aims-masterdata-application/api/getPermissionsDetails",
+  operationsURL:"http://localhost:8080/aims-masterdata-application/api/getOperationsDetails",
+  featuresURL:"http://localhost:8080/aims-masterdata-application/api/getFeaturesDetails",
+  currencyAmountURL:"http://localhost:8080/aims-masterdata-application/api/getCurrencyAmount",
+  currencyJsonURL:"http://localhost:8080/aims-masterdata-application/api/getCurrencyJson",
+  countryURL:"http://localhost:8080/aims-masterdata-application/api/getCountryDetails",
+  financingAgreementURL:"http://localhost:8080/aims-masterdata-application/api/getFinancingAgreementDetails"
+  };
+  

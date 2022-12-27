@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{'alert-notification.notificationAlert' | translate}}</h2>
+<mat-dialog-content class="mat-typography">
+    <div class="notificationSec">
+        <div class="NotiBG"><img class="rounded-circle thumb64" src="./assets/images/user.jpg" alt="Profile"></div>
+        <div class="NotiText">
+         <h5>{{message.slice(0,40).concat('.....')}} <a href="" target="_blank" class="badge badge-danger float-right" 
+             data-toggle="tooltip" data-placement="top" title="Download"></a></h5>
+         <p>
+            {{message}} 
+         </p>
+         <ng-container *ngIf="link!==''">
+          <a [routerLink]="[link]">
+            To View Click Here 
+          </a>
+         </ng-container>
+         
+         
+         
+         <h6 class="small text-gray-500"><i>{{date}} </i>  </h6>
+        </div>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>{{'common.cancel' | translate}}</button>
+  <!-- <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Install</button> -->
+</mat-dialog-actions>
+
+
+
+<!-- 
+<mat-dialog-actions class="" >
+
+    <div class="notificationSec">
+        <div class="NotiBG"><img class="rounded-circle thumb64" src="../assets/images/user.jpg" alt="Profile"></div>
+        <div class="NotiText">
+         <h5>Project-001 is funded by World bank. <a href="" target="_blank" class="badge badge-danger float-right" 
+             data-toggle="tooltip" data-placement="top" title="Download"></a></h5>
+         <p>
+             Project-001 which is planned in Maputo region is funded by World bank. 
+             The project will be an on-budget project which deals with creation of 1000 schools in Maputo province.
+         </p>
+         <h6 class="small text-gray-500"><i>March 12, 2021</i>  </h6>
+        </div>
+    </div>
+  </mat-dialog-actions> -->

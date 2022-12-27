@@ -1,0 +1,14 @@
+
+table {
+    width: 100%;
+  }
+ th{
+    background-color: rgb(17, 1, 1);
+    font-weight: bolder;
+    font-size: medium;
+  }
+
+  tr:nth-child(2n+1){
+    background-color:#e4f0ec;
+  }
+  .modal-xl{max-width:800px}@media (min-width:1200px){.modal-xl{max-width:1140px}}

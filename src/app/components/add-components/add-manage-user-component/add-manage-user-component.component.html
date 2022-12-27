@@ -1,0 +1,287 @@
+<!-- HTML page for User Access Management  -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">   
+  <div class="">
+    <form class="example-form" [formGroup]="userForm" autocomplete="off" novalidate
+        (ngSubmit)="createUserform(userForm.value)">
+        <input type="hidden" class="form-control"  formControlName="userAccessId">
+        <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="custom-expansion-panel" >
+
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <h6>{{'add-user-access.add-user-account' | translate}}</h6>
+              </mat-panel-title>
+
+            </mat-expansion-panel-header>
+        <div class="row">
+          <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+            <strong class="mandatory">*</strong>
+            <mat-form-field appearance="outline">
+                <mat-label><span class="label-fullname">{{'user-account.first-name' | translate}}</span></mat-label>
+                <input matInput class="" placeholder="First Name" formControlName="firstName">
+            </mat-form-field>
+        </div>
+
+            <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                    <mat-label><span class="label-fullname">{{'user-account.last-name' | translate}}</span></mat-label>
+                    <input matInput class="" placeholder="Last Name" formControlName="lastName">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                    <mat-label><span class="label-username">{{'add-manage-user.user-name' | translate}}</span></mat-label>
+                    <input matInput class="" placeholder="User Name" formControlName="userName">
+                    <!-- <mat-error>Username Can Not be Empty and Does not Contain Any Special Characters</mat-error> -->
+                </mat-form-field>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                    <mat-label><span class="label-email">{{'add-user-access.email' | translate}}</span></mat-label>
+                    <input matInput class="" placeholder="Email" formControlName="email" (keyup)="validateEmail()"	>
+                </mat-form-field>
+                <ng-container *ngIf="check_email_flag==false">
+                  <mat-error > {{'user-account.invalid' | translate}} </mat-error>
+              </ng-container>
+              <ng-container *ngIf="check_email1_flag==false">
+                      <p style="color: green;"> {{'user-account.valid' | translate}} </p>
+              </ng-container>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-4 col-lg-4 col-sm-12">
+              <strong class="mandatory">*</strong>
+              <mat-form-field appearance="outline" class="mb-form-0 code-width">
+                  <mat-label>{{'user-account.Code' | translate}}</mat-label>
+                  <!-- <input type="text" placeholder="Pick one" aria-label="Number" matInput formControlName="countryCode"
+                      [matAutocomplete]="countryCode">
+                  <mat-autocomplete #countryCode="matAutocomplete"  panelWidth="270px">
+                      <mat-option *ngFor="let option of countryDialingCodeFilteredOption | async" [value]="option.dialingCode" [id]="option.countryName">
+                          {{option.dialingCode}}&nbsp;({{option.countryName}})
+                      </mat-option>
+                  </mat-autocomplete> -->
+                  <mat-select (openedChange)="searchCode.patchValue('')"  placeholder="Select" formControlName="countryCode">
+                    <div class="select-container" *ngIf="countryDialingCodeFilteredOption">
+                        <mat-optgroup>
+                            <mat-form-field style="width:100%;">
+                                <input autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchCode">
+                                <button [disableRipple]="true" *ngIf="searchCode.value" matSuffix mat-icon-button aria-label="Clear" (click)="searchCode.patchValue('')">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </mat-form-field>
+                        </mat-optgroup>
+                        <mat-optgroup *ngIf="(countryDialingCodeFilteredOption | async).length == 0">
+                            <div>{{'common.No results found!' | translate}}</div>
+                        </mat-optgroup>
+                        <mat-option *ngFor="let option of countryDialingCodeFilteredOption | async" [value]="option.dialingCodeid">
+                            {{option.dialingCode}}&nbsp;({{option.countryName}})
+                        </mat-option>
+                    </div>
+                  </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="mb-form-0 phone-number-width">
+                  <mat-label>{{ 'add-organization.telephone' | translate }}</mat-label>
+                  <input type="number" matInput  formControlName="telephone" placeholder="{{ 'add-organization.telephone' | translate }}" (keyup)="validatePhone()">
+              </mat-form-field>
+
+              <ng-container *ngIf="check_phone_flag==false">
+                <mat-error > {{'add-organization.invalidPhone' | translate}}</mat-error>
+            </ng-container>
+            <ng-container *ngIf="check_phone1_flag==false">
+                <p style="color: green;">{{'add-organization.validPhone' | translate}} </p>
+            </ng-container>
+            <ng-container *ngIf="check_phone1_flag==false && phoneMessage==' '">
+            </ng-container>
+
+            </div>
+         
+          <div class="col-xl-4 col-lg-4 col-sm-12">
+                <strong class="mandatory">*</strong>
+                <mat-form-field appearance="outline">
+                    <mat-label><span class="label-username">{{'add-manage-user.date-of-joining' | translate}}</span></mat-label>
+                    <input matInput [matDatepicker]="picker" [max]="maxDate" formControlName="dateOfJoining" style="cursor: pointer"
+                        (focus)="picker?.open()" readonly>
+                    <ng-container *ngIf="dateClearFlag==false">
+                      <mat-icon matDatepickerToggleIcon (click)="clearJoinDate($event)">clear</mat-icon>
+                    </ng-container>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-4 col-lg-4 col-sm-12">
+          
+            <mat-form-field appearance="outline">
+                <mat-label>{{'user-profile.city' | translate}}</mat-label>
+              <input matInput placeholder="City " formControlName="city">
+              </mat-form-field>
+        </div>
+          <div class="col-xl-4 col-lg-4 col-sm-12">
+            
+              <mat-form-field appearance="outline">
+                  <mat-label>{{'user-profile.address' | translate}}</mat-label>
+                  <textarea matInput placeholder="Address " formControlName="address" ></textarea>
+                </mat-form-field>
+          </div>
+
+      </div>
+      <!-- <div class="row">
+        <div class="col-xl-4 col-lg-4 col-sm-12">
+          <strong class="mandatory">*</strong>
+          <mat-form-field appearance="outline" class="mb-form-0">
+            <mat-label><span class="label-implementing-organization">{{ 'create-envelope.funding-organization' | translate }}</span></mat-label>
+            <mat-select (openedChange)="openedChange($event)" placeholder="Select" formControlName="fundingOrganization" multiple>
+                <mat-select-trigger>
+                    {{userForm.controls.fundingOrganization.value ? selectedFundingOrgName[0] : ''}}
+                    <span *ngIf="userForm.controls.fundingOrganization.value?.length > 1" class="additional-selection">
+                        (+{{userForm.controls.fundingOrganization.value.length - 1}} {{userForm.controls.fundingOrganization.value?.length === 2 ? 'other' : 'others'}})
+                    </span>
+                </mat-select-trigger>
+                <div class="select-container" *ngIf="filteredFundingOrg">
+                    <mat-optgroup>
+                        <mat-form-field style="width:100%;">
+                            <input #search autocomplete="off" placeholder="Search" aria-label="Search" matInput [formControl]="searchTextboxControl">
+                            <button [disableRipple]="true" *ngIf="search.value" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch($event)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                    </mat-optgroup> -->
+                    <!-- <mat-optgroup *ngIf="(filteredImplementingOrg | async).length == 0">
+                        <div>{{'common.No results found!' | translate}}</div>
+                    </mat-optgroup> -->
+                    <!-- <mat-option (onSelectionChange)="selectionChange($event)" *ngFor="let option of filteredFundingOrg | async" [value]="option.id"
+                        matTooltip="{{option.names}}" [matTooltipPosition]="'right'" matTooltipClass="custom-tooltip">
+                        {{option.names}}
+                    </mat-option>
+                </div>
+            </mat-select>
+        </mat-form-field>
+        </div>
+      </div> -->
+        <ng-container *ngIf="editmanageuser!=='true'  && viewmanageuser!=='true' ">
+        <div class="row">
+            <div class="col-lg-12 mt-2 mb-2">
+                <div class="example-button">
+                    <button class="btn btn-success mr-2" (click)="checkSubmitCondition();">{{'common.submit' | translate}}</button>
+
+                    <button class="btn btn-reset mr-2" (click)="clearForm(userForm)">{{'common.reset' | translate}}</button>
+                </div>
+            </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="editmanageuser =='true' && viewmanageuser!=='true'">
+        <div class="row">
+            <div class="col-lg-12 mt-2 mb-2">
+                <div class="example-button">
+                    <button class="btn btn-success mr-2" (click)="checkSubmitConditionForEdit();">{{'common.update' | translate}}</button>
+
+                        
+                        <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="viewmanageuser =='true' && editmanageuser!=='true'">
+        <div class="row">
+            <div class="col-lg-12 mt-2 mb-2">
+                <div class="example-button">
+                  <button class="btn btn-success mr-2" (click)='editManageUser(userAccessIdValue)'>{{'common.edit' | translate}}</button>
+
+                        <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+                </div>
+            </div>
+        </div>
+      </ng-container>
+        </mat-expansion-panel>
+    </form>
+    <mat-expansion-panel [expanded]="true" (opened)="setStep(0)" hideToggle class="custom-expansion-panel" >
+
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <h6>{{'add-user-access.user-account-list' | translate}}</h6>
+          </mat-panel-title>
+
+        </mat-expansion-panel-header>
+    <div class="row">
+        <div class="col-sm-12">
+          <p>
+            {{'common.totalrows' | translate}} : {{ totalRows }} <br>
+          </p>
+
+  <div class="mat-elevation-z8 table-responsive print-size-font">
+  <table id = "ExampleMaterialTable" mat-table [dataSource]="userAccessdataSource" class="table table-bordered " matSort>
+    <ng-container matColumnDef="partner">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'user-account.first-name' | translate}} </th>
+      <td mat-cell *matCellDef="let element"> {{element.firstName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="purdaccrs">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'user-account.last-name' | translate}} </th>
+      <td mat-cell *matCellDef="let element"> {{element.lastName}} </td>
+    </ng-container>
+    <ng-container matColumnDef="year">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'add-user-access.user-name' | translate}} </th>
+      <td mat-cell *matCellDef="let element"> {{element.userName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="envagrcurr">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'add-user-access.email' | translate}}  </th>
+      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="telephone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'add-organization.telephone' | translate}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.telephone}} </td>
+    </ng-container>
+
+    <!-- <ng-container matColumnDef="exchangerateUsd">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'add-user-access.date-of-joining' | translate}}</th>
+      <td mat-cell *matCellDef="let element"> {{element.dateOfJoining}} </td>
+    </ng-container> -->
+
+  
+
+  <ng-container matColumnDef="edit" sticky>
+  <th *matHeaderCellDef class="label-action" > {{ 'create-envelope.action' | translate }} </th>
+
+  <td *matCellDef="let element;let i = index;" class="printremove">
+    <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+    <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1"  (click)='editManageUser(element.userAccessId)'>
+      <i class="far fa-edit"></i>
+    </button>
+    </ng-container>
+    <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+    <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.delete' | translate }}" tabindex="-1" (click)='opensweetalertDelete(element.userAccessId)'>
+      <i class="fas fa-trash-alt"></i>
+    </button>
+    </ng-container>
+    <ng-container *ngIf="userPermission.indexOf(2)!=-1">
+      <button class="btn btn-success btn-sm" placement="top" ngbTooltip="{{ 'create-envelope.view' | translate }}" tabindex="-1" (click)='viewManageUser(element.userAccessId)' >
+        <i class="fas fa-eye"></i>
+      </button>
+    </ng-container>
+
+  </td>
+  </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+
+  </div>
+  </div>
+  </div>
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </mat-expansion-panel>
+
+
+  </div>
+</ng-container>

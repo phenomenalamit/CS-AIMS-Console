@@ -1,0 +1,48 @@
+<div class="container-fluid">
+    <div class="innerbody">
+
+   
+
+    <div class="breadcumb">
+     <div class="row">
+         <div class="col-lg-6 col-sm-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                class="fas fa-home"></i></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{'assign-Group.User Management' | translate}}</li>
+                    <li class="breadcrumb-item active" aria-current="page">{{'menu.Assign Group' | translate}}</li>
+                </ol>
+              </nav>
+         </div>
+         <div class="col-lg-6 col-sm-12">
+            <div class="iconics-div">
+                <ul class="iconics-buttons">
+                   <li><span class="indicates">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+
+                    </ul>
+                </div>
+         </div>
+     </div>
+
+   
+    </div>
+    
+
+
+    
+
+
+    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+        <mat-tab label="Assign Group" class="label-create-assignnGroup">
+           <app-assign-group-component></app-assign-group-component>
+        </mat-tab>
+
+
+
+        
+
+    </mat-tab-group>
+    </div>
+    </div>
+

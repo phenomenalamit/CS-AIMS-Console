@@ -1,0 +1,217 @@
+<div class="container-fluid">
+        <div class="innerbody">
+            <!-- <ng-container *ngIf="EditOrganization=='EditOrganization'"> -->
+                <ng-container *ngIf="id !==null">
+                <ng-container *ngIf="num===0 || num===undefined">
+
+                    <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item active label-organization" aria-current="page">
+                                            {{'add-organization.organization' | translate}}</li>
+                                        <li class="breadcrumb-item active label-create-organization"
+                                            aria-current="page">{{'add-organization.editorganization' | translate}}</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><span class="indicates label-indicates-fields-are-mandatory">{{'common.indicates-fields-are-mandatory' | translate}}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <h1 class="label-envelope">Envelope</h1> -->
+                    </div>
+
+                </ng-container>
+
+
+                <ng-container *ngIf="num===1">
+
+                    <!-- <div class="breadcumb">
+                        <div class="row">
+                            <div class="col-lg-6 col-sm-12">
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                    class="fas fa-home"></i></a></li>
+                                        <li class="breadcrumb-item label-organization"><a
+                                                href="/admin/organization">Organization</a></li>
+                                        <li class="breadcrumb-item active label-view-organization" aria-current="page">
+                                            View Organization List</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-lg-6 col-sm-12">
+                                <div class="iconics-div">
+                                    <ul class="iconics-buttons">
+                                        <li><a onclick="window.print()" class="iconsBG" title="Print"><i
+                                                    class="fas fa-print"></i></a></li>
+                                       <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li>
+                                        <!-- <li><a href="#" class="iconsBG" title="Back"><i class="fas fa-arrow-left"></i></a></li>
+                                        <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i
+                                                    class="far fa-file-excel"></i></a></li>
+                                        <li><a class="iconsBG" title="Back"
+                                                (click)='moveToSelectedTab("Create Organization")'><i
+                                                    class="fas fa-arrow-left"></i></a></li>
+
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                 <h1 class="label-envelope">Envelope</h1>
+                    </div> -->
+
+                </ng-container>
+                <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                    <mat-tab label="Create Organization" class="label-create-Organization">
+                        <app-add-organization-component></app-add-organization-component>
+                    </mat-tab>
+
+
+                    <!-- <mat-tab label="View Organization List" class="label-view-organization">
+                        <app-view-organization-component></app-view-organization-component>
+                    </mat-tab> -->
+
+                </mat-tab-group>
+            </ng-container>
+            <ng-container *ngIf="viewOrgId !==null">
+                <!-- <ng-container *ngIf="ViewMoreOrganization=='ViewMoreOrganization'"> -->
+                    <ng-container *ngIf="num===0 || num===undefined">
+                        <div class="breadcumb">
+                            <div class="row">
+                                <div class="col-lg-6 col-sm-12">
+                                    <nav aria-label="breadcrumb">
+                                        <ol class="breadcrumb">
+                                            <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                        class="fas fa-home"></i></a></li>
+                                            <li class="breadcrumb-item active" aria-current="page">{{'add-organization.organization' | translate}}</li>
+                                            <li class="breadcrumb-item active" aria-current="page">{{'view-organization.view-organization-list' | translate}}
+                                                </li>
+                                        </ol>
+                                    </nav>
+                                </div>
+                                <div class="col-lg-6 col-sm-12">
+                                    <div class="iconics-div">
+                                        <ul class="iconics-buttons">
+
+                                            <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li> -->
+                                            <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                                            <!-- <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li> -->
+                                            <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToOrganizationTab()'><i
+                                                        class="fas fa-arrow-left"></i></a></li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </ng-container>
+                    <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                        <mat-tab label="View Organization Details" class="label-edit-organization">
+                            <app-add-organization-component></app-add-organization-component>
+                        </mat-tab>
+                    </mat-tab-group>
+                </ng-container>
+                <ng-container *ngIf="draftedId !==null">
+                    <!-- <ng-container *ngIf="ViewMoreOrganization=='ViewMoreOrganization'"> -->
+                        <ng-container *ngIf="num===0 || num===undefined">
+                            <div class="breadcumb">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-12">
+                                        <nav aria-label="breadcrumb">
+                                            <ol class="breadcrumb">
+                                                <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                            class="fas fa-home"></i></a></li>
+                                                <li class="breadcrumb-item active" aria-current="page">{{'add-organization.organization' | translate}}</li>
+                                                <li class="breadcrumb-item active" aria-current="page">{{'view-organization.view-organization-list' | translate}}
+                                                    </li>
+                                            </ol>
+                                        </nav>
+                                    </div>
+                                    <div class="col-lg-6 col-sm-12">
+                                        <div class="iconics-div">
+                                            <ul class="iconics-buttons">
+    
+                                                <!-- <li><a onclick="window.print()" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li> -->
+                                                <!-- <li><a href="#" class="iconsBG" title="Excel"><i class="far fa-file-excel"></i></a></li> -->
+                                                <!-- <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i class="far fa-file-excel"></i></a></li> -->
+                                                <li><a class="iconsBG iconback" title="{{'common.Back'|translate}}" (click)='moveToOrganizationTab()'><i
+                                                            class="fas fa-arrow-left"></i></a></li>
+    
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+    
+    
+                            </div>
+    
+    
+                        </ng-container>
+                        <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)">
+                            <mat-tab label="View Organization Details" class="label-edit-organization">
+                                <app-add-organization-component></app-add-organization-component>
+                            </mat-tab>
+                        </mat-tab-group>
+                    </ng-container>
+        </div>
+    </div>
+    <!-- <div class="container-fluid">
+        <div class="innerbody">
+
+            <ng-container *ngIf="num===0 || num===undefined">
+
+                <div class="breadcumb">
+                    <div class="row">
+                        <div class="col-lg-6 col-sm-12">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a [routerLink]="'/admin/dashboard'"><i
+                                                class="fas fa-home"></i></a></li>
+                                    <li class="breadcrumb-item label-organization"><a
+                                            href="/admin/organization">Organization</a></li>
+                                    <li class="breadcrumb-item active label-view-organization" aria-current="page">View
+                                        Organization List</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <div class="iconics-div">
+                                <ul class="iconics-buttons">
+                                    <li><a href="#" class="iconsBG" title="Print"><i class="fas fa-print"></i></a></li>
+                                    <li><a class="iconsBG" title="Excel" (click)="generateExcel()"><i
+                                                class="far fa-file-excel"></i></a></li>
+                                    <li><a class="iconsBG" title="Back"
+                                            (click)='moveToSelectedTab("Create Organization")'><i
+                                                class="fas fa-arrow-left"></i></a></li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </ng-container>
+            <mat-tab-group mat-align-tabs="start" (selectedIndexChange)="tabClick($event)"> -->
+<!--
+                <mat-tab label="View Organization List" class="label-view-organization">
+                    <app-view-organization-component></app-view-organization-component>
+                </mat-tab> -->
+
+            <!-- </mat-tab-group>
+        </div>
+    </div> -->

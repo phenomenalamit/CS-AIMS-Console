@@ -1,0 +1,295 @@
+<!-- HTML Page Component for ADD/EDIT User type -->
+<ng-container *ngIf="authorised_flag==false">
+  <h6 style="text-align: center;">** You Don't have Authorization to View this Page **</h6>
+</ng-container>
+<ng-container *ngIf="authorised_flag==true">  
+  <div class="">
+      
+      <form class="example-form" [formGroup]="userTypeForm" autocomplete="off" novalidate
+          (ngSubmit)="createUserform(userTypeForm.value)">
+          <input type="hidden" class="form-control"  formControlName="userTypeId" >
+          <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle class="custom-expansion-panel" >
+
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <h6>{{'add-user-type.addUserType' | translate }}</h6>
+                </mat-panel-title>
+
+              </mat-expansion-panel-header>
+          <div class="row">
+              <div class="col-xl-4 col-lg-4 col-sm-12 mt-3">
+                  <strong class="mandatory">*</strong>
+                  <mat-form-field appearance="outline" class="mb-form-0">
+                      <mat-label><span class="label-userType">{{'add-user-type.User Type' | translate}}</span></mat-label>
+                      <input matInput class=""  placeholder="{{'add-user-type.Enter User Type' | translate}}"  formControlName="userType"  >
+                  </mat-form-field>
+              </div>
+          </div>
+          <div class="row form-group" (click)="getValueByLang()">
+              <div class="col-xl-12 col-lg-12 col-sm-12 pr-0">
+                <div class="table-responsive">
+                  <table class="table table-bordered" formArrayName="tableData" >
+                    <thead>
+                        <tr>
+                            <th *ngFor="let column of headers">
+                                <ng-container *ngIf="column==='Module'">
+                                  {{'assign-Group.Primary Link' | translate}}
+                                </ng-container>
+                                <ng-container *ngIf="column==='Access Permission'">
+                                  {{'assign-Group.Access Permission' | translate}}
+                                </ng-container>
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let row of userTypeForm.get('tableData')['controls']; let j = index">
+                            <td *ngFor="let column of headers">
+                                <ng-container [formGroupName]="j">
+                                  <ng-container *ngIf="browserLang== 'en'">
+                                  <ng-container *ngIf=" column === 'Module'; then loggedIn2;"></ng-container>
+                                </ng-container>
+                                <ng-container *ngIf="browserLang== 'pt'">
+                                  <ng-container *ngIf=" column === 'Module'; then loggedIn3;"></ng-container>
+                                </ng-container>
+                                  <ng-template #loggedIn2>
+                                    {{primaryLinkList[j].primaryLinkName}}
+                                  </ng-template>
+                                  
+                                  
+                                    <ng-template #loggedIn3>
+                                      {{primaryLinkList[j].primaryLinkNamePt}}
+                                    </ng-template>
+                                  <ng-container *ngIf=" column === 'Access Permission'; then loggedIn1;"></ng-container>
+                                  <ng-template #loggedIn1>
+                                    <div class="col-xl-4 col-lg-4 col-sm-12 mt-2">
+                                      <mat-form-field appearance="fill">
+                                        <mat-label>{{'menu.Choose Permissions' | translate}}</mat-label>
+                                        <mat-select  #select formControlName="permissionArr" multiple (closed)="setData(j,select)">
+                                            <mat-option value="{{plp.permissionMasterId}}" *ngFor="let plp of primaryLinkList[j].primaryLinkPermissions" >
+                                              {{plp.permissionMasterId==1?'CREATE':plp.permissionMasterId==2?'READ':plp.permissionMasterId==3?'UPDATE':'DELETE'}}
+                                            </mat-option>
+                                        </mat-select>
+                                      </mat-form-field>
+                                    </div>
+                                  </ng-template>
+                                </ng-container>
+                            </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+          </div>
+          <ng-container *ngIf="editusertype!=='true' ">
+          <div class="row">
+              <div class="col-lg-12 mt-3 mb-2">
+                  <div class="example-button">
+                    <button class="btn btn-success mr-2" (click)="(userTypeForm.invalid) ?  openMandatoryAlert():opensweetalert()" >{{'common.submit' | translate}}</button>
+                      <button class="btn btn-reset mr-2"  (click)="clearForm(userTypeForm)">{{'common.reset' | translate}}</button>
+                  </div>
+              </div>
+          </div>
+          </ng-container>
+          <ng-container *ngIf="editusertype =='true' ">
+            <div class="row">
+                <div class="col-lg-12 mt-3 mb-2">
+                    <div class="example-button">
+                      <button class="btn btn-success mr-2" (click)="(userTypeForm.invalid) ?  openMandatoryAlert():opensweetalertUpdate()" >{{'common.update' | translate}}</button>
+                      
+                        <button class="btn btn-danger mr-2" (click)="moveToViewTab()">{{'common.cancel' | translate}}</button>
+                    </div>
+                </div>
+            </div>
+            </ng-container>
+          </mat-expansion-panel>
+      </form>
+      <mat-expansion-panel [expanded]="true" (opened)="setStep(0)" hideToggle class="custom-expansion-panel" >
+
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h6>{{'add-user-type.userTypeList' | translate}}</h6>
+            </mat-panel-title>
+
+          </mat-expansion-panel-header>
+        
+          <div class="row">
+            <div class="col-sm-8">
+              <p>
+                {{'common.totalrows' | translate}} : {{ totalRows }} <br>
+              </p>
+      
+          
+          <div class="mat-elevation-z8 table-responsive print-size-font">
+              <table id = "ExampleMaterialTable" mat-table [dataSource]="UserTypeDatasource" class="table table-bordered " matSort>
+          
+                <ng-container matColumnDef="userType">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header>{{'add-user-type.User Type' | translate}} </th>
+                  <td mat-cell *matCellDef="let element"> {{element.userType}} </td>
+                </ng-container>
+                
+          
+            <ng-container matColumnDef="edit" sticky>
+            
+              <th *matHeaderCellDef class="add-width">{{ 'create-envelope.action' | translate }}
+              </th>
+              <td *matCellDef="let element;let i = index;" class="printremove">
+                <ng-container *ngIf="userPermission.indexOf(3)!=-1">
+                  <button class="btn btn-primary btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.edit' | translate }}" tabindex="-1" (click)='editUserType(element.userTypeId);'>
+                      <i class="far fa-edit"></i>
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="userPermission.indexOf(4)!=-1">
+                  <button class="btn btn-danger btn-sm mr-1" placement="top" ngbTooltip="{{ 'create-envelope.delete' | translate }}" tabindex="-1" (click)='opensweetalertDelete(element.userTypeId)'>
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </ng-container>
+            </td>
+          </ng-container>
+          
+          
+          
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+          
+          
+            </div>
+            </div>
+            </div>
+             <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator> 
+          
+          <!-- <ng-container *ngIf="usergroup==='dnpo' || usergroup==='dnped'
+          || usergroup==='dnma' || usergroup==='dncp' || usergroup==='cedsif' || usergroup==='bankomoz' ">
+            <mat-form-field class="input-filter">
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+            </mat-form-field>
+            <div class="row">
+              <div class="col-sm-12">
+            <div class="mat-elevation-z8 table-responsive">
+                <table id = "ExampleMaterialTable" mat-table [dataSource]="dataSource" class="table table-bordered " matSort>
+          
+          
+                
+                  <ng-container matColumnDef="viewmore">
+                    <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+                  
+                    <td *matCellDef="let element"> <button class="btn btn-success btn-sm" tabindex="-1" (click)='viewMoreEnvelope(element)'>
+                      <i class="fas fa-eye"></i>
+                    </button> </td>
+                  </ng-container>
+                  <ng-container matColumnDef="partner">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.funding-organization' | translate }} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.partner}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="purdaccrs">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.purpose-DAC-CRS' | translate }} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.purdaccrs}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="year">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.year' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+                  </ng-container>
+          
+                  <ng-container matColumnDef="envagrcurr">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amount' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.envagrcurr}} </td>
+                  </ng-container>
+          
+                  <ng-container matColumnDef="exchangerateUsd">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.currency' | translate }}</th>
+                    <td mat-cell *matCellDef="let element"> {{element.exchangerateUsd}} </td>
+                  </ng-container>
+          
+                  <ng-container matColumnDef="exchangerateMzn">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtmzn' | translate }} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.exchangerateMzn}} </td>
+                  </ng-container>
+                  <ng-container matColumnDef="amtannenvmeti">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtusd' | translate }} </th>
+                    <td mat-cell *matCellDef="let element"> {{element.amtannenvmeti}} </td>
+                  </ng-container>
+                
+          
+          
+                  <tr mat-header-row *matHeaderRowDef="displayedColumnsReadOnly"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumnsReadOnly;"></tr>
+                </table>
+          
+                <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              </div>
+              </div>
+              </div>
+            </ng-container> -->
+          
+          
+            <!-- <ng-container *ngIf="usergroup=='dngdpteam' || usergroup=='partner' || usergroup=='dntcef'">
+              <mat-form-field class="input-filter">
+                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+              </mat-form-field>
+          
+              <div class="mat-elevation-z8 table-responsive">
+                  <table id = "ExampleMaterialTable" mat-table [dataSource]="dataSource" class="table table-bordered " matSort>
+          
+          
+                  
+          
+                    <ng-container matColumnDef="partner">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.funding-organization' | translate }} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.partner}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="purdaccrs">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.purpose-DAC-CRS' | translate }} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.purdaccrs}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="year">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.year' | translate }} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+                    </ng-container>
+          
+                    <ng-container matColumnDef="envagrcurr">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amount' | translate }} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.envagrcurr}} </td>
+                    </ng-container>
+          
+                    <ng-container matColumnDef="exchangerateUsd">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.currency' | translate }}</th>
+                      <td mat-cell *matCellDef="let element"> {{element.exchangerateUsd}} </td>
+                    </ng-container>
+          
+                    <ng-container matColumnDef="exchangerateMzn">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtmzn' | translate }} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.exchangerateMzn}} </td>
+                    </ng-container>
+                    <ng-container matColumnDef="amtannenvmeti">
+                      <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'create-envelope.amtusd' | translate }} </th>
+                      <td mat-cell *matCellDef="let element"> {{element.amtannenvmeti}} </td>
+                    </ng-container>
+                  
+          
+                <ng-container matColumnDef="edit">
+                  <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+                  <td *matCellDef="let element"> <button class="btn btn-primary btn-sm" placement="top" ngbTooltip="Edit" tabindex="-1" (click)='moveToSelectedTab("Edit Envelope",element)'>
+                      <i class="far fa-edit"></i>
+                  </button> </td>
+              </ng-container>
+          
+          
+              <ng-container matColumnDef="viewmore">
+                <th *matHeaderCellDef class="label-action"> {{ 'create-envelope.action' | translate }} </th>
+                <td *matCellDef="let element"> <button class="btn btn-success btn-sm" placement="top" ngbTooltip="View" tabindex="-1" (click)='viewMoreEnvelope(element)'>
+                  <i class="fas fa-eye"></i>
+                </button> </td>
+              </ng-container>
+          
+                    <tr mat-header-row *matHeaderRowDef="displayedColumnsReadUpdate"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsReadUpdate;"></tr>
+                  </table>
+          
+          
+                </div>
+                <mat-paginator #paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+              </ng-container> -->
+            </mat-expansion-panel>
+  </div>
+</ng-container>

@@ -1,0 +1,16 @@
+[
+  {
+    "isDefault": "Y",
+    "languageId": 1,
+    "languageCode": "en",
+    "languageName": "ENGLISH",
+    "isEdit": false
+  },
+  {
+    "isDefault": "N",
+    "languageId": 2,
+    "languageCode": "pt",
+    "languageName": "PORTUGUESE",
+    "isEdit": false
+  }
+]
